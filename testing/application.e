@@ -7,9 +7,6 @@ note
 class
 	APPLICATION
 
-inherit
-	EQA_TEST_SET
-
 create
 	make
 

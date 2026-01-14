@@ -27,6 +27,6 @@
 		<description>Test target for simple_code</description>
 		<root class="APPLICATION" feature="make"/>
 		<library name="testing" location="$ISE_LIBRARY\library\testing\testing.ecf"/>
-		<cluster name="testing" location=".\testing\" recursive="true"/>
+		<cluster name="test_classes" location=".\testing\" recursive="true"/>
 	</target>
 </system>
