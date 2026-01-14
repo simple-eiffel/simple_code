@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <system xmlns="http://www.eiffel.com/developers/xml/configuration-1-23-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-23-0 http://www.eiffel.com/developers/xml/configuration-1-23-0.xsd" name="simple_code" uuid="A1B2C3D4-E5F6-7890-ABCD-EF1234567890" library_target="simple_code">
 	<description>AI-Powered Code Assistant Integration for Eiffel</description>
 	<target name="simple_code">
@@ -16,6 +16,9 @@
 		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf"/>
 		<library name="simple_ai_client" location="$SIMPLE_EIFFEL\simple_ai_client\simple_ai_client.ecf"/>
 		<library name="simple_file" location="$SIMPLE_EIFFEL\simple_file\simple_file.ecf"/>
+		<library name="simple_logger" location="$SIMPLE_EIFFEL\simple_logger\simple_logger.ecf"/>
+		<library name="simple_sql" location="$SIMPLE_EIFFEL\simple_sql\simple_sql.ecf"/>
+		<library name="simple_vision" location="$SIMPLE_EIFFEL\simple_vision\simple_vision.ecf"/>
 		<cluster name="src" location=".\src\" recursive="true">
 			<file_rule>
 				<exclude>/.git$</exclude>
@@ -30,5 +33,9 @@
 		<library name="simple_testing" location="$SIMPLE_EIFFEL\simple_testing\simple_testing.ecf"/>
 		<library name="testing" location="$ISE_LIBRARY\library\testing\testing.ecf"/>
 		<cluster name="test_classes" location=".\testing\" recursive="true"/>
+	</target>
+	<target name="scg_project" extends="simple_code">
+		<description>Simple Code Generator - Project Generator</description>
+		<root class="SCG_PROJECT_GEN" feature="make"/>
 	</target>
 </system>
