@@ -5,10 +5,10 @@ note
 	revision: "$Revision$"
 
 class
-	TEST_PLACEHOLDER
+	LIB_TESTS
 
 inherit
-	EQA_TEST_SET
+	TEST_SET_BASE
 
 feature -- Test
 
