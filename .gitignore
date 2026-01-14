@@ -1,0 +1,22 @@
+# EiffelStudio generated
+EIFGENs/
+*.epr
+
+# Editor files
+.eiffel_lsp/
+*.swp
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+
+# Build artifacts
+*.exe
+*.dll
+*.o
+*.obj
