@@ -39,6 +39,7 @@ feature {NONE} -- Test Runners
 		do
 			run_test (agent lib_tests.test_version_exists, "test_version_exists")
 			run_test (agent lib_tests.test_sc_compiler_paths, "test_sc_compiler_paths")
+			run_test (agent lib_tests.test_project_generator, "test_project_generator")
 		end
 
 feature {NONE} -- Implementation

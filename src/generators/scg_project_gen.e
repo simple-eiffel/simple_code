@@ -38,6 +38,7 @@ feature {NONE} -- Initialization
 			project_name := a_project_name
 			project_path := a_path
 			simple_libs := a_simple_libs
+			create verification_error.make_empty
 
 			create project_uuid.make
 
@@ -51,14 +52,24 @@ feature {NONE} -- Initialization
 			generate_gitignore
 
 			is_generated := True
+
+			-- Verify the generated project compiles
+			verify_compilation
 		ensure
 			generated: is_generated
+			verified: is_verified
 		end
 
 feature -- Status
 
 	is_generated: BOOLEAN
 			-- Was project successfully generated?
+
+	is_verified: BOOLEAN
+			-- Did generated project pass compilation verification?
+
+	verification_error: detachable STRING
+			-- Error message if compilation verification failed (empty if successful)
 
 feature -- Access
 
@@ -200,6 +211,41 @@ feature {NONE} -- Generation
 		do
 			create l_file.make ((create {SIMPLE_PATH}.make_from (project_path.to_string)).add (".gitignore").to_string)
 			l_ok := l_file.write_text (gitignore_template)
+		end
+
+	verify_compilation
+			-- Verify generated project compiles using SC_COMPILER.
+			-- Runs melt check on library target, then compile_check on test target.
+		local
+			l_compiler: SC_COMPILER
+			l_ecf: STRING
+			l_workdir: STRING
+			l_discard: SC_COMPILER
+		do
+			l_ecf := project_name + ".ecf"
+			l_workdir := project_path.to_string.to_string_8
+
+			-- Verify library target compiles (melt check)
+			create l_compiler.make (l_ecf, project_name)
+			l_discard := l_compiler.set_working_directory (l_workdir)
+			l_compiler.compile_check
+
+			if l_compiler.is_compiled then
+				-- Verify test target compiles (melt check)
+				create l_compiler.make (l_ecf, project_name + "_tests")
+				l_discard := l_compiler.set_working_directory (l_workdir)
+				l_compiler.compile_check
+
+				if l_compiler.is_compiled then
+					is_verified := True
+				else
+					is_verified := False
+					verification_error := "Test target compilation failed: " + l_compiler.last_error
+				end
+			else
+				is_verified := False
+				verification_error := "Library target compilation failed: " + l_compiler.last_error
+			end
 		end
 
 feature {NONE} -- Helpers

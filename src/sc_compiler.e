@@ -41,7 +41,10 @@ feature {NONE} -- Initialization
 			-- Create compiler for `a_ecf_path' with `a_target'.
 		require
 			ecf_not_empty: not a_ecf_path.is_empty
+			ecf_is_ecf_file: a_ecf_path.ends_with (".ecf")
 			target_not_empty: not a_target.is_empty
+		local
+			l_env: SIMPLE_ENV
 		do
 			ecf_path := a_ecf_path
 			target := a_target
@@ -49,12 +52,25 @@ feature {NONE} -- Initialization
 			create last_error.make_empty
 			create working_directory.make_empty
 
-			-- Default EiffelStudio paths (Windows)
-			ise_eiffel := "C:\Program Files\Eiffel Software\EiffelStudio 25.02 Standard"
-			ise_platform := "win64"
+			-- Get EiffelStudio paths from environment variables
+			create l_env
+			if attached l_env.get ("ISE_EIFFEL") as l_ise then
+				ise_eiffel := l_ise.to_string_8
+			else
+				ise_eiffel := "C:\Program Files\Eiffel Software\EiffelStudio 25.02 Standard"
+			end
+			if attached l_env.get ("ISE_PLATFORM") as l_plat then
+				ise_platform := l_plat.to_string_8
+			else
+				ise_platform := "win64"
+			end
 		ensure
 			ecf_set: ecf_path.same_string (a_ecf_path)
 			target_set: target.same_string (a_target)
+			no_compilation_yet: last_result = Void
+			initially_not_compiled: not is_compiled
+			no_errors_yet: last_error.is_empty
+			exit_code_zero: last_exit_code = 0
 		end
 
 feature -- Access
@@ -83,6 +99,9 @@ feature -- Access
 	last_exit_code: INTEGER
 			-- Exit code from last compilation
 
+	last_result: detachable SC_COMPILE_RESULT
+			-- Parsed result from last compilation (Void until first compilation)
+
 feature -- Status
 
 	is_compiled: BOOLEAN
@@ -98,6 +117,8 @@ feature -- Compilation Modes
 		do
 			reset_state
 			run_ec_with_args ("-batch -config %"" + ecf_path + "%" -target " + target)
+		ensure
+			result_available: attached last_result
 		end
 
 	compile_test
@@ -108,10 +129,13 @@ feature -- Compilation Modes
 			if is_compiled then
 				verify_binary (f_code_path)
 			end
+		ensure
+			result_available: attached last_result
 		end
 
 	compile_release
-			-- Build BOTH lean (no DBC) and fat (-keep) binaries.
+			-- Build lean (no DBC) then fat (-keep) binary.
+			-- Note: Fat binary overwrites lean in F_code. Final binary has DBC.
 		do
 			reset_state
 
@@ -122,7 +146,7 @@ feature -- Compilation Modes
 			run_ec_with_args ("-batch -config %"" + ecf_path + "%" -target " + target + " -finalize -c_compile")
 
 			if is_compiled then
-				-- Second: Build fat (with DBC via -keep)
+				-- Second: Build fat (with DBC via -keep) - overwrites lean
 				if is_verbose then
 					print ("--- Building FAT binary (with DBC) ---%N")
 				end
@@ -132,6 +156,8 @@ feature -- Compilation Modes
 					verify_binary (f_code_path)
 				end
 			end
+		ensure
+			result_available: attached last_result
 		end
 
 	compile_freeze
@@ -142,6 +168,8 @@ feature -- Compilation Modes
 			if is_compiled then
 				verify_binary (w_code_path)
 			end
+		ensure
+			result_available: attached last_result
 		end
 
 	compile_raw (a_args: STRING)
@@ -151,6 +179,8 @@ feature -- Compilation Modes
 		do
 			reset_state
 			run_ec_with_args (a_args)
+		ensure
+			result_available: attached last_result
 		end
 
 feature -- Paths
@@ -159,22 +189,28 @@ feature -- Paths
 			-- Path to EIFGENs directory for current target.
 		do
 			if working_directory.is_empty then
-				Result := "EIFGENs/" + target
+				Result := "EIFGENs\" + target
 			else
-				Result := working_directory + "/EIFGENs/" + target
+				Result := working_directory + "\EIFGENs\" + target
 			end
+		ensure
+			result_not_empty: not Result.is_empty
 		end
 
 	f_code_path: STRING
 			-- Path to F_code directory (finalized code).
 		do
-			Result := eifgens_path + "/F_code"
+			Result := eifgens_path + "\F_code"
+		ensure
+			result_not_empty: not Result.is_empty
 		end
 
 	w_code_path: STRING
 			-- Path to W_code directory (workbench code).
 		do
-			Result := eifgens_path + "/W_code"
+			Result := eifgens_path + "\W_code"
+		ensure
+			result_not_empty: not Result.is_empty
 		end
 
 	exe_path: STRING
@@ -202,8 +238,7 @@ feature -- Configuration (Fluent API)
 
 	set_working_directory (a_path: STRING): like Current
 			-- Set working directory for compilation.
-		require
-			path_not_void: a_path /= Void
+			-- Pass empty string to use current directory.
 		do
 			working_directory := a_path
 			Result := Current
@@ -255,13 +290,24 @@ feature {NONE} -- Implementation
 			last_output.wipe_out
 			last_error.wipe_out
 			last_exit_code := 0
+			last_result := Void
+		ensure
+			not_compiled: not is_compiled
+			output_cleared: last_output.is_empty
+			error_cleared: last_error.is_empty
+			exit_code_zero: last_exit_code = 0
+			no_result: last_result = Void
 		end
 
 	run_ec_with_args (a_args: STRING)
 			-- Run ec.exe with given arguments string.
+		require
+			args_not_empty: not a_args.is_empty
 		local
 			l_proc: SIMPLE_PROCESS
 			l_cmd: STRING
+			l_proc_error: STRING
+			l_parser: SC_OUTPUT_PARSER
 		do
 			create l_cmd.make (256)
 			l_cmd.append_character ('%"')
@@ -289,19 +335,36 @@ feature {NONE} -- Implementation
 				last_output.wipe_out
 			end
 
+			-- Capture process error separately
+			create l_proc_error.make_empty
+			if attached l_proc.last_error as l_err then
+				l_proc_error := l_err.to_string_8
+			end
+
+			-- Parse output into structured result
+			create l_parser
+			last_result := l_parser.parse (last_output, l_proc_error, last_exit_code)
+
 			if l_proc.was_successful then
 				is_compiled := True
 			else
 				is_compiled := False
 				last_error := "Compilation failed with exit code " + last_exit_code.out
-				if attached l_proc.last_error as l_err then
-					last_error.append ("%N" + l_err.to_string_8)
+				if not l_proc_error.is_empty then
+					last_error.append ("%N" + l_proc_error)
 				end
 			end
+		ensure
+			result_created: attached last_result
+			result_exit_code_matches: attached last_result as r implies r.exit_code = last_exit_code
+			failure_has_error: not is_compiled implies not last_error.is_empty
 		end
 
 	run_finish_freezing (a_code_dir: STRING)
 			-- Run finish_freezing in the specified code directory.
+			-- Note: Called manually for freeze scenarios requiring separate C compilation.
+		require
+			dir_not_empty: not a_code_dir.is_empty
 		local
 			l_proc: SIMPLE_PROCESS
 			l_cmd: STRING
@@ -326,6 +389,8 @@ feature {NONE} -- Implementation
 
 	verify_binary (a_code_path: STRING)
 			-- Verify that a binary was built in `a_code_path'.
+		require
+			path_not_empty: not a_code_path.is_empty
 		local
 			l_dir: SIMPLE_FILE
 			l_exe: STRING
@@ -348,25 +413,41 @@ feature {NONE} -- Implementation
 
 	find_exe_in (a_dir: STRING): STRING
 			-- Find first .exe file in `a_dir'. Returns empty string if none found.
+		require
+			dir_not_empty: not a_dir.is_empty
 		local
 			l_files: SIMPLE_FILES
 			l_entries: ARRAYED_LIST [STRING_32]
 			i: INTEGER
+			l_found: BOOLEAN
 		do
 			create Result.make_empty
 			create l_files
 
 			l_entries := l_files.list_files (a_dir)
-			from i := 1 until i > l_entries.count loop
+			from i := 1 until i > l_entries.count or l_found loop
 				if l_entries.i_th (i).ends_with (".exe") then
-					Result := a_dir + "/" + l_entries.i_th (i).to_string_8
+					Result := a_dir + "\" + l_entries.i_th (i).to_string_8
+					l_found := True
 				end
 				i := i + 1
 			end
 		end
 
 invariant
-	ecf_not_empty: not ecf_path.is_empty
+	-- Configuration validity
+	ecf_path_valid: not ecf_path.is_empty and ecf_path.ends_with (".ecf")
 	target_not_empty: not target.is_empty
+	ise_eiffel_not_empty: not ise_eiffel.is_empty
+	ise_platform_not_empty: not ise_platform.is_empty
+
+	-- Compilation state consistency: if we have a result, exit codes must match
+	result_exit_code_consistent: attached last_result as r implies r.exit_code = last_exit_code
+
+	-- Error state semantics: failure implies error message exists
+	failure_implies_error: (attached last_result and not is_compiled) implies not last_error.is_empty
+
+	-- Success state semantics: success implies no error message
+	success_implies_no_error: is_compiled implies last_error.is_empty
 
 end

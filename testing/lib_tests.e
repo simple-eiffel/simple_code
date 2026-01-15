@@ -60,17 +60,17 @@ feature -- Test
 		do
 			create l_compiler.make ("test.ecf", "test_target")
 
-			-- Verify path construction
-			assert ("eifgens_path", l_compiler.eifgens_path.same_string ("EIFGENs/test_target"))
-			assert ("f_code_path", l_compiler.f_code_path.same_string ("EIFGENs/test_target/F_code"))
-			assert ("w_code_path", l_compiler.w_code_path.same_string ("EIFGENs/test_target/W_code"))
+			-- Verify path construction (Windows backslash separators)
+			assert ("eifgens_path", l_compiler.eifgens_path.same_string ("EIFGENs\test_target"))
+			assert ("f_code_path", l_compiler.f_code_path.same_string ("EIFGENs\test_target\F_code"))
+			assert ("w_code_path", l_compiler.w_code_path.same_string ("EIFGENs\test_target\W_code"))
 
 			-- Verify fluent API (need to capture result since functions can't be used as instructions)
-			l_discard := l_compiler.set_working_directory ("/my/project")
+			l_discard := l_compiler.set_working_directory ("D:\my\project")
 			l_discard := l_compiler.set_verbose (True)
-			assert ("working_dir_set", l_compiler.working_directory.same_string ("/my/project"))
+			assert ("working_dir_set", l_compiler.working_directory.same_string ("D:\my\project"))
 			assert ("verbose_set", l_compiler.is_verbose)
-			assert ("eifgens_with_workdir", l_compiler.eifgens_path.same_string ("/my/project/EIFGENs/test_target"))
+			assert ("eifgens_with_workdir", l_compiler.eifgens_path.same_string ("D:\my\project\EIFGENs\test_target"))
 
 			-- Verify ec.exe path contains expected components
 			assert ("ec_path_has_studio", l_compiler.ec_exe_path.has_substring ("studio"))
@@ -97,6 +97,7 @@ feature -- Test
 
 			-- Verify generator state
 			assert ("is_generated", l_gen.is_generated)
+			assert ("is_verified", l_gen.is_verified)
 			assert ("project_name_set", l_gen.project_name.same_string (test_project_name))
 
 			-- Verify directory structure
