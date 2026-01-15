@@ -15,6 +15,7 @@
 		</capability>
 		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf"/>
 		<library name="simple_ai_client" location="$SIMPLE_EIFFEL\simple_ai_client\simple_ai_client.ecf"/>
+		<library name="simple_datetime" location="$SIMPLE_EIFFEL\simple_datetime\simple_datetime.ecf"/>
 		<library name="simple_env" location="$SIMPLE_EIFFEL\simple_env\simple_env.ecf"/>
 		<library name="simple_file" location="$SIMPLE_EIFFEL\simple_file\simple_file.ecf"/>
 		<library name="simple_logger" location="$SIMPLE_EIFFEL\simple_logger\simple_logger.ecf"/>
