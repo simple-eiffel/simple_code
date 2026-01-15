@@ -22,6 +22,7 @@ feature {NONE} -- Initialization
 			run_lib_tests
 			run_scg_project_gen_tests
 			run_sc_project_tests
+			run_scg_class_gen_tests
 
 			print ("%N========================%N")
 			print ("Results: " + passed.out + " passed, " + failed.out + " failed%N")
@@ -66,11 +67,30 @@ feature {NONE} -- Test Runners
 			run_test_with_setup_proj (agent sc_project_tests.test_project_full_lifecycle, "test_project_full_lifecycle")
 		end
 
+	run_scg_class_gen_tests
+			-- Run TEST_SCG_CLASS_GEN test cases.
+		do
+			print ("%N--- TEST_SCG_CLASS_GEN ---%N")
+			create scg_class_gen_tests
+			run_test_with_setup_class (agent scg_class_gen_tests.test_class_gen_creation, "test_class_gen_creation")
+			run_test_with_setup_class (agent scg_class_gen_tests.test_class_gen_requires_specs, "test_class_gen_requires_specs")
+			run_test_with_setup_class (agent scg_class_gen_tests.test_class_gen_with_ollama, "test_class_gen_with_ollama")
+			run_test_with_setup_class (agent scg_class_gen_tests.test_class_gen_with_mock_ai, "test_class_gen_with_mock_ai")
+			run_test_with_setup_class (agent scg_class_gen_tests.test_generated_class_has_notes, "test_generated_class_has_notes")
+			run_test_with_setup_class (agent scg_class_gen_tests.test_generated_class_has_contracts, "test_generated_class_has_contracts")
+			run_test_with_setup_class (agent scg_class_gen_tests.test_generated_class_is_valid_eiffel, "test_generated_class_is_valid_eiffel")
+			run_test_with_setup_class (agent scg_class_gen_tests.test_semantic_framing_applied, "test_semantic_framing_applied")
+			run_test_with_setup_class (agent scg_class_gen_tests.test_hat_passes_applied, "test_hat_passes_applied")
+			run_test_with_setup_class (agent scg_class_gen_tests.test_ai_failure_handling, "test_ai_failure_handling")
+			run_test_with_setup_class (agent scg_class_gen_tests.test_generation_log_populated, "test_generation_log_populated")
+		end
+
 feature {NONE} -- Implementation
 
 	lib_tests: LIB_TESTS
 	scg_project_gen_tests: TEST_SCG_PROJECT_GEN
 	sc_project_tests: TEST_SC_PROJECT
+	scg_class_gen_tests: TEST_SCG_CLASS_GEN
 
 	passed: INTEGER
 	failed: INTEGER
@@ -126,6 +146,26 @@ feature {NONE} -- Implementation
 			end
 		rescue
 			sc_project_tests.cleanup
+			print ("  FAIL: " + a_name + "%N")
+			failed := failed + 1
+			l_retried := True
+			retry
+		end
+
+	run_test_with_setup_class (a_test: PROCEDURE; a_name: STRING)
+			-- Run a single class generator test with prepare/cleanup.
+		local
+			l_retried: BOOLEAN
+		do
+			if not l_retried then
+				scg_class_gen_tests.prepare
+				a_test.call (Void)
+				scg_class_gen_tests.cleanup
+				print ("  PASS: " + a_name + "%N")
+				passed := passed + 1
+			end
+		rescue
+			scg_class_gen_tests.cleanup
 			print ("  FAIL: " + a_name + "%N")
 			failed := failed + 1
 			l_retried := True
