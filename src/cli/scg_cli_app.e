@@ -139,6 +139,12 @@ feature {NONE} -- Command Processing
 				handle_inno_install (a_args)
 			elseif l_command.is_case_insensitive_equal ("git-context") then
 				handle_git_context (a_args)
+			elseif l_command.is_case_insensitive_equal ("new") then
+				handle_new (a_args)
+			elseif l_command.is_case_insensitive_equal ("projects") then
+				handle_projects (a_args)
+			elseif l_command.is_case_insensitive_equal ("rules") or l_command.is_case_insensitive_equal ("guidance") then
+				handle_rules
 			elseif l_command.is_case_insensitive_equal ("--help") or l_command.is_case_insensitive_equal ("-h") then
 				print_usage
 			else
@@ -476,7 +482,7 @@ feature {NONE} -- Command Processing
 			l_session_name, l_project_path: detachable STRING_32
 			l_session: SCG_SESSION
 			l_process: SIMPLE_PROCESS
-			l_output, l_ecf_path: STRING
+			l_output, l_ecf_path, l_ec_cmd: STRING
 			l_errors: ARRAYED_LIST [STRING_32]
 			l_class_errors: HASH_TABLE [ARRAYED_LIST [STRING_32], STRING_32]
 			l_builder: SCG_PROMPT_BUILDER
@@ -502,10 +508,15 @@ feature {NONE} -- Command Processing
 					-- Find ECF file
 					l_ecf_path := l_project_path.to_string_8 + "/" + l_session_name.to_string_8 + ".ecf"
 
+					-- Get compiler command with full path
+					l_ec_cmd := get_ec_command
+
 					-- Run compiler
 					print ("[INFO] Compiling project...%N")
+					print ("[INFO] ECF: " + l_ecf_path + "%N")
+					print ("[INFO] Compiler: " + l_ec_cmd + "%N")
 					create l_process.make
-					l_process.run_in_directory ("ec.exe -batch -config " + l_ecf_path + " -c_compile", l_project_path.to_string_8)
+					l_process.run_in_directory (l_ec_cmd + " -batch -config " + l_ecf_path + " -c_compile", l_project_path.to_string_8)
 
 					if attached l_process.last_output as l_out then
 						l_output := l_out.to_string_8
@@ -1336,6 +1347,250 @@ feature {NONE} -- Command Processing
 			end
 		end
 
+	handle_new (a_args: ARGUMENTS_32)
+			-- Handle 'new <project_name> [--type library|cli] [--dir <path>] [--lib <simple_lib>...]' command.
+			-- Creates a new project scaffold directly without session workflow.
+		local
+			l_project_name, l_type, l_dir: detachable STRING_32
+			l_libs: ARRAYED_LIST [STRING]
+			l_project_gen: SCG_PROJECT_GEN
+			l_path: SIMPLE_PATH
+			l_kb: SCG_KB
+			i: INTEGER
+		do
+			-- Extract positional project name (first non-option argument after "new")
+			from i := 2 until i > a_args.argument_count or attached l_project_name loop
+				if not a_args.argument (i).starts_with ("-") then
+					l_project_name := a_args.argument (i)
+				end
+				i := i + 1
+			end
+
+			-- Get options
+			l_type := get_option_value (a_args, "--type")
+			l_dir := get_option_value (a_args, "--dir")
+
+			-- Collect --lib options (can have multiple)
+			create l_libs.make (5)
+			from i := 2 until i > a_args.argument_count loop
+				if a_args.argument (i).is_case_insensitive_equal ("--lib") then
+					if i + 1 <= a_args.argument_count then
+						l_libs.extend (a_args.argument (i + 1).to_string_8)
+						i := i + 1
+					end
+				end
+				i := i + 1
+			end
+
+			-- Validate
+			if not attached l_project_name then
+				print ("[ERROR] Missing project name%N")
+				print ("Usage: simple_codegen new <project_name> [--type library|cli] [--dir <path>] [--lib <simple_lib>...]%N")
+				print ("%NExamples:%N")
+				print ("  simple_codegen new simple_foo%N")
+				print ("  simple_codegen new simple_bar --type cli%N")
+				print ("  simple_codegen new simple_baz --type library --dir /d/prod%N")
+				print ("  simple_codegen new simple_qux --lib simple_file --lib simple_json%N")
+			else
+				-- Default type is library
+				if not attached l_type then
+					l_type := "library"
+				end
+
+				-- Default dir is current directory
+				if attached l_dir as l_d then
+					create l_path.make_from (l_d.to_string_8 + "/" + l_project_name.to_string_8)
+				else
+					create l_path.make_from ("./" + l_project_name.to_string_8)
+				end
+
+				print ("[INFO] Creating project: " + l_project_name.to_string_8 + "%N")
+				print ("  Type: " + l_type.to_string_8 + "%N")
+				print ("  Path: " + l_path.to_string + "%N")
+				if not l_libs.is_empty then
+					print ("  Libraries: ")
+					across l_libs as ic loop
+						print (ic + " ")
+					end
+					print ("%N")
+				end
+
+				-- Create the project
+				if l_type.is_case_insensitive_equal ("cli") or l_type.is_case_insensitive_equal ("app") then
+					create l_project_gen.make_cli_app (l_path, l_project_name.to_string_8, l_libs)
+				else
+					create l_project_gen.make_with_name (l_path, l_project_name.to_string_8, l_libs)
+				end
+
+				-- Report results
+				if l_project_gen.is_generated then
+					print ("%N[OK] Project created successfully%N")
+					print ("Generated files:%N")
+					print ("  " + l_path.to_string + "/" + l_project_name.to_string_8 + ".ecf%N")
+					print ("  " + l_path.to_string + "/src/" + l_project_name.to_string_8 + ".e%N")
+					print ("  " + l_path.to_string + "/testing/test_app.e%N")
+					print ("  " + l_path.to_string + "/testing/lib_tests.e%N")
+					print ("  " + l_path.to_string + "/README.md%N")
+					print ("  " + l_path.to_string + "/CHANGELOG.md%N")
+					print ("  " + l_path.to_string + "/.gitignore%N")
+					print ("  " + l_path.to_string + "/docs/index.html%N")
+
+					-- Register project in KB tracking database
+					create l_kb.make
+					if l_kb.is_open then
+						l_kb.register_project (
+							l_project_name.to_string_8,
+							l_type.to_string_8,
+							l_path.to_string,
+							"Generated by simple_codegen new",
+							l_libs
+						)
+						l_kb.register_project_class (
+							l_project_name.to_string_8,
+							l_project_name.to_string_8.as_upper,
+							l_path.to_string + "/src/" + l_project_name.to_string_8 + ".e"
+						)
+						l_kb.log_generation (
+							l_project_name.to_string_8,
+							l_project_name.to_string_8.as_upper,
+							"create_project",
+							l_project_gen.is_verified,
+							"Project scaffold created"
+						)
+						l_kb.close
+						print ("%N[KB] Project registered in tracking database%N")
+					end
+
+					if l_project_gen.is_verified then
+						print ("%N[VERIFIED] Project compiles successfully%N")
+						is_success := True
+					else
+						print ("%N[WARNING] Compilation verification failed:%N")
+						if attached l_project_gen.verification_error as l_err then
+							print ("  " + l_err + "%N")
+						end
+						print ("Project created but may need fixes.%N")
+					end
+
+					print ("%NNext steps:%N")
+					print ("  1. cd " + l_path.to_string + "%N")
+					if l_type.is_case_insensitive_equal ("cli") or l_type.is_case_insensitive_equal ("app") then
+						print ("  2. Implement your CLI in src/" + l_project_name.to_string_8 + ".e%N")
+					else
+						print ("  2. Add your code to src/" + l_project_name.to_string_8 + ".e%N")
+					end
+					print ("  3. Run tests: simple_codegen compile --session temp --project .%N")
+				else
+					print ("[ERROR] Project generation failed%N")
+				end
+			end
+		end
+
+	handle_projects (a_args: ARGUMENTS_32)
+			-- Handle 'projects [--stats] [--project <name>]' command.
+			-- Lists tracked projects or shows details for a specific project.
+		local
+			l_project_name: detachable STRING_32
+			l_show_stats: BOOLEAN
+			l_kb: SCG_KB
+			l_projects: ARRAYED_LIST [TUPLE [name: STRING; project_type: STRING; path: STRING; created_at: STRING]]
+			l_project: detachable TUPLE [id: INTEGER; name: STRING; project_type: STRING; path: STRING; description: STRING; created_at: STRING]
+			l_classes: ARRAYED_LIST [TUPLE [class_name: STRING; file_path: STRING; is_validated: BOOLEAN]]
+			l_history: ARRAYED_LIST [TUPLE [class_name: STRING; action: STRING; success: BOOLEAN; notes: STRING; created_at: STRING]]
+			l_stats: TUPLE [classes: INTEGER; features: INTEGER; examples: INTEGER; patterns: INTEGER; libraries: INTEGER]
+		do
+			l_project_name := get_option_value (a_args, "--project")
+			l_show_stats := has_flag (a_args, "--stats")
+
+			create l_kb.make
+			if not l_kb.is_open then
+				print ("[ERROR] Cannot open KB database%N")
+				if attached l_kb.last_error as err then
+					print ("  " + err + "%N")
+				end
+			else
+				if l_show_stats then
+					-- Show KB statistics
+					l_stats := l_kb.stats
+					print ("Knowledge Base Statistics%N")
+					print ("=========================%N")
+					print ("  Classes:   " + l_stats.classes.out + "%N")
+					print ("  Features:  " + l_stats.features.out + "%N")
+					print ("  Examples:  " + l_stats.examples.out + "%N")
+					print ("  Patterns:  " + l_stats.patterns.out + "%N")
+					print ("  Libraries: " + l_stats.libraries.out + "%N")
+					print ("%NTracked Projects: " + l_kb.project_count.out + "%N")
+					is_success := True
+
+				elseif attached l_project_name as pname then
+					-- Show specific project details
+					l_project := l_kb.get_project (pname.to_string_8)
+					if attached l_project as p then
+						print ("Project: " + p.name + "%N")
+						print (create {STRING}.make_filled ('=', p.name.count + 9) + "%N")
+						print ("  Type:        " + p.project_type + "%N")
+						print ("  Path:        " + p.path + "%N")
+						print ("  Description: " + p.description + "%N")
+						print ("  Created:     " + p.created_at + "%N")
+
+						l_classes := l_kb.get_project_classes (pname.to_string_8)
+						if not l_classes.is_empty then
+							print ("%NClasses (" + l_classes.count.out + "):%N")
+							across l_classes as c loop
+								print ("  - " + c.class_name)
+								if c.is_validated then
+									print (" [validated]")
+								end
+								print ("%N")
+							end
+						end
+
+						l_history := l_kb.get_project_history (pname.to_string_8, 10)
+						if not l_history.is_empty then
+							print ("%NRecent Activity:%N")
+							across l_history as h loop
+								print ("  " + h.created_at + " | " + h.action)
+								if not h.class_name.is_empty then
+									print (" (" + h.class_name + ")")
+								end
+								if h.success then
+									print (" [OK]")
+								else
+									print (" [FAIL]")
+								end
+								print ("%N")
+							end
+						end
+						is_success := True
+					else
+						print ("[ERROR] Project not found: " + pname.to_string_8 + "%N")
+					end
+
+				else
+					-- List all projects
+					l_projects := l_kb.list_projects
+					if l_projects.is_empty then
+						print ("No projects tracked yet.%N")
+						print ("%NCreate a new project with:%N")
+						print ("  simple_codegen new <project_name> [--type library|cli]%N")
+					else
+						print ("Tracked Projects%N")
+						print ("================%N")
+						across l_projects as p loop
+							print ("  " + p.name + " [" + p.project_type + "]%N")
+							print ("    Path: " + p.path + "%N")
+							print ("    Created: " + p.created_at + "%N%N")
+						end
+						print ("Total: " + l_projects.count.out + " project(s)%N")
+						print ("%NFor details: simple_codegen projects --project <name>%N")
+					end
+					is_success := True
+				end
+
+				l_kb.close
+			end
+		end
+
 feature {NONE} -- Helpers
 
 	get_option_value (a_args: ARGUMENTS_32; a_option: STRING): detachable STRING_32
@@ -1374,12 +1629,69 @@ feature {NONE} -- Helpers
 			end
 		end
 
+	get_ec_command: STRING
+			-- Get EiffelStudio compiler command with full path.
+			-- Tries ISE_EIFFEL environment variable first, then default locations.
+		local
+			l_env: EXECUTION_ENVIRONMENT
+			l_ise_eiffel: detachable STRING
+			l_file: RAW_FILE
+		do
+			create l_env
+			l_ise_eiffel := l_env.get ("ISE_EIFFEL")
+
+			-- Try ISE_EIFFEL environment variable
+			if attached l_ise_eiffel as l_ise then
+				Result := l_ise + "/studio/spec/win64/bin/ec.exe"
+				create l_file.make_with_name (Result)
+				if l_file.exists then
+					-- Wrap in quotes for paths with spaces
+					Result := "%"" + Result + "%""
+				else
+					Result := ""
+				end
+			else
+				Result := ""
+			end
+
+			-- Try default EiffelStudio 25.02 location
+			if Result.is_empty then
+				Result := "C:/Program Files/Eiffel Software/EiffelStudio 25.02 Standard/studio/spec/win64/bin/ec.exe"
+				create l_file.make_with_name (Result)
+				if l_file.exists then
+					Result := "%"" + Result + "%""
+				else
+					Result := ""
+				end
+			end
+
+			-- Try 24.11 location
+			if Result.is_empty then
+				Result := "C:/Program Files/Eiffel Software/EiffelStudio 24.11 Standard/studio/spec/win64/bin/ec.exe"
+				create l_file.make_with_name (Result)
+				if l_file.exists then
+					Result := "%"" + Result + "%""
+				else
+					Result := ""
+				end
+			end
+
+			-- Fallback to just "ec" and hope it's in PATH
+			if Result.is_empty then
+				Result := "ec"
+			end
+		ensure
+			result_not_void: Result /= Void
+		end
+
 	print_usage
 			-- Print usage information.
 		do
 			print ("Simple Code Generator CLI - Claude-in-the-Loop Code Generation%N")
 			print ("================================================================%N%N")
 			print ("Commands:%N")
+			print ("  new <project_name> [--type library|cli] [--dir <path>] [--lib <simple_lib>...]%N")
+			print ("      Create new project scaffold (like 'cargo new')%N%N")
 			print ("  init --session <name> [--level system|class] [--class <CLASS_NAME>]%N")
 			print ("      Initialize a new generation session (default: system level)%N%N")
 			print ("  add-feature --session <name> --class <CLASS> --feature <name> --type <command|query>%N")
@@ -1416,6 +1728,8 @@ feature {NONE} -- Helpers
 			print ("      Generate INNO Setup installer script%N%N")
 			print ("  git-context --session <name> [--file <file>]%N")
 			print ("      Generate git history context for Claude prompts%N%N")
+			print ("  projects [--stats] [--project <name>]%N")
+			print ("      List tracked projects or show KB statistics%N%N")
 			print ("Build modes (for compile/run-tests):%N")
 			print ("  Development:  W_code (workbench, fast compile, slow run)%N")
 			print ("  Testing:      F_code with -keep (finalized with assertions)%N")
@@ -1429,7 +1743,104 @@ feature {NONE} -- Helpers
 			print ("  6. simple_codegen validate --input generated_class.e%N")
 			print ("  7. If issues: simple_codegen refine --session library_system --class CLASS --issues %"...%"%N")
 			print ("  8. Process refinement response, repeat until valid%N")
-			print ("  9. simple_codegen assemble --session library_system --output ./library_system%N")
+			print ("  9. simple_codegen assemble --session library_system --output ./library_system%N%N")
+			print ("  rules%N")
+			print ("      Display guardrails and constraints for Claude%N")
+		end
+
+	handle_rules
+			-- Output guardrails and constraints for Claude.
+		do
+			print ("=======================================================================%N")
+			print ("        SIMPLE_CODEGEN - CLAUDE USER MANUAL REMINDER%N")
+			print ("=======================================================================%N%N")
+
+			print ("FIRST: READ THE CLAUDE USER MANUAL:%N")
+			print ("  /d/prod/simple_code/CLAUDE_USER_MANUAL.md%N%N")
+
+			print ("The manual explains:%N")
+			print ("  - SCALE and SCOPE of work%N")
+			print ("  - The 6 lifecycle stages%N")
+			print ("  - Mandatory rules%N")
+			print ("  - Command reference%N%N")
+
+			print ("If you haven't read it, STOP and read it NOW.%N%N")
+
+			print ("=======================================================================%N")
+			print ("            GUARDRAILS SUMMARY (from manual)%N")
+			print ("=======================================================================%N%N")
+
+			print ("*** YOU ARE WORKING WITHIN A CONSTRAINED BOX ***%N%N")
+
+			print ("=== 0. DETERMINE SCALE AND SCOPE FIRST ===%N")
+			print ("   SCALE (what level are you working at?):%N")
+			print ("     SYSTEM    - New project (ALL stages 1-6)%N")
+			print ("     SUBSYSTEM - Module in existing project (stages 2-5)%N")
+			print ("     CLUSTER   - Group of classes (stages 2-3, maybe 5)%N")
+			print ("     CLASS     - Single class (stage 2, maybe 3)%N")
+			print ("     FEATURE   - Single feature (stage 2 only)%N%N")
+
+			print ("   Based on user prompt, identify SCALE then apply appropriate SCOPE.%N%N")
+
+			print ("=== 1. PROJECT STRUCTURE (FOR SYSTEM SCALE) ===%N")
+			print ("   Every project MUST have this structure:%N")
+			print ("   PROJECT_ROOT/%N")
+			print ("   +-- project_name.ecf     (with main AND test targets)%N")
+			print ("   +-- README.md%N")
+			print ("   +-- CHANGELOG.md%N")
+			print ("   +-- .gitignore%N")
+			print ("   +-- src/                 (source code)%N")
+			print ("   +-- testing/             (test_app.e, lib_tests.e)%N")
+			print ("   +-- docs/                (index.html)%N")
+			print ("   +-- bin/                 (deployed binaries)%N")
+			print ("   +-- inno/                (installer files, optional)%N%N")
+
+			print ("=== 2. LIFECYCLE STAGES (based on SCOPE) ===%N")
+			print ("   Stage 1: PROJECT SKELETON - dirs, ECF, README, CHANGELOG%N")
+			print ("   Stage 2: CODE GENERATION - main classes in src/%N")
+			print ("   Stage 3: TEST CREATION - test_app.e, lib_tests.e%N")
+			print ("   Stage 4: DOCUMENTATION - docs/index.html%N")
+			print ("   Stage 5: BUILD/DEPLOY - compile, copy to bin/%N")
+			print ("   Stage 6: INSTALLER - INNO setup (optional)%N")
+			print ("   (Apply stages based on SCALE identified above)%N%N")
+
+			print ("=== 3. PROJECT CONFINEMENT ===%N")
+			print ("   - ALL files MUST be created INSIDE the project directory%N")
+			print ("   - NEVER create files in /d/prod/ directly%N")
+			print ("   - EIFGENs MUST be in project_root/EIFGENs/%N")
+			print ("   - Source files go in project_root/src/%N%N")
+
+			print ("=== 4. COMPILATION RULES ===%N")
+			print ("   *** NEVER use ec.exe or ec.sh directly ***%N")
+			print ("   *** USE THESE TOOLS INSTEAD: ***%N")
+			print ("   For sessions:  simple_codegen compile --session <name> --project <path>%N")
+			print ("   For any project: simple_codegen compile --session <name> --project <path>%N")
+			print ("   ALWAYS cd to project directory BEFORE any operation%N%N")
+
+			print ("=== 5. CLEANUP REQUIREMENTS ===%N")
+			print ("   Before finishing work:%N")
+			print ("   - Terminate any background processes%N")
+			print ("   - Delete temporary files%N")
+			print ("   - Release file locks%N")
+			print ("   - Report created artifacts%N%N")
+
+			print ("=== 6. WORKFLOW ===%N")
+			print ("   1. ALWAYS start by running: simple_codegen rules%N")
+			print ("   2. FOLLOW simple_codegen prompts - DO NOT act on your own%N")
+			print ("   3. Complete ALL lifecycle stages in order%N")
+			print ("   4. Verify checklist before declaring COMPLETE%N%N")
+
+			print ("=== VERIFICATION CHECKLIST ===%N")
+			print ("   [ ] ECF has both main AND test targets%N")
+			print ("   [ ] testing/ folder exists with tests%N")
+			print ("   [ ] docs/ folder exists with index.html%N")
+			print ("   [ ] README.md exists%N")
+			print ("   [ ] bin/ folder exists with binary%N")
+			print ("   [ ] All tests pass%N%N")
+
+			print ("=======================================================================%N")
+			print ("    FOLLOW THESE RULES - DO NOT ACT OUTSIDE PROMPTS%N")
+			print ("=======================================================================%N")
 		end
 
 invariant

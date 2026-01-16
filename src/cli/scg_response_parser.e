@@ -60,6 +60,7 @@ feature -- Parsing
 
 	parse (a_response: STRING_32; a_session: SCG_SESSION)
 			-- Parse Claude's response and update session.
+			-- Uses SIMPLE_JSON first, falls back to regex extraction for large code fields.
 		require
 			response_not_empty: not a_response.is_empty
 			session_valid: a_session.is_valid
@@ -90,8 +91,111 @@ feature -- Parsing
 						last_error := "Response is not a JSON object"
 					end
 				else
-					last_error := "Invalid JSON: " + l_json.errors_as_string
+					-- JSON parsing failed - try fallback extraction for class_code/refinement
+					parse_fallback (l_json_text, a_session)
+					if not is_success then
+						last_error := "Invalid JSON: " + l_json.errors_as_string + "%N(Fallback extraction also failed)"
+					end
 				end
+			end
+		end
+
+	parse_fallback (a_json_text: STRING_32; a_session: SCG_SESSION)
+			-- Fallback parser using regex/string extraction when SIMPLE_JSON fails.
+			-- Handles class_code and refinement responses with large code fields.
+		local
+			l_type, l_class_name, l_code: detachable STRING_32
+		do
+			-- Extract type
+			l_type := extract_field (a_json_text, "type")
+
+			if attached l_type as l_t then
+				response_type := l_t
+
+				if l_t.is_case_insensitive_equal ("class_code") or l_t.is_case_insensitive_equal ("refinement") then
+					-- Extract class_name
+					l_class_name := extract_field (a_json_text, "class_name")
+
+					-- Extract code (special handling for large multiline strings)
+					l_code := extract_code_field (a_json_text)
+
+					if attached l_class_name as l_cn and then attached l_code as l_c then
+						if not l_cn.is_empty and not l_c.is_empty then
+							parsed_class_name := l_cn
+							parsed_code := unescape_json_string (l_c)
+							parsed_notes := extract_field (a_json_text, "notes")
+
+							-- Update session
+							if attached parsed_code as l_pc then
+								a_session.mark_class_generated (l_cn, l_pc)
+							end
+							is_success := True
+						end
+					end
+				end
+			end
+		end
+
+	extract_field (a_json_text: STRING_32; a_field_name: STRING): detachable STRING_32
+			-- Extract simple string field value from JSON text.
+		local
+			l_pattern: STRING_32
+			l_start, l_end: INTEGER
+		do
+			-- Look for "field_name": "value"
+			l_pattern := "%"" + a_field_name + "%": %""
+			l_start := a_json_text.substring_index (l_pattern, 1)
+			if l_start > 0 then
+				l_start := l_start + l_pattern.count
+				-- Find closing quote (handle escaped quotes)
+				l_end := find_string_end (a_json_text, l_start)
+				if l_end > l_start then
+					Result := a_json_text.substring (l_start, l_end - 1)
+				end
+			end
+		end
+
+	extract_code_field (a_json_text: STRING_32): detachable STRING_32
+			-- Extract the "code" field which may contain large multiline content.
+		local
+			l_pattern: STRING_32
+			l_start, l_end: INTEGER
+		do
+			-- Look for "code": "
+			l_pattern := "%"code%": %""
+			l_start := a_json_text.substring_index (l_pattern, 1)
+			if l_start > 0 then
+				l_start := l_start + l_pattern.count
+				-- Find closing quote (handle escaped quotes and newlines)
+				l_end := find_string_end (a_json_text, l_start)
+				if l_end > l_start then
+					Result := a_json_text.substring (l_start, l_end - 1)
+				end
+			end
+		end
+
+	find_string_end (a_text: STRING_32; a_start: INTEGER): INTEGER
+			-- Find end of JSON string starting at a_start (position of closing quote).
+		local
+			i: INTEGER
+			c: CHARACTER_32
+		do
+			from i := a_start until i > a_text.count or Result > 0 loop
+				c := a_text.item (i)
+				if c = '"' then
+					-- Check if it's escaped
+					if i > 1 and then a_text.item (i - 1) = '\' then
+						-- Check if the backslash itself is escaped
+						if i > 2 and then a_text.item (i - 2) = '\' then
+							-- Escaped backslash followed by quote - this is end of string
+							Result := i
+						end
+						-- Otherwise skip this escaped quote
+					else
+						Result := i
+					end
+				end
+				i := i + 1
 			end
 		end
 

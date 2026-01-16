@@ -213,8 +213,15 @@ feature {NONE} -- Templates
 
 	system_design_template: STRING_32
 			-- Template for initial system design prompt.
-		once
-			Result := {STRING_32} "[
+		do
+			create Result.make (10000)
+			Result.append (user_manual_reminder)
+			Result.append ({STRING_32} "%N%N")
+			Result.append (project_structure_requirements)
+			Result.append ({STRING_32} "%N%N")
+			Result.append (project_confinement_rules)
+			Result.append ({STRING_32} "%N%N")
+			Result.append ({STRING_32} "[
 I need you to design an Eiffel system based on my requirements.
 
 === YOUR TASK ===
@@ -291,7 +298,7 @@ Save this JSON response to a file and run:
 
 This parses your system specification and generates the first class prompt.
 The CLI will guide you through generating each class in sequence.
-]"
+]")
 		end
 
 	class_generation_instructions: STRING_32
@@ -583,8 +590,15 @@ feature -- Research and Planning Prompts
 
 	research_7_step_template: STRING_32
 			-- Template for 7-step research process.
-		once
-			Result := {STRING_32} "[
+		do
+			create Result.make (8000)
+			Result.append (user_manual_reminder)
+			Result.append ({STRING_32} "%N%N")
+			Result.append (project_structure_requirements)
+			Result.append ({STRING_32} "%N%N")
+			Result.append (project_confinement_rules)
+			Result.append ({STRING_32} "%N%N")
+			Result.append ({STRING_32} "[
 === 7-STEP RESEARCH PROCESS ===
 
 Execute each step thoroughly and document your findings.
@@ -626,7 +640,7 @@ STEP 7: CREATE IMPLEMENTATION PLAN
 - Dependencies between steps
 - Verification criteria for each step
 - Next CLI commands to execute
-]"
+]")
 		end
 
 	planning_dbit_template: STRING_32
@@ -970,6 +984,238 @@ Output ONLY the JSON. No explanations before or after.
 Execute the first command from next_cli_commands array.
 The plan will guide subsequent commands through the DBIT cycle.
 ]"
+		end
+
+feature -- User Manual Reference
+
+	user_manual_reminder: STRING_32
+			-- Reminder to read the Claude User Manual first.
+		once
+			Result := {STRING_32} "[
+=== CLAUDE USER MANUAL REMINDER ===
+
+BEFORE proceeding, ensure you have read and understood:
+  /d/prod/simple_code/CLAUDE_USER_MANUAL.md
+
+This manual contains:
+- How to determine SCALE and SCOPE of work
+- The 6 lifecycle stages and when to apply them
+- Mandatory rules for project confinement
+- Complete command reference
+- Common mistakes to avoid
+
+If you haven't read it, STOP and read it now.
+If you have read it, proceed with the work below.
+
+=====================================
+]"
+		end
+
+feature -- Project Structure Requirements
+
+	project_structure_requirements: STRING_32
+			-- Complete project structure requirements for simple_* pattern.
+		once
+			Result := {STRING_32} "[
+=== SCALE AND SCOPE AWARENESS ===
+
+FIRST: Determine the SCALE and SCOPE of the request.
+
+SCALE (what level are you working at?):
+  - SYSTEM:   New project/library (requires FULL structure below)
+  - SUBSYSTEM: New module within existing project (partial structure)
+  - CLUSTER:  Group of related classes (src/ changes only)
+  - CLASS:    Single class (src/ file only)
+  - FEATURE:  Single feature in existing class (edit only)
+
+SCOPE (what dev-ops stages are needed?):
+  For SYSTEM scale → ALL stages (1-6)
+  For SUBSYSTEM scale → Stages 2-5 (skip skeleton if exists)
+  For CLUSTER scale → Stages 2-3, maybe 5
+  For CLASS scale → Stage 2, maybe 3
+  For FEATURE scale → Stage 2 only (edit existing file)
+
+=== SIMPLE_* PROJECT STRUCTURE (FOR SYSTEM SCALE) ===
+
+NEW projects MUST have this complete structure:
+
+PROJECT_ROOT/
+├── project_name.ecf        # ECF configuration with library AND test targets
+├── README.md               # Project description, usage, examples
+├── CHANGELOG.md            # Version history
+├── .gitignore              # Git ignore patterns
+├── src/                    # Source code
+│   ├── main_class.e
+│   └── supporting_classes.e
+├── testing/                # Test classes
+│   ├── test_app.e          # Test runner (root class for test target)
+│   └── lib_tests.e         # Test cases inheriting TEST_SET_BASE
+├── docs/                   # Documentation
+│   ├── index.html          # Main documentation page
+│   └── api/                # API documentation (optional)
+├── bin/                    # Compiled binaries (deployed)
+│   └── project_name.exe
+└── inno/                   # Installer files (optional)
+    ├── project_name.iss    # INNO Setup script
+    └── Output/             # Built installer
+
+=== LIFECYCLE STAGES ===
+
+You MUST complete ALL stages in order:
+
+STAGE 1: PROJECT SKELETON
+- Create directory structure (src/, testing/, docs/, bin/)
+- Create ECF with both library and test targets
+- Create README.md with project description
+- Create CHANGELOG.md with initial version
+- Create .gitignore
+
+STAGE 2: CODE GENERATION
+- Generate main classes in src/
+- Apply DBC, void safety, SCOOP patterns
+- Validate with simple_codegen validator
+
+STAGE 3: TEST CREATION
+- Create test_app.e (test runner root class)
+- Create lib_tests.e (test cases)
+- ECF test target must include testing cluster
+- Use simple_testing library
+
+STAGE 4: DOCUMENTATION
+- Create docs/index.html with:
+  - Project overview
+  - API reference
+  - Usage examples
+  - Installation instructions
+
+STAGE 5: BUILD AND DEPLOY
+- Compile with test target, run tests
+- Compile release target (finalized)
+- Copy binary to bin/ folder
+- Deploy to /d/prod/bin/ if ecosystem tool
+
+STAGE 6: INSTALLER (optional for CLI tools)
+- Create INNO Setup script
+- Build installer
+- Test installation/uninstallation
+
+=== CLI COMMANDS FOR EACH STAGE ===
+
+Stage 1: simple_codegen init --session <name>
+Stage 2: simple_codegen generate --session <name>
+Stage 3: simple_codegen generate-tests --session <name>
+Stage 4: simple_codegen docs --session <name>
+Stage 5: simple_codegen compile --session <name> --project <path>
+Stage 6: simple_codegen inno --session <name>
+
+=== VERIFICATION CHECKLIST ===
+
+Before declaring project COMPLETE:
+[ ] ECF has both main AND test targets
+[ ] testing/ folder exists with test_app.e and lib_tests.e
+[ ] docs/ folder exists with index.html
+[ ] README.md exists with project description
+[ ] CHANGELOG.md exists with version history
+[ ] .gitignore exists
+[ ] bin/ folder exists with compiled binary
+[ ] All tests pass
+[ ] Documentation is complete
+]"
+		end
+
+feature -- Project Confinement Rules
+
+	project_confinement_rules: STRING_32
+			-- Rules for confining work to the project directory.
+		once
+			Result := {STRING_32} "[
+=== PROJECT CONFINEMENT (CRITICAL) ===
+ALL work MUST be confined to the project directory.
+
+1. FILE CREATION:
+   - ONLY create files inside the project directory
+   - NEVER create files in parent directories (e.g., /d/prod/)
+   - All source files go in project_root/src/
+   - All generated files stay in project_root/
+
+2. COMPILATION - USE CLI TOOLS (NOT ec.exe/ec.sh directly):
+   *** NEVER run ec.exe or ec.sh directly ***
+   *** USE these CLI tools instead: ***
+
+   For session-based projects:
+     simple_codegen.exe compile --session <name> --project <path>
+
+   For any Eiffel project:
+     simple_codegen compile --session <name> --project <path>
+     (compiles from correct directory, handles errors)
+
+   These tools:
+   - Automatically run from correct directory
+   - Create EIFGENs in proper location
+   - Handle refinement prompts on errors
+   - Track compilation history
+
+3. ARTIFACTS:
+   - Logs, temp files, output → project_root/
+   - Test results → project_root/
+   - EIFGENs → project_root/EIFGENs/
+   - Documentation → project_root/docs/
+
+4. VERIFICATION:
+   Before ANY file operation, verify the path is INSIDE project_root.
+   Pattern: path.has_substring(project_root)
+
+VIOLATION of these rules causes:
+- EIFGENs in wrong location (locks files elsewhere)
+- Pollution of shared directories
+- Confusion about what belongs to which project
+]"
+		end
+
+	cleanup_rules: STRING_32
+			-- Rules for cleaning up after completion.
+		once
+			Result := {STRING_32} "[
+=== CLEANUP (Required when DONE) ===
+Before finishing work, clean up resources:
+
+1. TERMINATE PROCESSES:
+   - Ensure no background compilations running
+   - Kill any spawned subprocesses (ec.exe, finish_freezing.exe)
+   - Release file locks
+
+2. TEMPORARY FILES:
+   - Delete any temp files created during work
+   - Remove intermediate artifacts not needed
+   - Clean response.json, prompt.txt if one-time use
+
+3. VERIFY NO LOCKS:
+   - Check that project EIFGENs is not locked
+   - Ensure no files held open
+
+4. REPORT ARTIFACTS:
+   When done, list what was created:
+   - New/modified source files
+   - Binaries deployed
+   - Config files updated
+
+COMMAND to verify cleanup:
+  Check for locks: File Locksmith (Windows) or lsof (Unix)
+  Check processes: tasklist | grep ec.exe (Windows)
+]"
+		end
+
+	full_session_rules: STRING_32
+			-- Combined rules for the session (manual + structure + confinement + cleanup).
+		do
+			create Result.make (8000)
+			Result.append (user_manual_reminder)
+			Result.append ({STRING_32} "%N%N")
+			Result.append (project_structure_requirements)
+			Result.append ({STRING_32} "%N%N")
+			Result.append (project_confinement_rules)
+			Result.append ({STRING_32} "%N%N")
+			Result.append (cleanup_rules)
 		end
 
 invariant
