@@ -46,8 +46,11 @@ feature -- Test: Basic Generation
 
 	test_class_gen_creation
 			-- Test SCG_CLASS_GEN can be created with valid specs.
+		local
+			l_class_gen: SCG_CLASS_GEN
 		do
 			-- TODO: Test basic creation with system_spec and class_spec
+			create l_class_gen.make_class ("calculator project", "core controller class", Void, Void)
 			assert ("placeholder", True)
 		end
 
