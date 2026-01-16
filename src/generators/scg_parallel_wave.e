@@ -14,7 +14,7 @@ note
 				print (wave.error_log)
 			end
 	]"
-	author: "Larry Reid"
+	author: "Larry Rix"
 	date: "$Date$"
 	revision: "$Revision$"
 

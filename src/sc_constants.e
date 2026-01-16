@@ -1,6 +1,6 @@
 note
 	description: "Constants and version information for simple_code"
-	author: "Larry Reid"
+	author: "Larry Rix"
 	date: "$Date$"
 	revision: "$Revision$"
 

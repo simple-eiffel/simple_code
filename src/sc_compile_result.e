@@ -9,7 +9,7 @@ note
 		- Warnings
 		- Compilation mode and C compilation status
 	]"
-	author: "Larry Reid"
+	author: "Larry Rix"
 	date: "$Date$"
 	revision: "$Revision$"
 

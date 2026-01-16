@@ -12,7 +12,7 @@ note
 			create pipeline.make (ai_client_factory, events)
 			result := pipeline.execute (class_text)
 	]"
-	author: "Larry Reid"
+	author: "Larry Rix"
 	date: "$Date$"
 	revision: "$Revision$"
 

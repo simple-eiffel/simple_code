@@ -25,7 +25,7 @@ note
 		  compiler.set_verbose (True)
 		  compiler.compile_test
 		]"
-	author: "Larry Reid"
+	author: "Larry Rix"
 	date: "$Date$"
 	revision: "$Revision$"
 

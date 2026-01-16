@@ -12,7 +12,7 @@ note
 			wait_for_worker (worker)             -- sync via precondition
 			changes := get_worker_changes (worker)
 	]"
-	author: "Larry Reid"
+	author: "Larry Rix"
 	date: "$Date$"
 	revision: "$Revision$"
 

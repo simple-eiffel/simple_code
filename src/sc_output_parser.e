@@ -12,7 +12,7 @@ note
 		- Warning blocks
 		- File paths and line numbers
 	]"
-	author: "Larry Reid"
+	author: "Larry Rix"
 	date: "$Date$"
 	revision: "$Revision$"
 

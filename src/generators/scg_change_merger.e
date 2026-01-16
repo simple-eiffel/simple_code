@@ -13,7 +13,7 @@ note
 				print (merger.conflict_log)
 			end
 	]"
-	author: "Larry Reid"
+	author: "Larry Rix"
 	date: "$Date$"
 	revision: "$Revision$"
 

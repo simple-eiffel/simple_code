@@ -1,6 +1,6 @@
 note
 	description: "Core test cases for simple_code library"
-	author: "Larry Reid"
+	author: "Larry Rix"
 	date: "$Date$"
 	revision: "$Revision$"
 

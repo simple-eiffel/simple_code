@@ -10,7 +10,7 @@ note
 
 		Also ensures Uniform Access Principle is respected.
 	]"
-	author: "Larry Reid"
+	author: "Larry Rix"
 	date: "$Date$"
 	revision: "$Revision$"
 

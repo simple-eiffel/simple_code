@@ -21,7 +21,7 @@ note
 				io.put_string (ic.name)
 			end
 	]"
-	author: "Larry Reid"
+	author: "Larry Rix"
 	date: "$Date$"
 	revision: "$Revision$"
 

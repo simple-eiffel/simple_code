@@ -1,6 +1,6 @@
 note
 	description: "Test cases for SC_PROJECT persistence and lifecycle"
-	author: "Larry Reid"
+	author: "Larry Rix"
 	date: "$Date$"
 	revision: "$Revision$"
 

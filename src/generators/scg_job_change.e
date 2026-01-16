@@ -14,7 +14,7 @@ note
 		Usage:
 			create change.make_replace ("feature_name", "old code", "new code", "naming_job", 100)
 	]"
-	author: "Larry Reid"
+	author: "Larry Rix"
 	date: "$Date$"
 	revision: "$Revision$"
 

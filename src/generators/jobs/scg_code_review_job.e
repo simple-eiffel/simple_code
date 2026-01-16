@@ -13,7 +13,7 @@ note
 
 		Fixes Critical and High severity issues found.
 	]"
-	author: "Larry Reid"
+	author: "Larry Rix"
 	date: "$Date$"
 	revision: "$Revision$"
 

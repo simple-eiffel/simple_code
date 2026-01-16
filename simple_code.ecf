@@ -34,6 +34,7 @@
 	<target name="simple_code_tests" extends="simple_code">
 		<description>Test target for simple_code</description>
 		<root class="TEST_APP" feature="make"/>
+		<library name="simple_eiffel_parser" location="$SIMPLE_EIFFEL\simple_eiffel_parser\simple_eiffel_parser.ecf"/>
 		<library name="simple_testing" location="$SIMPLE_EIFFEL\simple_testing\simple_testing.ecf"/>
 		<library name="testing" location="$ISE_LIBRARY\library\testing\testing.ecf"/>
 		<cluster name="test_classes" location=".\testing\" recursive="true">

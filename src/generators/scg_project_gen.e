@@ -7,7 +7,7 @@ note
 		- Test scaffolding
 		- README and CHANGELOG
 		]"
-	author: "Larry Reid"
+	author: "Larry Rix"
 	date: "$Date$"
 	revision: "$Revision$"
 

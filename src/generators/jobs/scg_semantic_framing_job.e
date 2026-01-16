@@ -12,7 +12,7 @@ note
 		- Attributes CANNOT have multiple names (creates separate attributes!)
 		- For attribute aliasing, wrap with query/command routines
 	]"
-	author: "Larry Reid"
+	author: "Larry Rix"
 	date: "$Date$"
 	revision: "$Revision$"
 

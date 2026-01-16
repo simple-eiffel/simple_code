@@ -20,7 +20,7 @@ note
 				final_text := pipeline.result_text
 			end
 	]"
-	author: "Larry Reid"
+	author: "Larry Rix"
 	date: "$Date$"
 	revision: "$Revision$"
 

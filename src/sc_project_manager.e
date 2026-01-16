@@ -21,7 +21,7 @@ note
 			-- Cleanup soft-deleted records
 			manager.cleanup_deleted_projects
 	]"
-	author: "Larry Reid"
+	author: "Larry Rix"
 	date: "$Date$"
 	revision: "$Revision$"
 

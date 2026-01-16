@@ -15,7 +15,7 @@ note
 		- VDRD: Deferred feature not implemented
 		- ECMA: ECMA standard violation
 	]"
-	author: "Larry Reid"
+	author: "Larry Rix"
 	date: "$Date$"
 	revision: "$Revision$"
 

@@ -34,7 +34,7 @@ note
 				class_text := gen.generated_class_text
 			end
 	]"
-	author: "Larry Reid"
+	author: "Larry Rix"
 	date: "$Date$"
 	revision: "$Revision$"
 	design_references: "[
@@ -585,6 +585,60 @@ feature -- Output
 		ensure
 			result_exists: Result /= Void
 		end
+
+	save_to_file (a_file_path: STRING_32): BOOLEAN
+			-- Save generated class text to file.
+			-- Returns True if save was successful.
+		require
+			is_generated: is_generated
+			path_not_empty: not a_file_path.is_empty
+		local
+			l_file: PLAIN_TEXT_FILE
+		do
+			create l_file.make_with_name (a_file_path)
+			if l_file.exists then
+				l_file.open_write
+			else
+				l_file.create_read_write
+			end
+			if l_file.is_open_write then
+				l_file.put_string (generated_class_text.to_string_8)
+				l_file.close
+				last_saved_path := a_file_path
+				Result := True
+				log_action ("Saved to: " + a_file_path)
+			else
+				last_error := "Failed to open file for writing: " + a_file_path
+				log_action ("ERROR: " + last_error)
+			end
+		ensure
+			saved_implies_path_stored: Result implies attached last_saved_path as p and then p.same_string (a_file_path)
+		end
+
+	save_to_directory (a_directory: STRING_32; a_class_name: STRING_32): BOOLEAN
+			-- Save generated class to directory with appropriate filename.
+			-- File is named a_class_name.e (lowercase).
+		require
+			is_generated: is_generated
+			directory_not_empty: not a_directory.is_empty
+			class_name_not_empty: not a_class_name.is_empty
+		local
+			l_path: STRING_32
+		do
+			create l_path.make_from_string (a_directory)
+			-- Ensure trailing separator
+			if not l_path.is_empty and then l_path.item (l_path.count) /= '/' and then l_path.item (l_path.count) /= '\' then
+				l_path.append_character ('/')
+			end
+			l_path.append (a_class_name.as_lower)
+			l_path.append (".e")
+			Result := save_to_file (l_path)
+		ensure
+			saved_implies_path_stored: Result implies attached last_saved_path
+		end
+
+	last_saved_path: detachable STRING_32
+			-- Path where class was last saved (if any)
 
 invariant
 	system_spec_exists: system_spec /= Void

@@ -23,7 +23,7 @@ note
 			found := repo.find_by_path ("...")
 			all_active := repo.find_active
 	]"
-	author: "Larry Reid"
+	author: "Larry Rix"
 	date: "$Date$"
 	revision: "$Revision$"
 

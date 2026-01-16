@@ -12,7 +12,7 @@ note
 		- Is this contract TRUE but INCOMPLETE?
 		- Would a caller know exactly what to expect?
 	]"
-	author: "Larry Reid"
+	author: "Larry Rix"
 	date: "$Date$"
 	revision: "$Revision$"
 

@@ -13,7 +13,7 @@ note
 		- Standard feature names (item, count, extend, etc.)
 		- Command-Query naming (verbs for commands, nouns for queries)
 	]"
-	author: "Larry Reid"
+	author: "Larry Rix"
 	date: "$Date$"
 	revision: "$Revision$"
 

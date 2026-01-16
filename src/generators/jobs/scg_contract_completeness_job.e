@@ -17,7 +17,7 @@ note
 		- State machine operations
 		- Resource management (open/close)
 	]"
-	author: "Larry Reid"
+	author: "Larry Rix"
 	date: "$Date$"
 	revision: "$Revision$"
 

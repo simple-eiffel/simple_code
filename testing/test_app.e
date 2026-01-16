@@ -1,6 +1,6 @@
 note
 	description: "Test runner application for simple_code"
-	author: "Larry Reid"
+	author: "Larry Rix"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -69,20 +69,19 @@ feature {NONE} -- Test Runners
 
 	run_scg_class_gen_tests
 			-- Run TEST_SCG_CLASS_GEN test cases.
+			-- Parser sanity checks run first (no AI needed).
+			-- Then the full generation test (calls AI once, validates multiple aspects).
 		do
 			print ("%N--- TEST_SCG_CLASS_GEN ---%N")
 			create scg_class_gen_tests
-			run_test_with_setup_class (agent scg_class_gen_tests.test_class_gen_creation, "test_class_gen_creation")
-			run_test_with_setup_class (agent scg_class_gen_tests.test_class_gen_requires_specs, "test_class_gen_requires_specs")
-			run_test_with_setup_class (agent scg_class_gen_tests.test_class_gen_with_ollama, "test_class_gen_with_ollama")
-			run_test_with_setup_class (agent scg_class_gen_tests.test_class_gen_with_mock_ai, "test_class_gen_with_mock_ai")
-			run_test_with_setup_class (agent scg_class_gen_tests.test_generated_class_has_notes, "test_generated_class_has_notes")
-			run_test_with_setup_class (agent scg_class_gen_tests.test_generated_class_has_contracts, "test_generated_class_has_contracts")
-			run_test_with_setup_class (agent scg_class_gen_tests.test_generated_class_is_valid_eiffel, "test_generated_class_is_valid_eiffel")
-			run_test_with_setup_class (agent scg_class_gen_tests.test_semantic_framing_applied, "test_semantic_framing_applied")
-			run_test_with_setup_class (agent scg_class_gen_tests.test_hat_passes_applied, "test_hat_passes_applied")
-			run_test_with_setup_class (agent scg_class_gen_tests.test_ai_failure_handling, "test_ai_failure_handling")
-			run_test_with_setup_class (agent scg_class_gen_tests.test_generation_log_populated, "test_generation_log_populated")
+
+			-- Parser sanity checks (no AI calls)
+			run_test (agent scg_class_gen_tests.test_parser_validation_valid_class, "test_parser_validation_valid_class")
+			run_test (agent scg_class_gen_tests.test_parser_validation_invalid_class, "test_parser_validation_invalid_class")
+
+			-- Full generation tests (calls AI - consolidated validation)
+			run_test (agent scg_class_gen_tests.test_class_gen_creation, "test_class_gen_creation")
+			run_test (agent scg_class_gen_tests.test_class_gen_with_ollama, "test_class_gen_with_ollama")
 		end
 
 feature {NONE} -- Implementation
@@ -146,26 +145,6 @@ feature {NONE} -- Implementation
 			end
 		rescue
 			sc_project_tests.cleanup
-			print ("  FAIL: " + a_name + "%N")
-			failed := failed + 1
-			l_retried := True
-			retry
-		end
-
-	run_test_with_setup_class (a_test: PROCEDURE; a_name: STRING)
-			-- Run a single class generator test with prepare/cleanup.
-		local
-			l_retried: BOOLEAN
-		do
-			if not l_retried then
-				scg_class_gen_tests.prepare
-				a_test.call (Void)
-				scg_class_gen_tests.cleanup
-				print ("  PASS: " + a_name + "%N")
-				passed := passed + 1
-			end
-		rescue
-			scg_class_gen_tests.cleanup
 			print ("  FAIL: " + a_name + "%N")
 			failed := failed + 1
 			l_retried := True

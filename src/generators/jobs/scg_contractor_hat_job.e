@@ -11,7 +11,7 @@ note
 		3. Check assertions
 		4. Preconditions/Postconditions
 	]"
-	author: "Larry Reid"
+	author: "Larry Rix"
 	date: "$Date$"
 	revision: "$Revision$"
 

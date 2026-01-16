@@ -10,7 +10,7 @@ note
 		- No unnecessary detachable types
 		- Proper handling of optional values
 	]"
-	author: "Larry Reid"
+	author: "Larry Rix"
 	date: "$Date$"
 	revision: "$Revision$"
 

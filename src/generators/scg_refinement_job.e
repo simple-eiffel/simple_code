@@ -19,7 +19,7 @@ note
 				refined_text := job.result_text
 			end
 	]"
-	author: "Larry Reid"
+	author: "Larry Rix"
 	date: "$Date$"
 	revision: "$Revision$"
 	design_references: "[

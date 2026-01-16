@@ -14,7 +14,7 @@ note
 		- make_from_row: Reconstitute from database row
 		- make_new: Create for new project (before generation)
 	]"
-	author: "Larry Reid"
+	author: "Larry Rix"
 	date: "$Date$"
 	revision: "$Revision$"
 

@@ -1,6 +1,6 @@
 note
 	description: "Test cases for SCG_PROJECT_GEN project generator"
-	author: "Larry Reid"
+	author: "Larry Rix"
 	date: "$Date$"
 	revision: "$Revision$"
 

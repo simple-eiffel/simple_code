@@ -20,7 +20,7 @@ note
 			events.notify_job_started (job, class_text)
 			events.notify_job_completed (job, refined_text)
 	]"
-	author: "Larry Reid"
+	author: "Larry Rix"
 	date: "$Date$"
 	revision: "$Revision$"
 
