@@ -45,6 +45,11 @@ feature -- Test
 			-- Verify ec.exe path contains expected components
 			assert ("ec_path_has_studio", l_compiler.ec_exe_path.has_substring ("studio"))
 			assert ("ec_path_has_ec", l_compiler.ec_exe_path.has_substring ("ec.exe"))
+
+			-- Verify test-related attributes are initialized
+			assert ("tests_not_passed_initially", not l_compiler.tests_passed)
+			assert ("test_exit_code_zero", l_compiler.last_test_exit_code = 0)
+			assert ("test_output_empty", l_compiler.last_test_output.is_empty)
 		end
 
 end

@@ -7,6 +7,7 @@ note
 		MODES:
 		  check   - Melt only (fast syntax/type check, no C compile)
 		  test    - Finalize with -keep (DBC baked in, for test runners)
+		  run     - Compile (freeze) then run tests via TEST_APP test runner
 		  release - Finalize BOTH lean (no DBC) and fat (-keep) binaries
 		  freeze  - Traditional W_code freeze (legacy, avoid)
 
@@ -51,6 +52,7 @@ feature {NONE} -- Initialization
 			create last_output.make_empty
 			create last_error.make_empty
 			create working_directory.make_empty
+			create last_test_output.make_empty
 
 			-- Get EiffelStudio paths from environment variables
 			create l_env
@@ -110,6 +112,15 @@ feature -- Status
 	is_verbose: BOOLEAN
 			-- Print verbose output during compilation?
 
+	tests_passed: BOOLEAN
+			-- Did all tests pass in last `compile_run'?
+
+	last_test_exit_code: INTEGER
+			-- Exit code from last test run
+
+	last_test_output: STRING
+			-- Output from last test run
+
 feature -- Compilation Modes
 
 	compile_check
@@ -167,6 +178,69 @@ feature -- Compilation Modes
 			run_ec_with_args ("-batch -config %"" + ecf_path + "%" -target " + target + " -c_compile")
 			if is_compiled then
 				verify_binary (w_code_path)
+			end
+		ensure
+			result_available: attached last_result
+		end
+
+	compile_run
+			-- Compile (freeze) then run tests via TEST_APP test runner.
+			-- Sets `tests_passed' to True if all tests pass.
+		local
+			l_exe: STRING
+			l_proc: SIMPLE_PROCESS
+		do
+			reset_state
+			tests_passed := False
+
+			-- First compile with freeze to get W_code executable
+			if is_verbose then
+				print ("--- Compiling (freeze) ---%N")
+			end
+			run_ec_with_args ("-batch -config %"" + ecf_path + "%" -target " + target + " -freeze -c_compile")
+
+			if is_compiled then
+				verify_binary (w_code_path)
+
+				if is_compiled then
+					-- Find and run the executable
+					l_exe := find_exe_in (w_code_path)
+
+					if not l_exe.is_empty then
+						if is_verbose then
+							print ("--- Running tests ---%N")
+							print ("Executable: " + l_exe + "%N")
+						end
+
+						create l_proc.make
+						if working_directory.is_empty then
+							l_proc.execute ("%"" + l_exe + "%"")
+						else
+							l_proc.execute_in_directory ("%"" + l_exe + "%"", working_directory)
+						end
+
+						last_test_exit_code := l_proc.exit_code
+
+						if attached l_proc.output as l_out then
+							last_test_output := l_out.to_string_8
+						else
+							last_test_output := ""
+						end
+
+						if l_proc.exit_code = 0 then
+							tests_passed := True
+							if is_verbose then
+								print ("All tests passed%N")
+							end
+						else
+							if is_verbose then
+								print ("Tests failed (exit code: " + l_proc.exit_code.out + ")%N")
+							end
+						end
+					else
+						last_error := "No executable found in " + w_code_path
+					end
+				end
 			end
 		ensure
 			result_available: attached last_result
@@ -291,12 +365,17 @@ feature {NONE} -- Implementation
 			last_error.wipe_out
 			last_exit_code := 0
 			last_result := Void
+			tests_passed := False
+			last_test_exit_code := 0
+			last_test_output.wipe_out
 		ensure
 			not_compiled: not is_compiled
 			output_cleared: last_output.is_empty
 			error_cleared: last_error.is_empty
 			exit_code_zero: last_exit_code = 0
 			no_result: last_result = Void
+			tests_not_passed: not tests_passed
+			test_output_cleared: last_test_output.is_empty
 		end
 
 	run_ec_with_args (a_args: STRING)
