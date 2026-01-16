@@ -135,6 +135,10 @@ feature {NONE} -- Command Processing
 				handle_run_tests (a_args)
 			elseif l_command.is_case_insensitive_equal ("c-integrate") then
 				handle_c_integrate (a_args)
+			elseif l_command.is_case_insensitive_equal ("inno-install") then
+				handle_inno_install (a_args)
+			elseif l_command.is_case_insensitive_equal ("git-context") then
+				handle_git_context (a_args)
 			elseif l_command.is_case_insensitive_equal ("--help") or l_command.is_case_insensitive_equal ("-h") then
 				print_usage
 			else
@@ -1188,6 +1192,150 @@ feature {NONE} -- Command Processing
 			end
 		end
 
+	handle_inno_install (a_args: ARGUMENTS_32)
+			-- Handle 'inno-install --session <name> --app <name> --version <ver> --exe <exe>' command.
+			-- Generates INNO Setup installer script.
+		local
+			l_session_name, l_app_name, l_version, l_exe_name: detachable STRING_32
+			l_publisher, l_icon: detachable STRING_32
+			l_session: SCG_SESSION
+			l_builder: SCG_PROMPT_BUILDER
+			l_inno: SCG_INNO_BUILDER
+			l_prompt, l_script: STRING_32
+		do
+			l_session_name := get_option_value (a_args, "--session")
+			l_app_name := get_option_value (a_args, "--app")
+			l_version := get_option_value (a_args, "--version")
+			l_exe_name := get_option_value (a_args, "--exe")
+			l_publisher := get_option_value (a_args, "--publisher")
+			l_icon := get_option_value (a_args, "--icon")
+
+			if not attached l_session_name then
+				print ("[ERROR] Missing --session%N")
+			elseif not attached l_app_name then
+				print ("[ERROR] Missing --app (application name)%N")
+			elseif not attached l_exe_name then
+				print ("[ERROR] Missing --exe (executable name)%N")
+			else
+				create l_session.make_from_existing (l_session_name)
+				if not l_session.is_valid then
+					print ("[ERROR] Invalid session: " + l_session.last_error.to_string_8 + "%N")
+				else
+					-- Create INNO builder and configure
+					create l_inno.make
+					l_inno.set_app_name (l_app_name)
+					l_inno.set_exe_name (l_exe_name)
+
+					if attached l_version as l_v then
+						l_inno.set_app_version (l_v)
+					else
+						l_inno.set_app_version ({STRING_32} "1.0.0")
+					end
+
+					if attached l_publisher as l_p then
+						l_inno.set_publisher (l_p)
+					end
+
+					if attached l_icon as l_i then
+						l_inno.set_icon_file (l_i)
+					end
+
+					-- Add the main executable
+					l_inno.add_exe (l_exe_name)
+
+					-- Generate the script
+					l_script := l_inno.generate_iss_script
+
+					-- Save to session
+					create l_builder.make (l_session)
+					create l_prompt.make (l_script.count + 500)
+					l_prompt.append ({STRING_32} "=== INNO INSTALLER SCRIPT ===%N%N")
+					l_prompt.append ({STRING_32} "Generated INNO Setup script for: ")
+					l_prompt.append (l_app_name)
+					l_prompt.append ({STRING_32} "%N%N")
+					l_prompt.append ({STRING_32} "Save this as 'setup.iss' and compile with INNO Setup Compiler:%N")
+					l_prompt.append ({STRING_32} "  iscc.exe setup.iss%N%N")
+					l_prompt.append ({STRING_32} "=== SCRIPT ===%N%N")
+					l_prompt.append (l_script)
+
+					l_session.save_next_prompt (l_prompt)
+
+					print ("[OK] INNO installer script generated%N")
+					print ("Application: " + l_app_name.to_string_8 + "%N")
+					print ("Executable: " + l_exe_name.to_string_8 + "%N")
+					print ("%NScript saved to: " + l_session.last_prompt_path.to_string_8 + "%N")
+					print ("%NTo build installer:%N")
+					print ("  1. Review and customize the .iss script%N")
+					print ("  2. Add files to include (binaries, DLLs, resources)%N")
+					print ("  3. Run: iscc.exe setup.iss%N")
+					is_success := True
+				end
+			end
+		end
+
+	handle_git_context (a_args: ARGUMENTS_32)
+			-- Handle 'git-context --session <name> [--file <file>]' command.
+			-- Generates git history context for Claude prompts.
+		local
+			l_session_name, l_file: detachable STRING_32
+			l_session: SCG_SESSION
+			l_git: SCG_GIT_HELPER
+			l_context: STRING_32
+		do
+			l_session_name := get_option_value (a_args, "--session")
+			l_file := get_option_value (a_args, "--file")
+
+			if not attached l_session_name then
+				print ("[ERROR] Missing --session%N")
+			else
+				create l_session.make_from_existing (l_session_name)
+				if not l_session.is_valid then
+					print ("[ERROR] Invalid session: " + l_session.last_error.to_string_8 + "%N")
+				else
+					-- Create git helper for session directory
+					create l_git.make (l_session.session_path)
+
+					if not l_git.is_git_repo then
+						-- Try parent directory
+						create l_git.make ({STRING_32} ".")
+					end
+
+					if l_git.is_git_repo then
+						-- Generate context
+						if attached l_file as l_f then
+							l_context := l_git.generate_file_history_context (l_f)
+						else
+							l_context := l_git.generate_change_context
+						end
+
+						-- Add prompt template
+						create {STRING_32} l_context.make (l_context.count + 1000)
+						l_context.append (l_git.generate_change_context)
+						l_context.append ({STRING_32} "%N%N")
+						l_context.append (l_git.git_history_prompt_template)
+
+						l_session.save_next_prompt (l_context)
+
+						print ("[OK] Git context generated%N")
+						print ("Branch: " + l_git.current_branch.to_string_8 + "%N")
+						if l_git.has_uncommitted_changes then
+							print ("Status: Has uncommitted changes%N")
+						else
+							print ("Status: Clean%N")
+						end
+						print ("%NContext saved to: " + l_session.last_prompt_path.to_string_8 + "%N")
+						print ("%NUse this context with Claude to:%N")
+						print ("  - Analyze recent changes%N")
+						print ("  - Generate appropriate commit messages%N")
+						print ("  - Identify related files for updates%N")
+						is_success := True
+					else
+						print ("[ERROR] Not a git repository%N")
+					end
+				end
+			end
+		end
+
 feature {NONE} -- Helpers
 
 	get_option_value (a_args: ARGUMENTS_32; a_option: STRING): detachable STRING_32
@@ -1264,6 +1412,10 @@ feature {NONE} -- Helpers
 			print ("      Run tests and generate refinement prompts for failures%N%N")
 			print ("  c-integrate --session <name> --mode <wrap|library|win32> --target %"description%"%N")
 			print ("      Generate C/C++ integration prompt (inline C, library, Win32 API)%N%N")
+			print ("  inno-install --session <name> --app <name> --exe <exe.exe> [--version <ver>] [--publisher <pub>] [--icon <ico>]%N")
+			print ("      Generate INNO Setup installer script%N%N")
+			print ("  git-context --session <name> [--file <file>]%N")
+			print ("      Generate git history context for Claude prompts%N%N")
 			print ("Build modes (for compile/run-tests):%N")
 			print ("  Development:  W_code (workbench, fast compile, slow run)%N")
 			print ("  Testing:      F_code with -keep (finalized with assertions)%N")
