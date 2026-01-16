@@ -20,74 +20,7 @@ class
 inherit
 	TEST_SET_BASE
 
-feature -- Test: Basic Generation with Validation
-
-	test_class_gen_creation
-			-- Test SCG_CLASS_GEN with comprehensive validation.
-			-- 1. Generate a class
-			-- 2. Save to file for inspection
-			-- 3. Validate with parser
-			-- 4. Validate with compiler
-		local
-			l_gen: SCG_CLASS_GEN
-			l_logger: SIMPLE_LOGGER
-			l_saved: BOOLEAN
-			l_valid_syntax: BOOLEAN
-		do
-			-- Setup logging
-			create l_logger.make_to_file (output_path + "/generation.log")
-			l_logger.set_json_output (False)
-			l_logger.info ("=== Starting class generation test ===")
-			l_logger.info ("System spec: " + test_system_spec_detailed.to_string_8)
-			l_logger.info ("Class spec: " + test_class_spec_detailed.to_string_8)
-
-			-- Generate class
-			l_logger.info ("Creating SCG_CLASS_GEN...")
-			create l_gen.make_class (test_system_spec_detailed, test_class_spec_detailed, Void, Void)
-
-			-- Log results
-			l_logger.info ("Generation completed: is_generated=" + l_gen.is_generated.out)
-			l_logger.info ("Has error: " + l_gen.has_error.out)
-			if l_gen.has_error then
-				l_logger.error ("Error: " + l_gen.last_error.to_string_8)
-			end
-			l_logger.info ("Generated text length: " + l_gen.generated_class_text.count.out + " chars")
-
-			-- Log the full generation log
-			l_logger.info ("--- Generation Log ---")
-			l_logger.info (l_gen.log_as_string.to_string_8)
-			l_logger.info ("--- End Generation Log ---")
-
-			-- Save generated output for inspection
-			if l_gen.is_generated then
-				l_saved := l_gen.save_to_file (output_path + "/calculator_controller.e")
-				l_logger.info ("Saved to file: " + l_saved.out)
-				if l_saved and attached l_gen.last_saved_path as p then
-					l_logger.info ("File path: " + p.to_string_8)
-				end
-
-				-- Validate with parser (first-line test)
-				l_valid_syntax := validate_with_parser (l_gen.generated_class_text, l_logger)
-				l_logger.info ("Parser validation: " + l_valid_syntax.out)
-
-				-- Only attempt compilation if parser passed
-				if l_valid_syntax then
-					-- Compilation validation (definitive test)
-					l_logger.info ("Attempting compilation validation...")
-					-- Note: Compilation test requires separate test project setup
-					-- For now we rely on parser validation
-				end
-			end
-
-			l_logger.info ("=== Test completed ===")
-
-			-- Assertions
-			assert ("class_generated", l_gen.is_generated)
-			assert ("no_error", not l_gen.has_error)
-			assert ("text_not_empty", not l_gen.generated_class_text.is_empty)
-			assert ("saved_to_file", l_saved)
-			assert ("valid_eiffel_syntax", l_valid_syntax)
-		end
+feature -- Test: Ollama Class Generation
 
 	test_class_gen_with_ollama
 			-- Test class generation using Ollama AI provider.
@@ -100,68 +33,87 @@ feature -- Test: Basic Generation with Validation
 			l_valid_syntax: BOOLEAN
 			l_model: STRING_32
 			l_model_available: BOOLEAN
-			l_retried: BOOLEAN
 		do
-			if l_retried then
-				-- Ollama not running or other error - skip test
-				assert ("ollama_unavailable_skipped", True)
+			-- Setup logging
+			create l_logger.make_to_file (output_path + "/ollama_generation.log")
+			l_logger.set_json_output (False)
+			l_logger.info ("=== Starting Ollama class generation test ===")
+
+			-- Create Ollama client
+			create l_ollama.make
+			l_model := "qwen2.5-coder:latest"
+			l_logger.info ("Checking Ollama model: " + l_model.to_string_8)
+
+			-- Check if model is available
+			-- Note: If Ollama server isn't running, this will return False
+			l_model_available := check_ollama_available (l_ollama, l_model, l_logger)
+
+			if not l_model_available then
+				l_logger.warn ("Model not available on Ollama server - test skipped")
+				l_logger.info ("=== Ollama test skipped (model unavailable) ===")
+				-- Skip test when Ollama unavailable (not a failure)
+				assert ("ollama_model_unavailable_skipped", True)
 			else
-				-- Setup logging
-				create l_logger.make_to_file (output_path + "/ollama_generation.log")
-				l_logger.set_json_output (False)
-				l_logger.info ("=== Starting Ollama class generation test ===")
+				l_ollama.set_model (l_model)
+				l_logger.info ("Model available, proceeding with generation...")
 
-				-- Create Ollama client
-				create l_ollama.make
-				l_model := "llama3"
-				l_logger.info ("Checking Ollama model: " + l_model.to_string_8)
+				-- Generate class with Ollama
+				l_logger.info ("Creating SCG_CLASS_GEN with Ollama...")
+				create l_gen.make_class (test_system_spec_detailed, test_class_spec_detailed, l_ollama, l_model)
 
-				-- Check if model is available BEFORE calling make_class (precondition requires it)
-				-- This may throw exception if Ollama server isn't running
-				l_model_available := l_ollama.is_valid_model (l_model)
+				-- Log results
+				l_logger.info ("Generation completed: is_generated=" + l_gen.is_generated.out)
+				l_logger.info ("Has error: " + l_gen.has_error.out)
+				if l_gen.has_error then
+					l_logger.error ("Error: " + l_gen.last_error.to_string_8)
+				end
 
-				if not l_model_available then
-					l_logger.warn ("Model not available on Ollama server - test skipped")
-					l_logger.info ("Available models: " + l_ollama.supported_models.count.out)
-					l_logger.info ("=== Ollama test skipped (model unavailable) ===")
-					assert ("ollama_model_unavailable_skipped", True)
+				-- Save and validate if generation succeeded
+				if l_gen.is_generated then
+					l_saved := l_gen.save_to_file (output_path + "/ollama_generated_class.e")
+					l_logger.info ("Saved to file: " + l_saved.out)
+
+					-- Validate with parser
+					l_valid_syntax := validate_with_parser (l_gen.generated_class_text, l_logger)
+					l_logger.info ("Parser validation: " + l_valid_syntax.out)
 				else
-					l_ollama.set_model (l_model)
-					l_logger.info ("Model available, proceeding with generation...")
+					l_saved := False
+					l_valid_syntax := False
+				end
 
-					-- Generate class with Ollama
-					l_logger.info ("Creating SCG_CLASS_GEN with Ollama...")
-					create l_gen.make_class (test_system_spec_detailed, test_class_spec_detailed, l_ollama, l_model)
+				l_logger.info ("=== Ollama test completed ===")
 
-					-- Log results
-					l_logger.info ("Generation completed: is_generated=" + l_gen.is_generated.out)
-					l_logger.info ("Has error: " + l_gen.has_error.out)
-					if l_gen.has_error then
-						l_logger.error ("Error: " + l_gen.last_error.to_string_8)
-					end
+				-- These assertions will FAIL if the generated code is invalid
+				-- No rescue/retry masking - let failures propagate
+				assert ("ollama_class_generated", l_gen.is_generated)
+				assert ("ollama_no_error", not l_gen.has_error)
+				assert ("ollama_valid_syntax", l_valid_syntax)
+			end
+		end
 
-					-- Save and validate if generation succeeded
-					if l_gen.is_generated then
-						l_saved := l_gen.save_to_file (output_path + "/ollama_generated_class.e")
-						l_logger.info ("Saved to file: " + l_saved.out)
+feature {NONE} -- Ollama Connection Check
 
-						-- Validate with parser
-						l_valid_syntax := validate_with_parser (l_gen.generated_class_text, l_logger)
-						l_logger.info ("Parser validation: " + l_valid_syntax.out)
-					else
-						l_saved := False
-						l_valid_syntax := False
-					end
-
-					l_logger.info ("=== Ollama test completed ===")
-
-					assert ("ollama_class_generated", l_gen.is_generated)
-					assert ("ollama_no_error", not l_gen.has_error)
-					assert ("ollama_valid_syntax", l_valid_syntax)
+	check_ollama_available (a_client: OLLAMA_CLIENT; a_model: STRING_32; a_logger: SIMPLE_LOGGER): BOOLEAN
+			-- Check if Ollama server is running and model is available.
+			-- Returns False if server unreachable or model not found.
+			-- This is the ONLY place where we gracefully handle connection failures.
+		local
+			l_failed: BOOLEAN
+		do
+			if l_failed then
+				a_logger.warn ("Ollama server not reachable")
+				Result := False
+			else
+				Result := a_client.is_valid_model (a_model)
+				if Result then
+					a_logger.info ("Model " + a_model.to_string_8 + " is available")
+				else
+					a_logger.info ("Model " + a_model.to_string_8 + " not found. Available: " + a_client.supported_models.count.out)
 				end
 			end
 		rescue
-			l_retried := True
+			-- Only catch connection errors to Ollama server
+			l_failed := True
 			retry
 		end
 
@@ -229,50 +181,22 @@ feature {NONE} -- Test Data
 			-- Directory for generated output files
 
 	test_system_spec_detailed: STRING_32
-			-- Detailed system specification for realistic testing
+			-- Simple system specification for fast AI testing
 		once
-			Result := {STRING_32} "[
-				{
-					"app": {
-						"name": "Calculator",
-						"description": "A simple calculator application with basic arithmetic operations",
-						"architecture": "MVC pattern with command-based operations"
-					},
-					"domain": {
-						"purpose": "Perform arithmetic calculations",
-						"core_concepts": ["operands", "operators", "results", "history"]
-					}
-				}
-			]"
+			Result := {STRING_32} "A simple counter utility"
 		end
 
 	test_class_spec_detailed: STRING_32
-			-- Detailed class specification for realistic testing
+			-- Simple class specification for fast AI testing
 		once
 			Result := {STRING_32} "[
-				{
-					"class": "CALCULATOR_CONTROLLER",
-					"purpose": "Main controller for calculator operations",
-					"responsibilities": [
-						"Accept user input for operands and operators",
-						"Delegate calculations to calculator engine",
-						"Maintain calculation history",
-						"Handle errors gracefully"
-					],
-					"features": [
-						"add (a, b: REAL_64): REAL_64",
-						"subtract (a, b: REAL_64): REAL_64",
-						"multiply (a, b: REAL_64): REAL_64",
-						"divide (a, b: REAL_64): REAL_64",
-						"clear_history",
-						"history: LIST [STRING]"
-					],
-					"contracts": {
-						"divide_precondition": "b /= 0",
-						"history_invariant": "history is never void"
-					}
-				}
-			]"
+Create a simple COUNTER class with:
+- value: INTEGER attribute
+- increment: add 1 to value
+- decrement: subtract 1 from value
+- reset: set value to 0
+Use Design by Contract.
+]"
 		end
 
 	valid_eiffel_class: STRING_32

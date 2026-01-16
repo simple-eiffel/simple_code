@@ -14,7 +14,6 @@
 			<void_safety support="all"/>
 		</capability>
 		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf"/>
-		<library name="simple_ai_client" location="$SIMPLE_EIFFEL\simple_ai_client\simple_ai_client.ecf"/>
 		<library name="simple_datetime" location="$SIMPLE_EIFFEL\simple_datetime\simple_datetime.ecf"/>
 		<library name="simple_env" location="$SIMPLE_EIFFEL\simple_env\simple_env.ecf"/>
 		<library name="simple_file" location="$SIMPLE_EIFFEL\simple_file\simple_file.ecf"/>
@@ -28,6 +27,8 @@
 				<exclude>/.git$</exclude>
 				<exclude>/.svn$</exclude>
 				<exclude>/EIFGENs$</exclude>
+				<exclude>/cli$</exclude>
+				<exclude>/_archived_ai_client$</exclude>
 			</file_rule>
 		</cluster>
 	</target>
@@ -46,5 +47,12 @@
 	<target name="scg_project" extends="simple_code">
 		<description>Simple Code Generator - Project Generator</description>
 		<root class="SCG_PROJECT_GEN" feature="make"/>
+	</target>
+	<target name="simple_codegen" extends="simple_code">
+		<description>Simple Code Generator CLI - Claude-in-the-Loop Code Generation</description>
+		<root class="SCG_CLI_APP" feature="make"/>
+		<library name="simple_eiffel_parser" location="$SIMPLE_EIFFEL\simple_eiffel_parser\simple_eiffel_parser.ecf"/>
+		<library name="simple_json" location="$SIMPLE_EIFFEL\simple_json\simple_json.ecf"/>
+		<cluster name="cli" location=".\src\cli\" recursive="true"/>
 	</target>
 </system>

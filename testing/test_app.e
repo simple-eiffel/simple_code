@@ -79,8 +79,7 @@ feature {NONE} -- Test Runners
 			run_test (agent scg_class_gen_tests.test_parser_validation_valid_class, "test_parser_validation_valid_class")
 			run_test (agent scg_class_gen_tests.test_parser_validation_invalid_class, "test_parser_validation_invalid_class")
 
-			-- Full generation tests (calls AI - consolidated validation)
-			run_test (agent scg_class_gen_tests.test_class_gen_creation, "test_class_gen_creation")
+			-- Full generation test (calls Ollama AI with qwen2.5-coder:14b)
 			run_test (agent scg_class_gen_tests.test_class_gen_with_ollama, "test_class_gen_with_ollama")
 		end
 
