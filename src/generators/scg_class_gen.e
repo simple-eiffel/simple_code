@@ -51,7 +51,8 @@ class
 
 create
 	make_class,
-	make_with_registry
+	make_with_registry,
+	make_negotiated
 
 feature {NONE} -- Initialization
 
@@ -117,6 +118,67 @@ feature {NONE} -- Initialization
 			system_spec_stored: system_spec = a_system_spec
 			class_spec_stored: class_spec = a_class_spec
 			registry_stored: job_registry = a_registry
+			log_not_void: generation_log /= Void
+			events_available: events /= Void
+		end
+
+	make_negotiated (a_system_spec, a_class_spec: STRING_32; a_ai: detachable AI_CLIENT; a_ai_model: detachable STRING_32)
+			-- Create class using top-down/bottom-up negotiation.
+			-- This approach:
+			-- 1. Generates skeleton (signatures + contracts)
+			-- 2. Tries implementing each feature
+			-- 3. Adjusts contracts based on implementation feedback
+			-- 4. Iterates until stable
+			-- 5. Assembles final class
+			-- Optionally refines result through job pipeline.
+		require
+			system_spec_not_empty: not a_system_spec.is_empty
+			class_spec_not_empty: not a_class_spec.is_empty
+			ai_client_and_model: attached a_ai implies attached a_ai_model
+		local
+			l_negotiator: SCG_CLASS_NEGOTIATOR
+		do
+			system_spec := a_system_spec
+			class_spec := a_class_spec
+			create job_registry.default_registry
+
+			-- Setup AI client
+			setup_ai_client (a_ai, a_ai_model)
+
+			if is_ai_configured then
+				check attached ai_client as l_ai then
+					-- Phase 1: Negotiate class generation
+					log_phase ("Phase 1: Negotiated Class Generation")
+					notify_phase_started ("Negotiated Generation")
+
+					create l_negotiator.make (system_spec, class_spec, l_ai)
+					negotiator := l_negotiator
+
+					if l_negotiator.is_negotiated then
+						generated_class_text := l_negotiator.final_class_text
+						log_action ("Negotiation completed in " + l_negotiator.iterations_used.out + " iterations")
+						log_action ("Class generated (" + generated_class_text.count.out + " chars)")
+
+						-- Optional: Apply refinement pipeline if registry has jobs
+						if job_registry.job_count > 0 and apply_refinement_after_negotiation then
+							create pipeline.make (job_registry, l_ai)
+							log_phase ("Phase 2: Assembly-Line Refinement")
+							notify_phase_started ("Assembly-Line Refinement")
+							apply_sequential_pipeline
+						end
+
+						is_generated := not has_error and not generated_class_text.is_empty
+					else
+						last_error := l_negotiator.last_error
+						log_action ("ERROR: Negotiation failed: " + last_error)
+					end
+				end
+			else
+				last_error := "Failed to configure AI client"
+			end
+		ensure
+			system_spec_stored: system_spec = a_system_spec
+			class_spec_stored: class_spec = a_class_spec
 			log_not_void: generation_log /= Void
 			events_available: events /= Void
 		end
@@ -188,8 +250,19 @@ feature -- Access
 	wave_pipeline: detachable SCG_WAVE_PIPELINE
 			-- The SCOOP-parallel wave pipeline (preferred)
 
+	negotiator: detachable SCG_CLASS_NEGOTIATOR
+			-- The negotiator used for make_negotiated (if applicable)
+
 	use_parallel: BOOLEAN
 			-- Use parallel wave pipeline? (default: False - SCOOP requires careful type handling)
+		attribute
+			Result := False
+		end
+
+	apply_refinement_after_negotiation: BOOLEAN
+			-- Apply refinement pipeline after negotiation? (default: False)
+			-- When True, make_negotiated will run refinement jobs after
+			-- the negotiation process completes successfully.
 		attribute
 			Result := False
 		end
@@ -218,6 +291,14 @@ feature -- Configuration
 			set_use_parallel (True)
 		ensure
 			is_parallel: use_parallel
+		end
+
+	set_apply_refinement_after_negotiation (a_value: BOOLEAN)
+			-- Set whether to apply refinement jobs after negotiation.
+		do
+			apply_refinement_after_negotiation := a_value
+		ensure
+			value_set: apply_refinement_after_negotiation = a_value
 		end
 
 feature -- Events (Pub-Sub for external monitoring)
@@ -565,9 +646,10 @@ feature {NONE} -- Helpers
 	eiffel_expert_system_prompt: STRING_32
 			-- Compact system prompt (~200 chars vs ~800 original)
 		once
-			Result := "[
+			Result := {STRING_32} "[
 Expert Eiffel dev. DBC, void-safe, SCOOP, CQS.
 simple_* over ISE stdlib. Contracts on public features.
+STRING_32 concat: use {STRING_32} "text" + var (NOT "text" + var).
 Output: ```eiffel class with note clause, no explanation.
 ]"
 		end

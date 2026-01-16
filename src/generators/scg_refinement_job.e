@@ -153,9 +153,10 @@ feature {NONE} -- Implementation
 	eiffel_expert_system_prompt: STRING_32
 			-- Compact system prompt (~200 chars vs ~800 original)
 		once
-			Result := "[
+			Result := {STRING_32} "[
 Expert Eiffel dev. DBC, void-safe, SCOOP, CQS.
 simple_* over ISE stdlib. Contracts on public features.
+STRING_32 concat: use {STRING_32} "text" + var (NOT "text" + var).
 Output: ```eiffel class only, no explanation.
 ]"
 		end
@@ -163,8 +164,9 @@ Output: ```eiffel class only, no explanation.
 	differential_system_prompt: STRING_32
 			-- System prompt for differential output mode
 		once
-			Result := "[
+			Result := {STRING_32} "[
 Expert Eiffel dev. DBC, void-safe, SCOOP, CQS.
+STRING_32 concat: use {STRING_32} "text" + var (NOT "text" + var).
 Output CHANGES ONLY, format:
 CHANGE:<location>|OLD:<exact text>|NEW:<replacement>
 One change per line. No other output.
