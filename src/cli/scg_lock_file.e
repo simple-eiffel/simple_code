@@ -1025,6 +1025,47 @@ feature -- Admin Operations
 			save
 		end
 
+feature -- Error Recovery
+
+	transition_to_error (a_error_message: STRING)
+			-- Transition to error recovery state after tool crash or unexpected error.
+			-- This prevents Claude from continuing when something went wrong.
+		require
+			message_not_empty: not a_error_message.is_empty
+		do
+			state := phase_manager.State_error_recovery.to_string_32
+			phase := {STRING_32} "ERROR"
+			phase_index := 0
+			last_command_time := current_timestamp
+			expected_next := {STRING_32} "simple_codegen lock --retry --session <name>"
+			warning := {STRING_32} "TOOL ERROR: " + a_error_message.to_string_32 +
+				". STOP and investigate. Do NOT continue. " +
+				"Fix the issue, then: simple_codegen lock --retry --session <name>"
+			save
+		ensure
+			in_error_state: state.same_string (phase_manager.State_error_recovery)
+		end
+
+	is_in_error_recovery: BOOLEAN
+			-- Is the workflow in error recovery state?
+		do
+			Result := state.same_string (phase_manager.State_error_recovery)
+		end
+
+	recover_from_error
+			-- Transition out of error recovery back to previous state.
+			-- Called after error has been investigated and fixed.
+		require
+			in_error_state: is_in_error_recovery
+		do
+			-- Reload from disk to get previous state
+			load
+			-- If still in error recovery, reset to initial
+			if is_in_error_recovery then
+				transition_to_initial
+			end
+		end
+
 feature -- Output
 
 	to_display_string: STRING_32
@@ -1304,6 +1345,13 @@ feature {NONE} -- Implementation
 			elseif state.same_string (phase_manager.State_complete) then
 				expected_next := {STRING_32} "(workflow complete)"
 				warning := {STRING_32} "Workflow complete. Project is ready for use."
+
+			-- ERROR_RECOVERY state
+			elseif state.same_string (phase_manager.State_error_recovery) then
+				expected_next := {STRING_32} "simple_codegen lock --retry --session <name>"
+				warning := {STRING_32} "TOOL ERROR occurred. STOP and investigate. " +
+					"Check debug_trace.log for details. Do NOT continue until fixed. " +
+					"After fixing: simple_codegen lock --retry --session <name>"
 
 			else
 				-- Default/unknown state

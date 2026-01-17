@@ -114,6 +114,8 @@ feature -- State Constants - Terminal
 
 	State_complete: STRING = "COMPLETE"
 	State_idle: STRING = "IDLE"
+	State_error_recovery: STRING = "ERROR_RECOVERY"
+			-- Tool crash/error state - requires investigation before continuing
 
 feature -- Access
 
@@ -207,6 +209,8 @@ feature -- State Queries
 				Result := Phase_github
 			elseif a_state.same_string (State_complete) then
 				Result := 11 -- Beyond all phases
+			elseif a_state.same_string (State_error_recovery) then
+				Result := 0 -- Error state - no phase until resolved
 			else
 				Result := 0 -- Unknown/IDLE
 			end
@@ -242,6 +246,12 @@ feature -- State Queries
 			-- Is this a test failure state?
 		do
 			Result := a_state.starts_with (State_test_failure_prefix)
+		end
+
+	is_error_recovery_state (a_state: STRING): BOOLEAN
+			-- Is this the error recovery state (tool crash/error)?
+		do
+			Result := a_state.same_string (State_error_recovery)
 		end
 
 	extract_error_index (a_state: STRING): INTEGER

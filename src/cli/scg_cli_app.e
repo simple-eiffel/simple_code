@@ -72,27 +72,55 @@ feature {NONE} -- Initialization
 
 	make
 			-- Run the CLI application.
+			-- Includes cleanup and rescue to prevent segfault on exit.
+			-- Sets non-zero exit code on error.
 		local
 			l_args: ARGUMENTS_32
+			l_had_exception: BOOLEAN
+			l_exceptions: EXCEPTIONS
 		do
-			-- Initialize debug logger first
-			create debug_logger.make_to_file ("D:/prod/simple_code/debug_trace.log")
-			debug_logger.set_level (debug_logger.Level_debug)
-			debug_logger.debug_log ("SCG_CLI_APP.make: START")
-
-			create l_args
-			create last_error.make_empty
-			debug_logger.debug_log ("SCG_CLI_APP.make: args and last_error initialized")
-
-			if l_args.argument_count < 1 then
-				debug_logger.debug_log ("SCG_CLI_APP.make: no args, printing usage")
-				print_usage
+			if l_had_exception then
+				-- Rescue path: ensure cleanup even on exception
+				print ("[FAILED] Unexpected exception occurred%N")
+				print ("Check debug_trace.log for details.%N")
+				ensure_kb_closed
+				-- Exit with error code
+				create l_exceptions
+				l_exceptions.die (1)
 			else
-				debug_logger.debug_log ("SCG_CLI_APP.make: calling process_command")
-				process_command (l_args)
-				debug_logger.debug_log ("SCG_CLI_APP.make: process_command returned")
+				-- Normal path
+				-- Initialize debug logger first
+				create debug_logger.make_to_file ("D:/prod/simple_code/debug_trace.log")
+				debug_logger.set_level (debug_logger.Level_debug)
+				debug_logger.debug_log ("SCG_CLI_APP.make: START")
+
+				create l_args
+				create last_error.make_empty
+				debug_logger.debug_log ("SCG_CLI_APP.make: args and last_error initialized")
+
+				if l_args.argument_count < 1 then
+					debug_logger.debug_log ("SCG_CLI_APP.make: no args, printing usage")
+					print_usage
+				else
+					debug_logger.debug_log ("SCG_CLI_APP.make: calling process_command")
+					process_command (l_args)
+					debug_logger.debug_log ("SCG_CLI_APP.make: process_command returned")
+				end
+
+				-- Cleanup: close KB before exit to prevent segfault
+				ensure_kb_closed
+				debug_logger.debug_log ("SCG_CLI_APP.make: END - about to exit make")
+
+				-- Exit with appropriate code based on success/failure
+				if not is_success and l_args.argument_count >= 1 then
+					-- Command was run but failed (not just help/usage)
+					create l_exceptions
+					l_exceptions.die (1)
+				end
 			end
-			debug_logger.debug_log ("SCG_CLI_APP.make: END - about to exit make")
+		rescue
+			l_had_exception := True
+			retry
 		end
 
 feature -- Status
@@ -107,6 +135,22 @@ feature -- Debug
 
 	debug_logger: SIMPLE_LOGGER
 			-- Logger for debug tracing
+
+feature {NONE} -- KB Management
+
+	active_kb: detachable SCG_KB
+			-- Knowledge base reference (kept alive for entire app lifecycle)
+			-- This prevents segfault from premature garbage collection.
+
+	ensure_kb_closed
+			-- Ensure KB is properly closed before app exit.
+			-- Call this from make cleanup or rescue clause.
+		do
+			if attached active_kb as kb then
+				kb.close
+				active_kb := Void
+			end
+		end
 
 feature {NONE} -- Command Processing
 
@@ -189,6 +233,7 @@ feature {NONE} -- Command Processing
 				handle_github (a_args)
 			elseif l_command.is_case_insensitive_equal ("--help") or l_command.is_case_insensitive_equal ("-h") then
 				print_usage
+				is_success := True  -- Help is not an error
 			else
 				print ("Unknown command: " + l_command.to_string_8 + "%N")
 				print_usage
@@ -628,6 +673,7 @@ feature {NONE} -- Command Processing
 						l_output := l_out.to_string_8
 						if l_output.has_substring ("System Recompiled") then
 							print ("[OK] Compilation successful%N")
+							l_session.display_lock_state
 							is_success := True
 						else
 							-- Parse errors and group by class
@@ -679,9 +725,12 @@ feature {NONE} -- Command Processing
 									l_class_errors.forth
 								end
 								l_builder.close
+								print ("%N")
+								l_session.display_lock_state
 							else
 								print ("[FAIL] Compilation failed (see output)%N")
 								print (l_output + "%N")
+								l_session.display_lock_state
 							end
 						end
 					else
@@ -2679,15 +2728,19 @@ feature {NONE} -- Prompt Builder Factory
 			-- Create prompt builder with reuse discovery AND security analysis enabled.
 			-- Security analysis is ALWAYS enabled (2026 threat landscape is mandatory).
 			-- Reuse discovery requires KB to be available.
+			-- KB lifecycle is managed via `active_kb` to prevent segfault on app exit.
 		require
 			session_valid: a_session.is_valid
 		local
-			l_kb: SCG_KB
 			l_ecf_path: STRING
 		do
+			-- Close any existing KB before creating new one
+			ensure_kb_closed
+
 			-- Try to enable reuse discovery with KB
-			create l_kb.make
-			if l_kb.is_open then
+			-- Store in active_kb to keep alive for entire app lifecycle
+			create active_kb.make
+			if attached active_kb as l_kb and then l_kb.is_open then
 				-- Get ECF path from session output directory
 				l_ecf_path := (a_session.output_path + "/" + a_session.session_name + ".ecf").to_string_8
 				create Result.make_with_reuse (a_session, l_kb, l_ecf_path)

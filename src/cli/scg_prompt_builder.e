@@ -137,10 +137,26 @@ feature -- Element change
 
 feature -- Prompt Generation
 
+	error_check_header: STRING_32
+			-- Mandatory error check instructions for Claude.
+			-- Appears at the top of every prompt to enforce workflow compliance.
+		once
+			create Result.make (500)
+			Result.append ({STRING_32} "=== MANDATORY: CHECK FOR ERRORS ===%N")
+			Result.append ({STRING_32} "Before proceeding:%N")
+			Result.append ({STRING_32} "1. Check the output of the last simple_codegen command%N")
+			Result.append ({STRING_32} "2. If you see 'PANIC', 'FAILED', 'Segmentation violation', or any error: STOP%N")
+			Result.append ({STRING_32} "3. Run: simple_codegen lock --session <name> to see current state%N")
+			Result.append ({STRING_32} "4. Follow the lock file warning instructions%N")
+			Result.append ({STRING_32} "DO NOT proceed if the previous command failed.%N")
+			Result.append ({STRING_32} "===================================%N%N")
+		end
+
 	build_system_design_prompt: STRING_32
 			-- Build the initial system design prompt.
 		do
 			create Result.make (2000)
+			Result.append (error_check_header)
 			Result.append (system_design_template)
 		end
 
@@ -193,6 +209,7 @@ feature -- Prompt Generation
 			l_reuse_result: SCG_REUSE_RESULT
 		do
 			create Result.make (3000)
+			Result.append (error_check_header)
 			Result.append ("Generate the Eiffel class: " + a_spec.name + "%N%N")
 
 			Result.append ("=== SESSION INFO ===%N")
@@ -246,6 +263,7 @@ feature -- Prompt Generation
 			code_not_empty: not a_code.is_empty
 		do
 			create Result.make (3000)
+			Result.append (error_check_header)
 			Result.append ("The class " + a_class_name + " has the following issues:%N%N")
 
 			across a_issues as ic loop
@@ -307,6 +325,7 @@ feature -- Prompt Generation
 			feature_not_empty: not a_feature_name.is_empty
 		do
 			create Result.make (3000)
+			Result.append (error_check_header)
 			if attached a_existing_code as l_code then
 				Result.append ("Modify the feature '" + a_feature_name + "' in class " + a_class_name + "%N%N")
 				Result.append ("=== EXISTING CLASS ===%N")

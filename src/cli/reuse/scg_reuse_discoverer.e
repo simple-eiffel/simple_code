@@ -77,6 +77,17 @@ feature -- Access
 			Result := attached kb
 		end
 
+feature -- Cleanup
+
+	close
+			-- Release resources (KB reference).
+			-- Call this before letting the discoverer go out of scope.
+		do
+			kb := Void
+		ensure
+			kb_detached: kb = Void
+		end
+
 feature -- Discovery
 
 	discover_for_class (a_spec: SCG_SESSION_CLASS_SPEC): SCG_REUSE_RESULT
