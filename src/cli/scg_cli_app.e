@@ -147,6 +147,10 @@ feature {NONE} -- Command Processing
 				handle_log (a_args)
 			elseif l_command.is_case_insensitive_equal ("rules") or l_command.is_case_insensitive_equal ("guidance") then
 				handle_rules
+			elseif l_command.is_case_insensitive_equal ("analyze-reuse") then
+				handle_analyze_reuse (a_args)
+			elseif l_command.is_case_insensitive_equal ("list-apis") then
+				handle_list_apis (a_args)
 			elseif l_command.is_case_insensitive_equal ("--help") or l_command.is_case_insensitive_equal ("-h") then
 				print_usage
 			else
@@ -223,7 +227,7 @@ feature {NONE} -- Command Processing
 					end
 
 					-- Build feature prompt
-					create l_builder.make (l_session)
+					l_builder := create_prompt_builder_with_reuse (l_session)
 					if not attached l_description then
 						l_description := ""
 					end
@@ -296,7 +300,7 @@ feature {NONE} -- Command Processing
 
 							-- Build next prompt if more work needed
 							if l_session.has_pending_work then
-								create l_builder.make (l_session)
+								l_builder := create_prompt_builder_with_reuse (l_session)
 								l_next_prompt := l_builder.build_next_prompt
 
 								if attached l_output as l_out then
@@ -457,7 +461,7 @@ feature {NONE} -- Command Processing
 							print ("[ERROR] No issues provided%N")
 						else
 							-- Build refinement prompt
-							create l_builder.make (l_session)
+							l_builder := create_prompt_builder_with_reuse (l_session)
 							l_prompt := l_builder.build_refinement_prompt (l_class_name, l_issues, l_c)
 
 							-- Save to session
@@ -551,7 +555,7 @@ feature {NONE} -- Command Processing
 							-- Generate refinement prompts for each class with errors
 							if l_class_errors.count > 0 then
 								print ("[FAIL] Compilation errors in " + l_class_errors.count.out + " class(es)%N")
-								create l_builder.make (l_session)
+								l_builder := create_prompt_builder_with_reuse (l_session)
 
 								from l_class_errors.start until l_class_errors.after loop
 									if attached l_class_errors.key_for_iteration as l_err_class and then
@@ -634,7 +638,7 @@ feature {NONE} -- Command Processing
 						print ("[ERROR] Class not found or not yet generated: " + l_class_name.to_string_8 + "%N")
 					else
 						-- Build test generation prompt
-						create l_builder.make (l_session)
+						l_builder := create_prompt_builder_with_reuse (l_session)
 						l_prompt := l_builder.build_test_prompt (l_class_name, l_c)
 
 						-- Save to session
@@ -923,7 +927,7 @@ feature {NONE} -- Command Processing
 					print ("[ERROR] Invalid session: " + l_session.last_error.to_string_8 + "%N")
 				else
 					-- Build research prompt
-					create l_builder.make (l_session)
+					l_builder := create_prompt_builder_with_reuse (l_session)
 					l_prompt := l_builder.build_research_prompt (l_topic, l_scope)
 
 					-- Save to session
@@ -982,7 +986,7 @@ feature {NONE} -- Command Processing
 					end
 
 					-- Build planning prompt
-					create l_builder.make (l_session)
+					l_builder := create_prompt_builder_with_reuse (l_session)
 					l_prompt := l_builder.build_plan_prompt (l_goal, l_class_name, l_code)
 
 					-- Save to session
@@ -1063,7 +1067,7 @@ feature {NONE} -- Command Processing
 							print ("[FAIL] " + l_failures.count.out + " test(s) failed%N%N")
 
 							-- Generate refinement prompts for each failing class
-							create l_builder.make (l_session)
+							l_builder := create_prompt_builder_with_reuse (l_session)
 							across l_failures as ic loop
 								print ("  - " + ic.test_name.to_string_8 + " (class: " + ic.class_name.to_string_8 + ")%N")
 								print ("    " + ic.message.to_string_8 + "%N")
@@ -1171,7 +1175,7 @@ feature {NONE} -- Command Processing
 					create l_c_helper.make
 
 					-- Build C integration prompt
-					create l_builder.make (l_session)
+					l_builder := create_prompt_builder_with_reuse (l_session)
 					l_prompt := l_builder.build_c_integration_prompt (l_mode, l_target)
 
 					-- Save to session
@@ -1260,7 +1264,7 @@ feature {NONE} -- Command Processing
 					l_script := l_inno.generate_iss_script
 
 					-- Save to session
-					create l_builder.make (l_session)
+					l_builder := create_prompt_builder_with_reuse (l_session)
 					create l_prompt.make (l_script.count + 500)
 					l_prompt.append ({STRING_32} "=== INNO INSTALLER SCRIPT ===%N%N")
 					l_prompt.append ({STRING_32} "Generated INNO Setup script for: ")
@@ -1750,7 +1754,13 @@ feature {NONE} -- Helpers
 			print ("      Display guardrails and constraints for Claude%N")
 		print ("%N  log --session <name> --category <CAT> --action %"description%"%N")
 		print ("      Log Claude action for after-action analysis%N")
-		print ("      Categories: INSTRUCTED | GAP_FILL | REBEL | ERROR_FIX | DECISION%N")
+		print ("      Categories: INSTRUCTED | GAP_FILL | REBEL | ERROR_FIX | DECISION%N%N")
+		print ("  analyze-reuse --session <name> --class <CLASS> [--ecf <path>]%N")
+		print ("      Analyze reuse opportunities for a class specification%N")
+		print ("      Searches KB for similar classes/features, recommends reuse strategy%N%N")
+		print ("  list-apis --session <name> [--ecf <path>]%N")
+		print ("      List available APIs from ECF library dependencies%N")
+		print ("      Shows simple_* libraries and their features%N")
 		end
 
 	handle_log (a_args: ARGUMENTS_32)
@@ -1760,6 +1770,7 @@ feature {NONE} -- Helpers
 			l_session_name, l_category, l_action: detachable STRING_32
 			l_logger: SCG_ACTION_LOGGER
 			l_session_path: STRING
+			l_exe_path: PATH
 		do
 			l_session_name := get_option_value (a_args, "--session")
 			l_category := get_option_value (a_args, "--category")
@@ -1776,8 +1787,30 @@ feature {NONE} -- Helpers
 				print ("[ERROR] Missing --action option%N")
 				print ("Usage: simple_codegen log --session <name> --category <CAT> --action %"description%"%N")
 			else
-				-- Build session path
-				l_session_path := "sessions/" + l_session_name.to_string_8
+				-- Build absolute session path relative to executable
+				-- Path: .../simple_code/EIFGENs/target/W_code/exe -> need 4 levels up
+				if attached a_args.command_name as cmd then
+					create l_exe_path.make_from_string (cmd)
+					if attached l_exe_path.parent as p1 then           -- W_code
+						if attached p1.parent as p2 then               -- target (simple_code_tests)
+							if attached p2.parent as p3 then           -- EIFGENs
+								if attached p3.parent as p4 then       -- simple_code (project root)
+									l_session_path := p4.extended ("sessions").extended (l_session_name.to_string_8).out
+								else
+									l_session_path := "sessions/" + l_session_name.to_string_8
+								end
+							else
+								l_session_path := "sessions/" + l_session_name.to_string_8
+							end
+						else
+							l_session_path := "sessions/" + l_session_name.to_string_8
+						end
+					else
+						l_session_path := "sessions/" + l_session_name.to_string_8
+					end
+				else
+					l_session_path := "sessions/" + l_session_name.to_string_8
+				end
 
 				-- Create logger and log action
 				create l_logger.make (l_session_path)
@@ -1886,6 +1919,219 @@ feature {NONE} -- Helpers
 			print ("=======================================================================%N")
 			print ("    FOLLOW THESE RULES - DO NOT ACT OUTSIDE PROMPTS%N")
 			print ("=======================================================================%N")
+		end
+
+	handle_analyze_reuse (a_args: ARGUMENTS_32)
+			-- Handle 'analyze-reuse --session <name> --class <CLASS> [--ecf <path>]' command.
+			-- Analyzes reuse opportunities for a class specification.
+		local
+			l_session_name, l_class_name, l_ecf_path: detachable STRING_32
+			l_session: SCG_SESSION
+			l_kb: SCG_KB
+			l_discoverer: SCG_REUSE_DISCOVERER
+			l_spec: detachable SCG_SESSION_CLASS_SPEC
+			l_result: SCG_REUSE_RESULT
+		do
+			l_session_name := get_option_value (a_args, "--session")
+			l_class_name := get_option_value (a_args, "--class")
+			l_ecf_path := get_option_value (a_args, "--ecf")
+
+			if not attached l_session_name then
+				print ("[ERROR] Missing --session option%N")
+				print ("Usage: simple_codegen analyze-reuse --session <name> --class <CLASS> [--ecf <path>]%N")
+			elseif not attached l_class_name then
+				print ("[ERROR] Missing --class option%N")
+				print ("Usage: simple_codegen analyze-reuse --session <name> --class <CLASS> [--ecf <path>]%N")
+			else
+				-- Load session
+				create l_session.make_from_existing (l_session_name)
+				if not l_session.is_valid then
+					print ("[ERROR] Invalid session: " + l_session.last_error.to_string_8 + "%N")
+				else
+					-- Find class spec
+					across l_session.class_specs as ic loop
+						if ic.name.is_case_insensitive_equal (l_class_name) then
+							l_spec := ic
+						end
+					end
+
+					if not attached l_spec as l_s then
+						-- Create a minimal spec if not found in session
+						create l_spec.make (l_class_name, "", create {ARRAYED_LIST [STRING_32]}.make (0))
+					end
+
+					-- Default ECF path if not specified
+					if not attached l_ecf_path then
+						l_ecf_path := l_session.output_path + "/" + l_session_name + ".ecf"
+					end
+
+					-- Create KB and discoverer
+					create l_kb.make
+					if l_kb.is_open then
+						create l_discoverer.make_with_kb (l_kb, l_ecf_path.to_string_8)
+
+						-- Run discovery
+						l_result := l_discoverer.discover_for_class (l_spec)
+
+						-- Output results
+						print ("=== REUSE ANALYSIS REPORT ===%N")
+						print ("Class: " + l_class_name.to_string_8 + "%N")
+						print ("Session: " + l_session_name.to_string_8 + "%N")
+						print ("ECF: " + l_ecf_path.to_string_8 + "%N%N")
+
+						print ("Recommendation: " + l_result.recommendation.name + "%N")
+						print ("Confidence: " + ((l_result.confidence * 100).truncated_to_integer).out + "%%%N%N")
+
+						if l_result.has_candidates then
+							print ("Candidates found: " + l_result.candidates.count.out + "%N")
+							across l_result.candidates as c loop
+								print ("  - " + c.as_summary + "%N")
+							end
+							print ("%N")
+						else
+							print ("No reuse candidates found.%N%N")
+						end
+
+						if not l_result.do_not_reinvent.is_empty then
+							print ("DO NOT REINVENT:%N")
+							across l_result.do_not_reinvent as item loop
+								print ("  - " + item.to_string_8 + "%N")
+							end
+							print ("%N")
+						end
+
+						if not l_result.suggested_imports.is_empty then
+							print ("SUGGESTED IMPORTS:%N")
+							across l_result.suggested_imports as lib loop
+								print ("  - " + lib.to_string_8 + "%N")
+							end
+							print ("%N")
+						end
+
+						-- Show prompt enhancement
+						print ("=== PROMPT ENHANCEMENT ===%N")
+						print (l_result.prompt_enhancement.to_string_8)
+
+						l_kb.close
+						is_success := True
+					else
+						print ("[ERROR] Cannot open KB database%N")
+						if attached l_kb.last_error as err then
+							print ("  " + err + "%N")
+						end
+					end
+				end
+			end
+		end
+
+	handle_list_apis (a_args: ARGUMENTS_32)
+			-- Handle 'list-apis --session <name> [--ecf <path>]' command.
+			-- Lists available APIs from ECF dependencies.
+		local
+			l_session_name, l_ecf_path: detachable STRING_32
+			l_session: SCG_SESSION
+			l_analyzer: SCG_ECF_ANALYZER
+			l_kb: SCG_KB
+			l_discoverer: SCG_REUSE_DISCOVERER
+		do
+			l_session_name := get_option_value (a_args, "--session")
+			l_ecf_path := get_option_value (a_args, "--ecf")
+
+			if not attached l_session_name then
+				print ("[ERROR] Missing --session option%N")
+				print ("Usage: simple_codegen list-apis --session <name> [--ecf <path>]%N")
+			else
+				-- Load session
+				create l_session.make_from_existing (l_session_name)
+				if not l_session.is_valid then
+					print ("[ERROR] Invalid session: " + l_session.last_error.to_string_8 + "%N")
+				else
+					-- Default ECF path if not specified
+					if not attached l_ecf_path then
+						l_ecf_path := l_session.output_path + "/" + l_session_name + ".ecf"
+					end
+
+					-- Analyze ECF
+					create l_analyzer.make
+					l_analyzer.analyze_file (l_ecf_path.to_string_8)
+
+					print ("=== ECF DEPENDENCY ANALYSIS ===%N")
+					print ("ECF: " + l_ecf_path.to_string_8 + "%N%N")
+
+					if l_analyzer.is_valid then
+						print ("Libraries found: " + l_analyzer.libraries.count.out + "%N")
+						print ("Simple_* libraries: " + l_analyzer.simple_library_count.out + "%N%N")
+
+						if not l_analyzer.simple_libraries.is_empty then
+							print ("=== SIMPLE_* LIBRARIES ===%N")
+							across l_analyzer.simple_libraries as lib loop
+								print ("  - " + lib.to_string_8 + "%N")
+							end
+							print ("%N")
+						end
+
+						-- Show all libraries
+						print ("=== ALL LIBRARIES ===%N")
+						across l_analyzer.libraries as lib loop
+							print ("  " + lib.name)
+							if lib.name.starts_with ("simple_") then
+								print (" [simple_*]")
+							end
+							print ("%N")
+							print ("    Location: " + lib.location + "%N")
+						end
+						print ("%N")
+
+						-- If KB available, show API summaries
+						create l_kb.make
+						if l_kb.is_open then
+							create l_discoverer.make_with_kb (l_kb, l_ecf_path.to_string_8)
+
+							print ("=== API SUMMARIES ===%N")
+							across l_analyzer.simple_libraries as lib loop
+								print (l_discoverer.extract_single_library_api (lib.to_string_8))
+							end
+
+							l_kb.close
+						end
+
+						is_success := True
+					else
+						print ("[ERROR] Failed to analyze ECF: " + l_analyzer.last_error + "%N")
+					end
+				end
+			end
+		end
+
+feature {NONE} -- Prompt Builder Factory
+
+	create_prompt_builder_with_reuse (a_session: SCG_SESSION): SCG_PROMPT_BUILDER
+			-- Create prompt builder with reuse discovery AND security analysis enabled.
+			-- Security analysis is ALWAYS enabled (2026 threat landscape is mandatory).
+			-- Reuse discovery requires KB to be available.
+		require
+			session_valid: a_session.is_valid
+		local
+			l_kb: SCG_KB
+			l_ecf_path: STRING
+		do
+			-- Try to enable reuse discovery with KB
+			create l_kb.make
+			if l_kb.is_open then
+				-- Get ECF path from session output directory
+				l_ecf_path := (a_session.output_path + "/" + a_session.session_name + ".ecf").to_string_8
+				create Result.make_with_reuse (a_session, l_kb, l_ecf_path)
+			else
+				-- Fall back to builder without reuse
+				create Result.make (a_session)
+			end
+
+			-- ALWAYS enable security analysis - 2026 threat landscape is mandatory
+			-- This implements the "Security Hat" by default for all code generation
+			Result.enable_security_analysis
+		ensure
+			result_not_void: Result /= Void
+			security_enabled: Result.is_security_enabled
 		end
 
 invariant

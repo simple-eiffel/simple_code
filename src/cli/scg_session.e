@@ -143,10 +143,73 @@ feature -- Access
 	response_count: INTEGER
 			-- Number of responses processed
 
+	reuse_analysis: detachable SCG_REUSE_RESULT
+			-- Cached reuse analysis for the session (at SYSTEM scale)
+			-- Populated when system spec is first processed or on-demand
+
+	reuse_discoverer: detachable SCG_REUSE_DISCOVERER
+			-- Reuse discoverer instance (created on demand when KB available)
+
+feature -- Reuse Discovery
+
+	discover_reuse_at_scale (a_scale: STRING)
+			-- Trigger reuse discovery at the specified scale point.
+			-- Scales: "SYSTEM", "CLUSTER", "CLASS", "FEATURE"
+		require
+			scale_not_empty: not a_scale.is_empty
+		local
+			l_kb: SCG_KB
+			l_ecf_path: STRING
+		do
+			-- Initialize discoverer if needed
+			if not attached reuse_discoverer then
+				create l_kb.make
+				if l_kb.is_open then
+					l_ecf_path := (output_path + "/" + session_name + ".ecf").to_string_8
+					create reuse_discoverer.make_with_kb (l_kb, l_ecf_path)
+				end
+			end
+
+			if attached reuse_discoverer as l_disc then
+				-- Set session specs for internal matching
+				l_disc.set_session_specs (class_specs)
+
+				if a_scale.is_case_insensitive_equal ("SYSTEM") then
+					-- Full system analysis
+					if not class_specs.is_empty then
+						reuse_analysis := l_disc.discover_for_system (class_specs)
+					end
+				elseif a_scale.is_case_insensitive_equal ("CLASS") then
+					-- Incremental analysis for new class
+					if not class_specs.is_empty then
+						-- Re-run system analysis to capture new class
+						reuse_analysis := l_disc.discover_for_system (class_specs)
+					end
+				end
+			end
+		end
+
+	has_reuse_analysis: BOOLEAN
+			-- Is there a cached reuse analysis?
+		do
+			Result := attached reuse_analysis
+		end
+
+	get_reuse_prompt_enhancement: STRING_32
+			-- Get the prompt enhancement text from reuse analysis.
+		do
+			if attached reuse_analysis as l_ra then
+				Result := l_ra.prompt_enhancement.to_string_32
+			else
+				create Result.make_empty
+			end
+		end
+
 feature -- Element change
 
 	add_class_spec (a_name, a_description: STRING_32; a_features: ARRAYED_LIST [STRING_32])
 			-- Add a class specification to generate.
+			-- Automatically triggers reuse discovery at CLASS scale.
 		require
 			name_not_empty: not a_name.is_empty
 		local
@@ -154,6 +217,10 @@ feature -- Element change
 		do
 			create l_spec.make (a_name, a_description, a_features)
 			class_specs.extend (l_spec)
+
+			-- Trigger reuse discovery for new class (front-loaded gate)
+			discover_reuse_at_scale ("CLASS")
+
 			save_session
 		ensure
 			spec_added: class_specs.count = old class_specs.count + 1
@@ -314,21 +381,25 @@ feature -- Operations
 				l_sanitized_path.remove_tail (1)
 			end
 
-			-- Create simple_libs list (empty for now, could be configured)
-			create l_simple_libs.make (5)
-
-			-- Generate project scaffold
+			-- Check if ECF already exists (preserve existing project with libraries)
 			create l_path.make_from (l_sanitized_path.to_string_8)
-			create l_gen.make_with_name (l_path, session_name.to_string_8, l_simple_libs)
+			create l_src_path.make_from (l_sanitized_path.to_string_8)
+			l_src_dir := l_src_path.add ("src").to_string.to_string_32
 
-			if l_gen.is_generated then
-				-- Write generated class files using SIMPLE_PATH for proper path construction
-				create l_src_path.make_from (l_sanitized_path.to_string_8)
-				l_src_dir := l_src_path.add ("src").to_string.to_string_32
+			-- Check for existing ECF (use fresh path to avoid mutating l_path)
+			create l_file.make ((create {SIMPLE_PATH}.make_from (l_sanitized_path.to_string_8)).add (session_name.to_string_8 + ".ecf").to_string)
+			if l_file.exists then
+				-- ECF exists - just write source files, preserve existing ECF with libraries
+				-- Ensure src directory exists
+				create l_file.make (l_src_dir.to_string_8)
+				if not l_file.exists then
+					if not l_file.create_directory then
+						last_error := "Failed to create src directory"
+					end
+				end
 
 				across class_specs as ic loop
 					if ic.is_generated and then attached ic.generated_code as l_code then
-						-- Use SIMPLE_PATH for proper path separator handling
 						create l_src_path.make_from (l_src_dir.to_string_8)
 						l_class_path := l_src_path.add (ic.name.as_lower + ".e").to_string.to_string_32
 						create l_file.make (l_class_path.to_string_8)
@@ -342,10 +413,32 @@ feature -- Operations
 				state := State_assembled
 				save_session
 			else
-				if attached l_gen.verification_error as l_err then
-					last_error := l_err.to_string_32
+				-- No ECF exists - create full project scaffold
+				create l_simple_libs.make (5)
+				create l_gen.make_with_name (l_path, session_name.to_string_8, l_simple_libs)
+
+				if l_gen.is_generated then
+					-- Write generated class files
+					across class_specs as ic loop
+						if ic.is_generated and then attached ic.generated_code as l_code then
+							create l_src_path.make_from (l_src_dir.to_string_8)
+							l_class_path := l_src_path.add (ic.name.as_lower + ".e").to_string.to_string_32
+							create l_file.make (l_class_path.to_string_8)
+							if l_file.write_text (l_code.to_string_8) then
+								generated_files.extend (l_class_path)
+							end
+						end
+					end
+
+					is_assembled := True
+					state := State_assembled
+					save_session
 				else
-					last_error := "Project generation failed"
+					if attached l_gen.verification_error as l_err then
+						last_error := l_err.to_string_32
+					else
+						last_error := "Project generation failed"
+					end
 				end
 			end
 		end

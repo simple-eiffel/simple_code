@@ -36,11 +36,15 @@
 		<description>Test target for simple_code</description>
 		<root class="TEST_APP" feature="make"/>
 		<library name="simple_eiffel_parser" location="$SIMPLE_EIFFEL\simple_eiffel_parser\simple_eiffel_parser.ecf"/>
+		<library name="simple_json" location="$SIMPLE_EIFFEL\simple_json\simple_json.ecf"/>
 		<library name="simple_testing" location="$SIMPLE_EIFFEL\simple_testing\simple_testing.ecf"/>
+		<library name="simple_xml" location="$SIMPLE_EIFFEL\simple_xml\simple_xml.ecf"/>
 		<library name="testing" location="$ISE_LIBRARY\library\testing\testing.ecf"/>
+		<cluster name="cli" location=".\src\cli\" recursive="true"/>
 		<cluster name="test_classes" location=".\testing\" recursive="true">
 			<file_rule>
 				<exclude>/temp_test_project$</exclude>
+				<exclude>/_archived$</exclude>
 			</file_rule>
 		</cluster>
 	</target>
@@ -53,6 +57,7 @@
 		<root class="SCG_CLI_APP" feature="make"/>
 		<library name="simple_eiffel_parser" location="$SIMPLE_EIFFEL\simple_eiffel_parser\simple_eiffel_parser.ecf"/>
 		<library name="simple_json" location="$SIMPLE_EIFFEL\simple_json\simple_json.ecf"/>
+		<library name="simple_xml" location="$SIMPLE_EIFFEL\simple_xml\simple_xml.ecf"/>
 		<cluster name="cli" location=".\src\cli\" recursive="true"/>
 	</target>
 </system>

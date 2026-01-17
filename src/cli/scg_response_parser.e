@@ -270,6 +270,9 @@ feature {NONE} -- JSON Parsing
 
 						if parsed_classes.count > 0 then
 							is_success := True
+							-- Trigger SYSTEM-level reuse discovery after all classes are parsed
+							-- This enables cross-class semantic analysis and ancestor detection
+							a_session.discover_reuse_at_scale ("SYSTEM")
 						else
 							last_error := "No classes found in system_spec"
 						end

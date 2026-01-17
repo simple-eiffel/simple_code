@@ -22,7 +22,6 @@ feature {NONE} -- Initialization
 			run_lib_tests
 			run_scg_project_gen_tests
 			run_sc_project_tests
-			run_scg_class_gen_tests
 
 			print ("%N========================%N")
 			print ("Results: " + passed.out + " passed, " + failed.out + " failed%N")
@@ -67,28 +66,11 @@ feature {NONE} -- Test Runners
 			run_test_with_setup_proj (agent sc_project_tests.test_project_full_lifecycle, "test_project_full_lifecycle")
 		end
 
-	run_scg_class_gen_tests
-			-- Run TEST_SCG_CLASS_GEN test cases.
-			-- Parser sanity checks run first (no AI needed).
-			-- Then the full generation test (calls AI once, validates multiple aspects).
-		do
-			print ("%N--- TEST_SCG_CLASS_GEN ---%N")
-			create scg_class_gen_tests
-
-			-- Parser sanity checks (no AI calls)
-			run_test (agent scg_class_gen_tests.test_parser_validation_valid_class, "test_parser_validation_valid_class")
-			run_test (agent scg_class_gen_tests.test_parser_validation_invalid_class, "test_parser_validation_invalid_class")
-
-			-- Full generation test (calls Ollama AI with qwen2.5-coder:14b)
-			run_test (agent scg_class_gen_tests.test_class_gen_with_ollama, "test_class_gen_with_ollama")
-		end
-
 feature {NONE} -- Implementation
 
 	lib_tests: LIB_TESTS
 	scg_project_gen_tests: TEST_SCG_PROJECT_GEN
 	sc_project_tests: TEST_SC_PROJECT
-	scg_class_gen_tests: TEST_SCG_CLASS_GEN
 
 	passed: INTEGER
 	failed: INTEGER

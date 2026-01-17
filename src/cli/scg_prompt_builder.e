@@ -18,7 +18,8 @@ class
 	SCG_PROMPT_BUILDER
 
 create
-	make
+	make,
+	make_with_reuse
 
 feature {NONE} -- Initialization
 
@@ -32,10 +33,87 @@ feature {NONE} -- Initialization
 			session_set: session = a_session
 		end
 
+	make_with_reuse (a_session: SCG_SESSION; a_kb: SCG_KB; a_ecf_path: STRING)
+			-- Create prompt builder with reuse discovery enabled.
+		require
+			session_valid: a_session.is_valid
+			kb_open: a_kb.is_open
+			ecf_path_not_empty: not a_ecf_path.is_empty
+		do
+			session := a_session
+			create reuse_discoverer.make_with_kb (a_kb, a_ecf_path)
+		ensure
+			session_set: session = a_session
+			reuse_enabled: is_reuse_enabled
+		end
+
 feature -- Access
 
 	session: SCG_SESSION
 			-- Session this builder works with
+
+	reuse_discoverer: detachable SCG_REUSE_DISCOVERER
+			-- Reuse discoverer for searching existing code (optional)
+
+	security_analyzer: detachable SCG_SECURITY_ANALYZER
+			-- Security analyzer for threat analysis (optional - "Security Hat")
+
+feature -- Status
+
+	is_reuse_enabled: BOOLEAN
+			-- Is reuse discovery enabled?
+		do
+			Result := attached reuse_discoverer
+		end
+
+	is_security_enabled: BOOLEAN
+			-- Is security analysis enabled ("Security Hat" on)?
+		do
+			Result := attached security_analyzer
+		end
+
+feature -- Element change
+
+	enable_reuse_discovery (a_kb: SCG_KB; a_ecf_path: STRING)
+			-- Enable reuse discovery with knowledge base and ECF path.
+		require
+			kb_open: a_kb.is_open
+			ecf_path_not_empty: not a_ecf_path.is_empty
+		do
+			create reuse_discoverer.make_with_kb (a_kb, a_ecf_path)
+		ensure
+			reuse_enabled: is_reuse_enabled
+		end
+
+	disable_reuse_discovery
+			-- Disable reuse discovery.
+		do
+			reuse_discoverer := Void
+		ensure
+			reuse_disabled: not is_reuse_enabled
+		end
+
+	enable_security_analysis
+			-- Enable security analysis ("put on Security Hat").
+			-- Activates 2026 threat landscape analysis including:
+			-- - Agentic AI risks (attacks on/by agents)
+			-- - Prompt injection defense (OWASP LLM #1)
+			-- - Identity/authentication risks
+			-- - Post-quantum cryptography considerations
+			-- - Data exfiltration prevention
+		do
+			create security_analyzer.make
+		ensure
+			security_enabled: is_security_enabled
+		end
+
+	disable_security_analysis
+			-- Disable security analysis ("remove Security Hat").
+		do
+			security_analyzer := Void
+		ensure
+			security_disabled: not is_security_enabled
+		end
 
 feature -- Prompt Generation
 
@@ -91,12 +169,37 @@ feature -- Prompt Generation
 			-- Build prompt to generate class from `a_spec'.
 		require
 			spec_not_generated: not a_spec.is_generated
+		local
+			l_reuse_result: SCG_REUSE_RESULT
 		do
-			create Result.make (2000)
+			create Result.make (3000)
 			Result.append ("Generate the Eiffel class: " + a_spec.name + "%N%N")
 
 			Result.append ("=== SESSION INFO ===%N")
 			Result.append ("Session: " + session.session_name + "%N%N")
+
+			-- Inject reuse analysis: prefer fresh discovery, fallback to session cache
+			if attached reuse_discoverer as l_disc then
+				-- Fresh discovery with current KB and ECF state
+				l_reuse_result := l_disc.discover_for_class (a_spec)
+				if l_reuse_result.has_candidates or not l_reuse_result.api_summary.is_empty then
+					Result.append (l_reuse_result.prompt_enhancement.to_string_32)
+					Result.append ("%N")
+				end
+			elseif session.has_reuse_analysis then
+				-- Fallback: use session's cached reuse analysis
+				Result.append (session.get_reuse_prompt_enhancement)
+				Result.append ("%N")
+			end
+
+			-- Inject security analysis ("Security Hat" mode)
+			if attached security_analyzer as l_sec then
+				l_sec.analyze_class_spec (a_spec)
+				if not l_sec.findings.is_empty or not l_sec.recommendations.is_empty then
+					Result.append (l_sec.as_prompt_enhancement.to_string_32)
+					Result.append ("%N")
+				end
+			end
 
 			Result.append ("=== CLASS SPECIFICATION ===%N")
 			Result.append ("Class name: " + a_spec.name + "%N")
@@ -359,6 +462,63 @@ feature {NONE} -- Implementation
 - Use 'detachable' for optional references
 - Initialize ALL attributes in creation procedures
 - Pattern: if attached x as l_x then ... end
+
+=== SIMPLE_* LIBRARY GOTCHAS (CRITICAL) ===
+SIMPLE_JSON (SIMPLE_JSON_VALUE):
+- All query features (item, as_array, as_object) return DETACHABLE
+- MUST wrap with 'attached' pattern: if attached obj.item ("key") as val then ...
+- Use is_number (NOT is_real) to check for numeric values
+- Use as_string_32 (NOT as_string) for string values
+- For numeric values, check is_integer FIRST:
+    if val.is_integer then x := val.as_integer.to_double
+    elseif val.is_number then x := val.as_real end
+
+SIMPLE_FILE:
+- Creation: create l_file.make (a_path) -- NOT make_open_read!
+- Reading: l_content := l_file.read_all OR l_file.read_text
+- No close method - file closes automatically after read
+- Check exists before reading: if l_file.exists then ...
+
+SIMPLE_CSV:
+- Use parse (content) to parse a string, parse_file (path) for files
+- Access rows: csv.row_at (i) returns ARRAYED_LIST [STRING]
+- Access cells: csv.row_at (i).i_th (col)
+- Row/col indices are 1-based
+
+UNICODE OUTPUT (STRING_32/CHARACTER_32):
+- STRING_32.to_string_8 has precondition is_valid_as_string_8 - FAILS on Unicode!
+- CHARACTER_32.out returns "U+XXXX" code point, NOT the character
+- For Unicode output, use: print (l_string_32) or print (l_char_32)
+- Buffer CHARACTER_32 to STRING_32, then print: l_buf.append_character (char); print (l_buf)
+- If class needs both STRING_8 buffer AND Unicode: add separate STRING_32 attribute
+
+MANIFEST ARRAYS WITH UNICODE:
+- Mixed types in manifest arrays cause VWMA warning
+- For CHARACTER_32 arrays with ' ' (CHAR_8) and '%/0x2588/' (CHAR_32):
+    WRONG:  arr := << ' ', '%/0x2588/' >>
+    RIGHT:  arr := {ARRAY [CHARACTER_32]} << ' ', '%/0x2588/' >>
+
+STANDARD I/O:
+- stdin read: io.input.end_of_file (NOT io.end_of_file)
+- stdin loop: from until io.input.end_of_file loop io.read_line ... end
+
+ARGUMENTS_32:
+- Has NO make feature - do NOT try to rename it
+- Just inherit: inherit ARGUMENTS_32 (no rename clause)
+- Access args: argument (i) returns STRING_32, argument_count for count
+
+=== EIFFEL INHERITANCE GOTCHAS ===
+DEFERRED FEATURES:
+- Do NOT use 'redefine' for deferred features - just implement them
+- WRONG: inherit PARENT redefine deferred_feature end
+- RIGHT: inherit PARENT (no redefine clause, just provide implementation)
+- Only use 'redefine' for effective (already implemented) features
+
+STRING ESCAPING:
+- Quote in string: use %%" (NOT %%%")
+- Newline: %N
+- Tab: %T
+- Percent: %%
 
 === STANDARD FEATURE NAMES (EiffelBase) ===
 Access:  item, count, capacity
