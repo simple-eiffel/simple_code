@@ -177,6 +177,16 @@ feature {NONE} -- Command Processing
 				handle_done (a_args)
 			elseif l_command.is_case_insensitive_equal ("wf-status") then
 				handle_workflow_status (a_args)
+			elseif l_command.is_case_insensitive_equal ("lock") then
+				handle_lock (a_args)
+			elseif l_command.is_case_insensitive_equal ("prep") then
+				handle_prep (a_args)
+			elseif l_command.is_case_insensitive_equal ("docs") then
+				handle_docs (a_args)
+			elseif l_command.is_case_insensitive_equal ("git") then
+				handle_git (a_args)
+			elseif l_command.is_case_insensitive_equal ("github") then
+				handle_github (a_args)
 			elseif l_command.is_case_insensitive_equal ("--help") or l_command.is_case_insensitive_equal ("-h") then
 				print_usage
 			else
@@ -187,21 +197,50 @@ feature {NONE} -- Command Processing
 		end
 
 	handle_init (a_args: ARGUMENTS_32)
-			-- Handle 'init --session <name>' command.
+			-- Handle 'init --session <name> [--skip-prep] [--skip-plan] [--skip-docs] [--skip-git] [--skip-github]' command.
 		local
 			l_session_name: detachable STRING_32
 			l_session: SCG_SESSION
+			l_lock: SCG_LOCK_FILE
 		do
 			l_session_name := get_option_value (a_args, "--session")
 
 			if attached l_session_name as l_name then
 				create l_session.make_new (l_name)
 				if l_session.is_valid then
+					-- Create lock file with skip configuration
+					create l_lock.make (l_session.session_path)
+
+					-- Apply skip flags (user controls skipping, not AI)
+					if has_flag (a_args, "--skip-prep") then
+						l_lock.set_skip_prep
+						print ("  [SKIP] PREP phase skipped%N")
+					end
+					if has_flag (a_args, "--skip-plan") then
+						l_lock.set_skip_plan
+						print ("  [SKIP] PLAN phase skipped%N")
+					end
+					if has_flag (a_args, "--skip-docs") then
+						l_lock.set_skip_docs
+						print ("  [SKIP] DOCS phase skipped%N")
+					end
+					if has_flag (a_args, "--skip-git") then
+						l_lock.set_skip_git
+						print ("  [SKIP] GIT phase skipped%N")
+					end
+					if has_flag (a_args, "--skip-github") then
+						l_lock.set_skip_github
+						print ("  [SKIP] GITHUB phase skipped%N")
+					end
+
+					-- Transition to initial state based on skip config
+					l_lock.transition_to_initial
+
 					is_success := True
 					print ("[OK] Session initialized: " + l_name.to_string_8 + "%N")
 					print ("Session path: " + l_session.session_path.to_string_8 + "%N")
-					print ("%NNext step: Copy the system design prompt to Claude:%N")
-					print ("  " + l_session.prompts_path.to_string_8 + "/001_system_design.txt%N")
+					print ("%N")
+					print (l_lock.to_display_string.to_string_8)
 				else
 					is_success := False
 					last_error := l_session.last_error
@@ -209,7 +248,7 @@ feature {NONE} -- Command Processing
 				end
 			else
 				print ("[ERROR] Missing --session option%N")
-				print ("Usage: simple_codegen init --session <name>%N")
+				print ("Usage: simple_codegen init --session <name> [--skip-prep] [--skip-plan] [--skip-docs] [--skip-git] [--skip-github]%N")
 			end
 		end
 
@@ -337,6 +376,9 @@ feature {NONE} -- Command Processing
 							l_session.add_response (l_content, l_parser.response_type)
 							debug_logger.debug_log ("handle_process: add_response complete")
 
+							-- Update lock file for next class or assembly
+							l_session.update_lock_for_next_class
+
 							-- Build next prompt if more work needed
 							debug_logger.debug_log ("handle_process: checking has_pending_work")
 							if l_session.has_pending_work then
@@ -369,6 +411,10 @@ feature {NONE} -- Command Processing
 								print ("%N[DONE] All classes generated. Ready for assembly.%N")
 								print ("Run: simple_codegen assemble --session " + l_session_name.to_string_8 + " --output <path>%N")
 							end
+
+							-- Display lock state
+							print ("%N")
+							l_session.display_lock_state
 
 							debug_logger.debug_log ("handle_process: setting is_success := True")
 							is_success := True
@@ -729,11 +775,15 @@ feature {NONE} -- Command Processing
 				if l_session.is_valid then
 					l_session.assemble_project (l_output)
 					if l_session.is_assembled then
+						-- Update lock file to complete
+						l_session.update_lock_for_assembly_complete
 						print ("[OK] Project assembled at: " + l_output.to_string_8 + "%N")
 						print ("Generated files:%N")
 						across l_session.generated_files as ic loop
 							print ("  " + ic.to_string_8 + "%N")
 						end
+						print ("%N")
+						l_session.display_lock_state
 						is_success := True
 					else
 						print ("[ERROR] Assembly failed: " + l_session.last_error.to_string_8 + "%N")
@@ -778,6 +828,296 @@ feature {NONE} -- Command Processing
 			else
 				print ("[ERROR] Missing --session option%N")
 				print ("Usage: simple_codegen status --session <name>%N")
+			end
+		end
+
+	handle_lock (a_args: ARGUMENTS_32)
+			-- Handle 'lock --session <name> [--retry] [--skip-to <state>] [--reset]' command.
+			-- Display or modify current lock file state for workflow enforcement.
+		local
+			l_session_name, l_skip_to: detachable STRING_32
+			l_session: SCG_SESSION
+			l_lock: SCG_LOCK_FILE
+		do
+			l_session_name := get_option_value (a_args, "--session")
+			l_skip_to := get_option_value (a_args, "--skip-to")
+
+			if attached l_session_name as l_name then
+				create l_session.make_from_existing (l_name)
+				if l_session.is_valid then
+					create l_lock.make_from_file (l_session.session_path)
+
+					if has_flag (a_args, "--reset") then
+						-- Admin: reset lock file to IDLE
+						l_lock.reset
+						print ("[OK] Lock file reset to IDLE%N%N")
+					elseif has_flag (a_args, "--retry") then
+						-- Admin: increment retry count
+						l_lock.retry_current
+						print ("[OK] Retry count incremented%N%N")
+					elseif attached l_skip_to as l_state then
+						-- Admin: force state
+						l_lock.force_state (l_state.to_string_8)
+						print ("[OK] Forced state to: " + l_state.to_string_8 + "%N%N")
+					end
+
+					-- Display current state
+					print (l_lock.to_display_string.to_string_8)
+					is_success := True
+				else
+					print ("[ERROR] Session not found: " + l_name.to_string_8 + "%N")
+				end
+			else
+				print ("[ERROR] Missing --session option%N")
+				print ("Usage:%N")
+				print ("  simple_codegen lock --session <name>                   # Show state%N")
+				print ("  simple_codegen lock --session <name> --retry           # Retry current step%N")
+				print ("  simple_codegen lock --session <name> --skip-to <state> # Force state (admin)%N")
+				print ("  simple_codegen lock --session <name> --reset           # Reset to IDLE%N")
+			end
+		end
+
+	handle_prep (a_args: ARGUMENTS_32)
+			-- Handle 'prep --session <name> [--research-done|--reuse-done|--deps-done|--scope-done]' command.
+			-- Advance through PREP phase states.
+		local
+			l_session_name: detachable STRING_32
+			l_session: SCG_SESSION
+			l_lock: SCG_LOCK_FILE
+		do
+			l_session_name := get_option_value (a_args, "--session")
+
+			if attached l_session_name as l_name then
+				create l_session.make_from_existing (l_name)
+				if l_session.is_valid then
+					create l_lock.make_from_file (l_session.session_path)
+
+					if has_flag (a_args, "--research-done") then
+						if l_lock.state.same_string (l_lock.phase_manager.State_prep_research) then
+							l_lock.transition_prep_research_done
+							print ("[OK] PREP research phase complete%N%N")
+						else
+							print ("[ERROR] Not in PREP_RESEARCH state. Current: " + l_lock.state.to_string_8 + "%N")
+						end
+					elseif has_flag (a_args, "--reuse-done") then
+						if l_lock.state.same_string (l_lock.phase_manager.State_prep_reuse) then
+							l_lock.transition_prep_reuse_done
+							print ("[OK] PREP reuse analysis complete%N%N")
+						else
+							print ("[ERROR] Not in PREP_REUSE state. Current: " + l_lock.state.to_string_8 + "%N")
+						end
+					elseif has_flag (a_args, "--deps-done") then
+						if l_lock.state.same_string (l_lock.phase_manager.State_prep_deps) then
+							l_lock.transition_prep_deps_done
+							print ("[OK] PREP dependency identification complete%N%N")
+						else
+							print ("[ERROR] Not in PREP_DEPS state. Current: " + l_lock.state.to_string_8 + "%N")
+						end
+					elseif has_flag (a_args, "--scope-done") then
+						if l_lock.state.same_string (l_lock.phase_manager.State_prep_scope) then
+							l_lock.transition_prep_scope_done
+							print ("[OK] PREP scope definition complete%N%N")
+						else
+							print ("[ERROR] Not in PREP_SCOPE state. Current: " + l_lock.state.to_string_8 + "%N")
+						end
+					else
+						print ("[ERROR] Missing done flag%N")
+						print ("Usage: simple_codegen prep --session <name> --<step>-done%N")
+						print ("  --research-done  Complete research step%N")
+						print ("  --reuse-done     Complete reuse analysis step%N")
+						print ("  --deps-done      Complete dependency identification step%N")
+						print ("  --scope-done     Complete scope definition step%N")
+					end
+
+					-- Display current state
+					print (l_lock.to_display_string.to_string_8)
+					is_success := True
+				else
+					print ("[ERROR] Session not found: " + l_name.to_string_8 + "%N")
+				end
+			else
+				print ("[ERROR] Missing --session option%N")
+			end
+		end
+
+	handle_docs (a_args: ARGUMENTS_32)
+			-- Handle 'docs --session <name> [--readme-done|--index-done|--examples-done]' command.
+			-- Advance through DOCS phase states.
+		local
+			l_session_name: detachable STRING_32
+			l_session: SCG_SESSION
+			l_lock: SCG_LOCK_FILE
+		do
+			l_session_name := get_option_value (a_args, "--session")
+
+			if attached l_session_name as l_name then
+				create l_session.make_from_existing (l_name)
+				if l_session.is_valid then
+					create l_lock.make_from_file (l_session.session_path)
+
+					if has_flag (a_args, "--readme-done") then
+						if l_lock.state.same_string (l_lock.phase_manager.State_docs_readme) then
+							l_lock.transition_docs_readme_done
+							print ("[OK] README.md complete%N%N")
+						else
+							print ("[ERROR] Not in DOCS_README state. Current: " + l_lock.state.to_string_8 + "%N")
+						end
+					elseif has_flag (a_args, "--index-done") then
+						if l_lock.state.same_string (l_lock.phase_manager.State_docs_index) then
+							l_lock.transition_docs_index_done
+							print ("[OK] docs/index.html complete%N%N")
+						else
+							print ("[ERROR] Not in DOCS_INDEX state. Current: " + l_lock.state.to_string_8 + "%N")
+						end
+					elseif has_flag (a_args, "--examples-done") then
+						if l_lock.state.same_string (l_lock.phase_manager.State_docs_examples) then
+							l_lock.transition_docs_examples_done
+							print ("[OK] Documentation examples complete%N%N")
+						else
+							print ("[ERROR] Not in DOCS_EXAMPLES state. Current: " + l_lock.state.to_string_8 + "%N")
+						end
+					else
+						print ("[ERROR] Missing done flag%N")
+						print ("Usage: simple_codegen docs --session <name> --<step>-done%N")
+						print ("  --readme-done    Complete README.md%N")
+						print ("  --index-done     Complete docs/index.html%N")
+						print ("  --examples-done  Complete code examples%N")
+					end
+
+					-- Display current state
+					print (l_lock.to_display_string.to_string_8)
+					is_success := True
+				else
+					print ("[ERROR] Session not found: " + l_name.to_string_8 + "%N")
+				end
+			else
+				print ("[ERROR] Missing --session option%N")
+			end
+		end
+
+	handle_git (a_args: ARGUMENTS_32)
+			-- Handle 'git --session <name> [--init-done|--ignore-done|--add-done|--commit-done]' command.
+			-- Advance through GIT phase states.
+		local
+			l_session_name: detachable STRING_32
+			l_session: SCG_SESSION
+			l_lock: SCG_LOCK_FILE
+		do
+			l_session_name := get_option_value (a_args, "--session")
+
+			if attached l_session_name as l_name then
+				create l_session.make_from_existing (l_name)
+				if l_session.is_valid then
+					create l_lock.make_from_file (l_session.session_path)
+
+					if has_flag (a_args, "--init-done") then
+						if l_lock.state.same_string (l_lock.phase_manager.State_git_init) then
+							l_lock.transition_git_init_done
+							print ("[OK] git init complete%N%N")
+						else
+							print ("[ERROR] Not in GIT_INIT state. Current: " + l_lock.state.to_string_8 + "%N")
+						end
+					elseif has_flag (a_args, "--ignore-done") then
+						if l_lock.state.same_string (l_lock.phase_manager.State_git_ignore) then
+							l_lock.transition_git_ignore_done
+							print ("[OK] .gitignore complete%N%N")
+						else
+							print ("[ERROR] Not in GIT_IGNORE state. Current: " + l_lock.state.to_string_8 + "%N")
+						end
+					elseif has_flag (a_args, "--add-done") then
+						if l_lock.state.same_string (l_lock.phase_manager.State_git_add) then
+							l_lock.transition_git_add_done
+							print ("[OK] git add complete%N%N")
+						else
+							print ("[ERROR] Not in GIT_ADD state. Current: " + l_lock.state.to_string_8 + "%N")
+						end
+					elseif has_flag (a_args, "--commit-done") then
+						if l_lock.state.same_string (l_lock.phase_manager.State_git_commit) then
+							l_lock.transition_git_commit_done
+							print ("[OK] git commit complete%N%N")
+						else
+							print ("[ERROR] Not in GIT_COMMIT state. Current: " + l_lock.state.to_string_8 + "%N")
+						end
+					else
+						print ("[ERROR] Missing done flag%N")
+						print ("Usage: simple_codegen git --session <name> --<step>-done%N")
+						print ("  --init-done    Complete git init%N")
+						print ("  --ignore-done  Complete .gitignore%N")
+						print ("  --add-done     Complete git add%N")
+						print ("  --commit-done  Complete initial commit%N")
+					end
+
+					-- Display current state
+					print (l_lock.to_display_string.to_string_8)
+					is_success := True
+				else
+					print ("[ERROR] Session not found: " + l_name.to_string_8 + "%N")
+				end
+			else
+				print ("[ERROR] Missing --session option%N")
+			end
+		end
+
+	handle_github (a_args: ARGUMENTS_32)
+			-- Handle 'github --session <name> [--create-done|--push-done|--pages-done|--release-done]' command.
+			-- Advance through GITHUB phase states.
+		local
+			l_session_name: detachable STRING_32
+			l_session: SCG_SESSION
+			l_lock: SCG_LOCK_FILE
+		do
+			l_session_name := get_option_value (a_args, "--session")
+
+			if attached l_session_name as l_name then
+				create l_session.make_from_existing (l_name)
+				if l_session.is_valid then
+					create l_lock.make_from_file (l_session.session_path)
+
+					if has_flag (a_args, "--create-done") then
+						if l_lock.state.same_string (l_lock.phase_manager.State_github_create) then
+							l_lock.transition_github_create_done
+							print ("[OK] GitHub repo created%N%N")
+						else
+							print ("[ERROR] Not in GITHUB_CREATE state. Current: " + l_lock.state.to_string_8 + "%N")
+						end
+					elseif has_flag (a_args, "--push-done") then
+						if l_lock.state.same_string (l_lock.phase_manager.State_github_push) then
+							l_lock.transition_github_push_done
+							print ("[OK] Push to remote complete%N%N")
+						else
+							print ("[ERROR] Not in GITHUB_PUSH state. Current: " + l_lock.state.to_string_8 + "%N")
+						end
+					elseif has_flag (a_args, "--pages-done") then
+						if l_lock.state.same_string (l_lock.phase_manager.State_github_pages) then
+							l_lock.transition_github_pages_done
+							print ("[OK] GitHub Pages enabled%N%N")
+						else
+							print ("[ERROR] Not in GITHUB_PAGES state. Current: " + l_lock.state.to_string_8 + "%N")
+						end
+					elseif has_flag (a_args, "--release-done") then
+						if l_lock.state.same_string (l_lock.phase_manager.State_github_release) then
+							l_lock.transition_github_release_done
+							print ("[OK] Initial release created%N%N")
+						else
+							print ("[ERROR] Not in GITHUB_RELEASE state. Current: " + l_lock.state.to_string_8 + "%N")
+						end
+					else
+						print ("[ERROR] Missing done flag%N")
+						print ("Usage: simple_codegen github --session <name> --<step>-done%N")
+						print ("  --create-done   Complete GitHub repo creation%N")
+						print ("  --push-done     Complete push to remote%N")
+						print ("  --pages-done    Complete GitHub Pages setup%N")
+						print ("  --release-done  Complete initial release%N")
+					end
+
+					-- Display current state
+					print (l_lock.to_display_string.to_string_8)
+					is_success := True
+				else
+					print ("[ERROR] Session not found: " + l_name.to_string_8 + "%N")
+				end
+			else
+				print ("[ERROR] Missing --session option%N")
 			end
 		end
 

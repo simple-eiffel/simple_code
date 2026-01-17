@@ -112,6 +112,35 @@ feature -- Status
 			Result := across class_specs as ic some not ic.is_generated end
 		end
 
+	next_pending_class: detachable SCG_SESSION_CLASS_SPEC
+			-- Next class that needs to be generated (Void if all done).
+		local
+			l_found: BOOLEAN
+		do
+			from
+				class_specs.start
+				l_found := False
+			until
+				class_specs.after or l_found
+			loop
+				if not class_specs.item.is_generated then
+					Result := class_specs.item
+					l_found := True
+				end
+				class_specs.forth
+			end
+		end
+
+	pending_class_count: INTEGER
+			-- Number of classes still waiting to be generated.
+		do
+			across class_specs as ic loop
+				if not ic.is_generated then
+					Result := Result + 1
+				end
+			end
+		end
+
 feature -- Access
 
 	session_name: STRING_32
@@ -924,6 +953,132 @@ feature {NONE} -- Helpers
 		once
 			Result := "sessions"
 		end
+
+feature -- Lock File Management
+
+	lock_file: SCG_LOCK_FILE
+			-- Lock file for workflow enforcement
+		do
+			if attached cached_lock_file as lf then
+				Result := lf
+			else
+				create Result.make (session_path)
+				cached_lock_file := Result
+			end
+		end
+
+	update_lock_for_spec
+			-- Update lock file after spec command (awaiting system_spec.json).
+		do
+			lock_file.transition_to_spec
+		end
+
+	update_lock_for_next_class
+			-- Update lock file for next class to generate.
+			-- Uses implementation states (CLASS_IMPL_n) since current workflow
+			-- generates full classes with contracts included.
+		local
+			l_next: detachable SCG_SESSION_CLASS_SPEC
+			l_total, l_index: INTEGER
+		do
+			l_next := next_pending_class
+			l_total := class_specs.count
+
+			-- Find index of next pending class
+			if attached l_next as nc then
+				l_index := 1
+				across class_specs as ic until l_index > l_total loop
+					if ic.name.same_string (nc.name) then
+						-- Found it, transition to impl state for this class
+						lock_file.transition_to_class_impl (nc.name, l_index, l_total)
+					end
+					l_index := l_index + 1
+				end
+			else
+				-- All classes done, move to ASSEMBLE
+				lock_file.transition_to_assemble_structure
+			end
+		end
+
+	update_lock_for_class_contract (a_class_index: INTEGER)
+			-- Update lock file to await contracts for class at index.
+		require
+			valid_index: a_class_index >= 1 and a_class_index <= class_specs.count
+		local
+			l_spec: SCG_SESSION_CLASS_SPEC
+		do
+			l_spec := class_specs.i_th (a_class_index)
+			lock_file.transition_to_class_contract (l_spec.name, a_class_index, class_specs.count)
+		end
+
+	update_lock_for_class_impl (a_class_index: INTEGER)
+			-- Update lock file to await implementation for class at index.
+		require
+			valid_index: a_class_index >= 1 and a_class_index <= class_specs.count
+		local
+			l_spec: SCG_SESSION_CLASS_SPEC
+		do
+			l_spec := class_specs.i_th (a_class_index)
+			lock_file.transition_to_class_impl (l_spec.name, a_class_index, class_specs.count)
+		end
+
+	update_lock_for_assembly_complete
+			-- Update lock file after assembly is complete.
+			-- Transitions to COMPILE_EIFFEL state.
+		do
+			lock_file.transition_to_compile_eiffel
+		end
+
+	update_lock_for_compile_success
+			-- Update lock file after successful compilation.
+			-- Transitions to TEST_GENERATE state.
+		do
+			lock_file.transition_to_compile_success
+		end
+
+	update_lock_for_test_success
+			-- Update lock file after all tests pass.
+			-- Transitions to next phase (DOCS or GIT or COMPLETE based on skips).
+		do
+			lock_file.transition_to_test_success
+		end
+
+	update_lock_for_complete
+			-- Update lock file to COMPLETE state.
+		do
+			lock_file.transition_to_complete
+		end
+
+	display_lock_state
+			-- Print current lock file state to stdout.
+		do
+			if lock_file.exists then
+				lock_file.load
+				print (lock_file.to_display_string)
+			else
+				print ("No lock file exists for this session.%N")
+			end
+		end
+
+	current_class_index: INTEGER
+			-- Index of current class being generated (1-based).
+			-- Returns 0 if no classes or all done.
+		local
+			l_idx: INTEGER
+		do
+			l_idx := 1
+			across class_specs as ic until Result > 0 loop
+				if not ic.is_generated then
+					Result := l_idx
+				end
+				l_idx := l_idx + 1
+			end
+		end
+
+feature {NONE} -- Lock File Cache
+
+	cached_lock_file: detachable SCG_LOCK_FILE
+			-- Cached lock file instance
 
 feature -- State Constants
 
