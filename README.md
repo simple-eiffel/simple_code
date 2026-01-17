@@ -1,80 +1,96 @@
+<p align="center">
+  <img src="https://raw.githubusercontent.com/simple-eiffel/.github/main/profile/assets/logo.png" alt="simple_ library logo" width="400">
+</p>
+
 # simple_code
 
-**AI-Powered Code Assistant Integration for Eiffel**
+**[Documentation](https://simple-eiffel.github.io/simple_code/)** | **[GitHub](https://github.com/simple-eiffel/simple_code)**
 
-A library for integrating AI assistants (Claude Code, Ollama/Llama3, and others) with EiffelStudio and Eiffel development workflows.
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Eiffel](https://img.shields.io/badge/Eiffel-25.02-blue.svg)](https://www.eiffel.org/)
+[![Design by Contract](https://img.shields.io/badge/DbC-enforced-orange.svg)]()
+[![Built with simple_codegen](https://img.shields.io/badge/Built_with-simple__codegen-blueviolet.svg)](https://github.com/simple-eiffel/simple_code)
 
-## Vision
+Claude-in-the-loop code generation CLI for Eiffel projects.
 
-simple_code bridges the gap between modern AI coding assistants and the Eiffel development environment, providing:
-
-- **EiffelStudio Tool Panel**: Dockable AI assistant panel integrated directly into the IDE
-- **Multi-Provider Support**: Claude API, Ollama (local), and extensible provider architecture
-- **Context-Aware Assistance**: Understands Eiffel syntax, DBC contracts, and OOSC2 principles
-- **Code Generation**: Generate Eiffel code following simple_* ecosystem patterns
+Part of the [Simple Eiffel](https://github.com/simple-eiffel) ecosystem.
 
 ## Status
 
-**Phase 0**: Project skeleton and documentation
+**Development** - Lock-file controlled pipeline for AI-assisted code generation
 
-## Documentation
+## Overview
 
-- [EiffelStudio Tool Development Guide](docs/EIFFELSTUDIO_TOOL_DEVELOPMENT.md) - Comprehensive guide for creating custom IDE panels
+simple_codegen is a CLI tool that guides Claude (AI) through a strict, lock-file controlled pipeline for generating Eiffel code. Each step requires explicit permission via the lock file, preventing the AI from skipping steps or batching operations.
 
-## Planned Features
+## Features
 
-### Phase 1: Core Infrastructure
-- [ ] AI provider abstraction layer
-- [ ] HTTP client wrapper for API calls
-- [ ] Response streaming support
-- [ ] Configuration management
+- **Lock-File Pipeline** - Every action requires lock file permission
+- **Session Management** - Track progress across multiple sessions
+- **Spec-Driven Generation** - Generate from JSON specification files
+- **TOON Prompts** - AI-readable prompts for consistent code generation
+- **Compile Integration** - Run ec.exe and parse error output
+- **Test Runner** - Execute tests and track failures individually
+- **Reuse Discovery** - Find existing simple_* code for reuse
+- **Security Analysis** - Scan generated code for vulnerabilities
 
-### Phase 2: Provider Implementations
-- [ ] Claude API integration (Opus, Sonnet, Haiku)
-- [ ] Ollama local integration (Llama3, CodeLlama, etc.)
-- [ ] Provider switching and fallback
+## Installation
 
-### Phase 3: EiffelStudio Integration
-- [ ] Dockable tool panel (ES_DOCKABLE_TOOL_WINDOW)
-- [ ] Editor context extraction
-- [ ] Stone protocol for class/feature targeting
-- [ ] Keyboard shortcuts
-
-### Phase 4: Eiffel Intelligence
-- [ ] Contract-aware code generation
-- [ ] Eiffel syntax understanding
-- [ ] simple_* pattern awareness
-- [ ] Test generation from contracts
-
-## Architecture
-
+1. Set the ecosystem environment variable:
+```bash
+export SIMPLE_EIFFEL=D:\prod
 ```
-simple_code/
-+-- src/
-|   +-- providers/           # AI provider implementations
-|   |   +-- sc_provider.e    # Abstract provider
-|   |   +-- sc_claude.e      # Claude API
-|   |   +-- sc_ollama.e      # Ollama local
-|   +-- tool/                # EiffelStudio integration
-|   |   +-- es_code_assistant_tool.e
-|   +-- core/                # Core classes
-|       +-- sc_message.e
-|       +-- sc_conversation.e
-|       +-- sc_config.e
-+-- docs/
-+-- testing/
+
+2. Build the CLI:
+```bash
+cd $SIMPLE_EIFFEL/simple_code
+/d/prod/ec.sh test -config simple_code.ecf -target simple_codegen
 ```
+
+3. The executable will be at:
+```
+EIFGENs/simple_codegen/F_code/simple_code.exe
+```
+
+## Quick Start
+
+```bash
+# Initialize a new session
+simple_codegen init --session my_project
+
+# Generate specification
+simple_codegen process --session my_project
+
+# Generate classes (one at a time via lock file)
+simple_codegen process --session my_project
+
+# Compile and fix errors (one at a time)
+simple_codegen compile --session my_project --project /path/to/project
+
+# Run tests
+simple_codegen run-tests --session my_project --project /path/to/project
+```
+
+## Lock File States
+
+The lock file controls exactly ONE task at a time:
+
+| Phase | States |
+|-------|--------|
+| SPEC | `SPEC_GENERATE` |
+| CLASS | `CLASS_CONTRACT_i`, `CLASS_IMPL_i` |
+| COMPILE | `COMPILE_EIFFEL`, `COMPILE_ERROR_i`, `COMPILE_C` |
+| TEST | `TEST_RUN`, `TEST_FAILURE_i` |
 
 ## Dependencies
 
-- simple_http (HTTP client)
-- simple_json (JSON parsing)
-- EiffelStudio libraries (for IDE integration)
+- simple_file
+- simple_json
+- simple_process
+- simple_sql
+- simple_eiffel_parser
+- simple_vision (for TOON prompts)
 
 ## License
 
-MIT License
-
-## Author
-
-Larry Reid (simple-eiffel ecosystem)
+MIT License - Copyright (c) 2024-2025, Larry Rix
