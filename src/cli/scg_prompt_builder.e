@@ -58,6 +58,12 @@ feature -- Access
 	security_analyzer: detachable SCG_SECURITY_ANALYZER
 			-- Security analyzer for threat analysis (optional - "Security Hat")
 
+	toon_prompt: SCG_TOON_PROMPT
+			-- TOON template loader for atomic prompts
+		once
+			create Result.make
+		end
+
 feature -- Status
 
 	is_reuse_enabled: BOOLEAN
@@ -91,6 +97,20 @@ feature -- Element change
 			reuse_discoverer := Void
 		ensure
 			reuse_disabled: not is_reuse_enabled
+		end
+
+	close
+			-- Close all resources (KB database, etc).
+			-- Call this before letting the builder go out of scope.
+		do
+			if attached reuse_discoverer as rd and then attached rd.kb as l_kb then
+				l_kb.close
+			end
+			reuse_discoverer := Void
+			security_analyzer := Void
+		ensure
+			reuse_disabled: not is_reuse_enabled
+			security_disabled: not is_security_enabled
 		end
 
 	enable_security_analysis
@@ -312,6 +332,201 @@ feature -- Prompt Generation
 			Result.append (json_output_format_feature)
 		end
 
+feature -- Atomic Prompt Generation (TOON Format)
+
+	get_atomic_prompt: STRING_32
+			-- Get the next atomic prompt based on current workflow step.
+			-- Returns single-task, focused prompt for one deliverable.
+		local
+			l_vars: HASH_TABLE [STRING, STRING]
+			l_template, l_rendered: STRING
+		do
+			create l_vars.make (10)
+
+			inspect session.current_step
+			when 1 then
+				-- Step 1: Generate system spec
+				l_template := toon_prompt.load_template ("01_system_spec")
+				if l_template.is_empty then
+					Result := build_system_design_prompt
+				else
+					l_vars.put (session.session_name.to_string_8, "project_name")
+					l_vars.put ("", "project_description")
+					l_rendered := toon_prompt.render (l_template, l_vars)
+					Result := l_rendered.to_string_32
+				end
+
+			else
+				-- Steps 2+: Generate classes or assemble
+				if session.current_step <= session.class_specs.count + 1 then
+					-- Generate a class
+					Result := get_atomic_class_prompt (session.current_step - 1)
+				else
+					-- Assemble project
+					Result := get_atomic_assemble_prompt
+				end
+			end
+
+			-- Ensure we have a result
+			if Result = Void or else Result.is_empty then
+				Result := build_next_prompt
+			end
+		ensure
+			result_not_empty: not Result.is_empty
+		end
+
+	get_atomic_class_prompt (a_class_index: INTEGER): STRING_32
+			-- Get atomic prompt for generating class at index.
+		require
+			valid_index: a_class_index >= 1 and a_class_index <= session.class_specs.count
+		local
+			l_vars: HASH_TABLE [STRING, STRING]
+			l_template, l_rendered: STRING
+			l_spec: SCG_SESSION_CLASS_SPEC
+			l_context, l_features, l_reuse: STRING
+		do
+			l_spec := session.class_specs.i_th (a_class_index)
+			l_template := toon_prompt.load_template ("02_gen_class")
+
+			if l_template.is_empty then
+				-- Fallback to monolithic prompt
+				Result := build_class_prompt (l_spec)
+			else
+				create l_vars.make (10)
+				l_vars.put (l_spec.name.to_string_8, "class_name")
+				l_vars.put (l_spec.description.to_string_8, "class_description")
+
+				-- Build feature list
+				create l_features.make (200)
+				across l_spec.features as ic loop
+					l_features.append ("- ")
+					l_features.append (ic.to_string_8)
+					l_features.append ("%N")
+				end
+				l_vars.put (l_features, "feature_list")
+
+				-- Build context (other generated classes)
+				create l_context.make (500)
+				across session.class_specs as ic loop
+					if ic.is_generated and then attached ic.generated_code as l_code then
+						l_context.append ("--- " + ic.name.to_string_8 + " ---%N")
+						-- Include just the class header and feature signatures
+						l_context.append (extract_class_summary (l_code.to_string_8))
+						l_context.append ("%N%N")
+					end
+				end
+				if l_context.is_empty then
+					l_context := "(no other classes generated yet)"
+				end
+				l_vars.put (l_context, "context_classes")
+
+				-- Build reuse info
+				create l_reuse.make (200)
+				if attached reuse_discoverer as l_disc then
+					if attached l_disc.discover_for_class (l_spec) as l_result then
+						if l_result.has_candidates then
+							l_reuse.append (l_result.prompt_enhancement)
+						end
+					end
+				end
+				if l_reuse.is_empty then
+					l_reuse := "(no reuse candidates found)"
+				end
+				l_vars.put (l_reuse, "reuse_info")
+
+				l_rendered := toon_prompt.render (l_template, l_vars)
+				Result := l_rendered.to_string_32
+			end
+		ensure
+			result_not_empty: not Result.is_empty
+		end
+
+	get_atomic_assemble_prompt: STRING_32
+			-- Get atomic prompt for assembling the project.
+		local
+			l_vars: HASH_TABLE [STRING, STRING]
+			l_template, l_rendered: STRING
+			l_class_list, l_ext_deps: STRING
+		do
+			l_template := toon_prompt.load_template ("03_assemble")
+
+			if l_template.is_empty then
+				-- Fallback to simple message
+				Result := "Assemble the project. All classes have been generated."
+			else
+				create l_vars.make (10)
+				l_vars.put (session.session_name.to_string_8, "project_name")
+				l_vars.put (session.output_path.to_string_8, "output_path")
+
+				-- Build class list
+				create l_class_list.make (200)
+				across session.class_specs as ic loop
+					l_class_list.append ("- ")
+					l_class_list.append (ic.name.to_string_8)
+					if ic.is_generated then
+						l_class_list.append (" [generated]")
+					else
+						l_class_list.append (" [pending]")
+					end
+					l_class_list.append ("%N")
+				end
+				l_vars.put (l_class_list, "class_list")
+
+				-- Build external deps
+				create l_ext_deps.make (200)
+				across session.external_dependencies as ic loop
+					l_ext_deps.append ("- ")
+					l_ext_deps.append (ic.name)
+					l_ext_deps.append (": ")
+					l_ext_deps.append (ic.include_path)
+					l_ext_deps.append ("%N")
+				end
+				if l_ext_deps.is_empty then
+					l_ext_deps := "(none)"
+				end
+				l_vars.put (l_ext_deps, "external_deps")
+
+				l_rendered := toon_prompt.render (l_template, l_vars)
+				Result := l_rendered.to_string_32
+			end
+		ensure
+			result_not_empty: not Result.is_empty
+		end
+
+	extract_class_summary (a_code: STRING): STRING
+			-- Extract class name and feature signatures from code.
+			-- Used to provide context without full implementation.
+		local
+			l_lines: LIST [STRING]
+			l_in_feature: BOOLEAN
+			l_line: STRING
+		do
+			create Result.make (500)
+			l_lines := a_code.split ('%N')
+			across l_lines as ic loop
+				l_line := ic.twin
+				l_line.left_adjust
+				if l_line.starts_with ("class") or l_line.starts_with ("inherit") or
+				   l_line.starts_with ("create") or l_line.starts_with ("feature") then
+					Result.append (ic)
+					Result.append ("%N")
+					l_in_feature := l_line.starts_with ("feature")
+				elseif l_in_feature then
+					-- Include feature signature lines (indented, contain : or is)
+					if not l_line.is_empty and then
+					   (l_line.has (':') or l_line.has_substring ("-- ")) and then
+					   not l_line.starts_with ("do") and then
+					   not l_line.starts_with ("local") and then
+					   not l_line.starts_with ("require") and then
+					   not l_line.starts_with ("ensure") then
+						Result.append ("  ")
+						Result.append (l_line)
+						Result.append ("%N")
+					end
+				end
+			end
+		end
+
 feature {NONE} -- Templates
 
 	system_design_template: STRING_32
@@ -336,12 +551,43 @@ I need you to design an Eiffel system based on my requirements.
 [USER: Replace this section with your system requirements]
 Example: "I need a library management system with book tracking, member management, and loan processing"
 
+=== EXTERNAL DEPENDENCIES (CHECK FIRST!) ===
+If the system requires external C/C++ libraries (e.g., libpq, sqlite3, openssl):
+
+1. IDENTIFY external dependencies in your system_spec JSON (external_dependencies field)
+2. BEFORE generating ANY code, CHECK if they are installed:
+   - Look for headers/libraries in standard locations
+   - Check environment variables (POSTGRESQL_HOME, SQLITE_HOME, etc.)
+   - Test with: ls "expected/path/to/include" or similar
+3. If NOT installed, attempt automatic installation:
+   - Download installer from official source
+   - Run silent/unattended installation
+   - Set required environment variables
+   - Verify installation succeeded
+4. If automatic installation FAILS:
+   - STOP the entire simple_codegen process immediately
+   - Tell the user EXACTLY:
+     a) What dependency is missing
+     b) Where to download it (official URL)
+     c) How to install manually (step-by-step)
+     d) What environment variables to set (name=value)
+     e) How to restart: "simple_codegen init --session <name>" then proceed
+   - DO NOT continue with code generation until user confirms installation
+5. If installed (or after successful auto-install):
+   - Document the paths in the system_spec
+   - Proceed with code generation
+
+CRITICAL: Never generate code that depends on missing external libraries!
+The C compile WILL fail and waste time. Check dependencies FIRST.
+
 === DESIGN PRINCIPLES (Simple Eiffel Ecosystem) ===
 1. DESIGN BY CONTRACT (DBC):
    - Write contracts BEFORE implementation (Specification Hat)
    - Preconditions: what callers must guarantee
    - Postconditions: what feature guarantees (must be COMPLETE, not just true)
-   - Class invariants: what's always true about objects
+   - Class invariants: ANALYZE each class to find ALL meaningful invariants!
+     (Express what is always true: count >= 0, is_empty = count = 0, etc.)
+     Include every invariant that expresses real class semantics.
 
 2. VOID SAFETY:
    - 'attached' for required references
@@ -371,6 +617,16 @@ Respond with a JSON object containing the system specification:
   "type": "system_spec",
   "system_name": "library_system",
   "description": "Library management system for tracking books and loans",
+  "external_dependencies": [
+    {
+      "name": "libpq",
+      "description": "PostgreSQL C client library",
+      "check_path": "$(POSTGRESQL_HOME)/include/libpq-fe.h",
+      "env_var": "POSTGRESQL_HOME",
+      "download_url": "https://www.postgresql.org/download/",
+      "install_instructions": "Install PostgreSQL 16, set POSTGRESQL_HOME=C:\\Program Files\\PostgreSQL\\16"
+    }
+  ],
   "classes": [
     {
       "name": "LIBRARY_BOOK",
@@ -384,7 +640,7 @@ Respond with a JSON object containing the system specification:
         {"name": "check_out", "type": "command", "description": "Mark book as borrowed"},
         {"name": "return_book", "type": "command", "description": "Mark book as available"}
       ],
-      "invariants": ["title not empty", "author not empty"]
+      "invariants": ["title_not_empty: not title.is_empty", "author_not_empty: not author.is_empty", "availability_consistent: is_available implies not is_borrowed"]
     }
   ],
   "relationships": [
@@ -439,6 +695,12 @@ Invariants:      count_valid, bounds_consistent, items_attached
 Example of INCOMPLETE vs COMPLETE postcondition:
   INCOMPLETE: ensure has_item: items.has (a_item)
   COMPLETE:   ensure has_item: items.has (a_item); count_increased: count = old count + 1
+
+=== CLASS INVARIANTS ===
+Analyze each class for meaningful invariants where applicable:
+- Attribute validity: count >= 0, capacity >= count
+- Relationship consistency: is_empty = (count = 0)
+- Design constraints: bar_width > 0
 
 === FEATURE CLAUSE STRUCTURE ===
 feature {NONE} -- Initialization
@@ -633,7 +895,8 @@ If adding more features, use:
 === TEST GENERATION GUIDELINES ===
 
 Generate comprehensive tests using Eiffel's Testing framework.
-Test class should inherit from EQA_TEST_SET.
+Test class MUST inherit from TEST_SET_BASE (from simple_testing library).
+This provides enhanced assertion helpers beyond EQA_TEST_SET.
 
 1. HAPPY PATH TESTS:
    - Test normal operation with valid inputs
@@ -641,11 +904,13 @@ Test class should inherit from EQA_TEST_SET.
    - Check state changes after commands
    - Test typical use case scenarios
 
-2. EDGE CASE TESTS (Critical):
-   - Boundary values (empty strings, zero, max values)
-   - Precondition boundaries (just valid, just invalid)
-   - State transitions at limits
-   - Concurrent-like scenarios if applicable
+2. EDGE CASE TESTS (CRITICAL - STRESS THE CODE):
+   - Boundary values (empty strings, zero, max values, negative numbers)
+   - Precondition boundaries (just valid, just barely invalid)
+   - State transitions at limits (empty to 1, full to overflow)
+   - Unusual but valid inputs (Unicode, very long strings, special chars)
+   - Negative/unexpected values where applicable (negative counts, etc.)
+   - The goal is to BREAK the code and find bugs, then fix them!
 
 3. CONTRACT VERIFICATION:
    - Tests that verify preconditions reject bad input
@@ -671,7 +936,7 @@ Respond with a JSON object containing the test class:
   "class_name": "TEST_LIBRARY_BOOK",
   "target_class": "LIBRARY_BOOK",
   "test_count": 8,
-  "code": "note\n    description: \"Tests for LIBRARY_BOOK\"\nclass\n    TEST_LIBRARY_BOOK\ninherit\n    EQA_TEST_SET\n...\nend"
+  "code": "note\n    description: \"Tests for LIBRARY_BOOK\"\nclass\n    TEST_LIBRARY_BOOK\ninherit\n    TEST_SET_BASE\n...\nend"
 }
 ```
 

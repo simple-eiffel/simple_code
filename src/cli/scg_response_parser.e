@@ -27,6 +27,9 @@ feature {NONE} -- Initialization
 			create last_error.make_empty
 			create response_type.make_empty
 			create parsed_classes.make (10)
+			create debug_logger.make_to_file ("D:/prod/simple_code/debug_trace.log")
+			debug_logger.set_level (debug_logger.Level_debug)
+			debug_logger.debug_log ("SCG_RESPONSE_PARSER.make: initialized")
 		ensure
 			last_error_empty: last_error.is_empty
 		end
@@ -56,6 +59,9 @@ feature -- Access
 	last_error: STRING_32
 			-- Error message from failed parse
 
+	debug_logger: SIMPLE_LOGGER
+			-- Debug logger for tracing
+
 feature -- Parsing
 
 	parse (a_response: STRING_32; a_session: SCG_SESSION)
@@ -68,6 +74,7 @@ feature -- Parsing
 			l_json_text: STRING_32
 			l_json: SIMPLE_JSON
 		do
+			debug_logger.debug_log ("SCG_RESPONSE_PARSER.parse: START, response length=" + a_response.count.out)
 			-- Reset state
 			is_success := False
 			last_error.wipe_out
@@ -76,28 +83,40 @@ feature -- Parsing
 			parsed_code := Void
 			parsed_notes := Void
 			parsed_classes.wipe_out
+			debug_logger.debug_log ("SCG_RESPONSE_PARSER.parse: state reset")
 
 			-- Extract JSON from response (may be wrapped in ```json ... ```)
 			l_json_text := extract_json (a_response)
+			debug_logger.debug_log ("SCG_RESPONSE_PARSER.parse: JSON extracted, length=" + l_json_text.count.out)
 
 			if l_json_text.is_empty then
 				last_error := "No JSON found in response"
+				debug_logger.debug_log ("SCG_RESPONSE_PARSER.parse: ERROR - no JSON found")
 			else
+				debug_logger.debug_log ("SCG_RESPONSE_PARSER.parse: creating SIMPLE_JSON")
 				create l_json
+				debug_logger.debug_log ("SCG_RESPONSE_PARSER.parse: calling l_json.parse")
 				if attached l_json.parse (l_json_text) as l_value then
+					debug_logger.debug_log ("SCG_RESPONSE_PARSER.parse: JSON parsed, is_object=" + l_value.is_object.out)
 					if l_value.is_object then
+						debug_logger.debug_log ("SCG_RESPONSE_PARSER.parse: calling parse_json_object")
 						parse_json_object (l_value, a_session, l_json)
+						debug_logger.debug_log ("SCG_RESPONSE_PARSER.parse: parse_json_object returned")
 					else
 						last_error := "Response is not a JSON object"
+						debug_logger.debug_log ("SCG_RESPONSE_PARSER.parse: ERROR - not a JSON object")
 					end
 				else
+					debug_logger.debug_log ("SCG_RESPONSE_PARSER.parse: JSON parse failed, trying fallback")
 					-- JSON parsing failed - try fallback extraction for class_code/refinement
 					parse_fallback (l_json_text, a_session)
 					if not is_success then
 						last_error := "Invalid JSON: " + l_json.errors_as_string + "%N(Fallback extraction also failed)"
+						debug_logger.debug_log ("SCG_RESPONSE_PARSER.parse: ERROR - fallback also failed")
 					end
 				end
 			end
+			debug_logger.debug_log ("SCG_RESPONSE_PARSER.parse: END, is_success=" + is_success.out)
 		end
 
 	parse_fallback (a_json_text: STRING_32; a_session: SCG_SESSION)
@@ -232,9 +251,12 @@ feature {NONE} -- JSON Parsing
 		local
 			l_class_spec: SCG_SESSION_CLASS_SPEC
 			l_name, l_desc: STRING_32
+			l_include_path, l_library_path: STRING_32
 			l_features: ARRAYED_LIST [STRING_32]
 			l_class_obj: SIMPLE_JSON_VALUE
 			l_classes_arr: SIMPLE_JSON_ARRAY
+			l_deps_arr: SIMPLE_JSON_ARRAY
+			l_dep_obj: SIMPLE_JSON_VALUE
 			i: INTEGER
 		do
 			-- Get classes array
@@ -282,6 +304,36 @@ feature {NONE} -- JSON Parsing
 				end
 			else
 				last_error := "Missing 'classes' field in system_spec"
+			end
+
+			-- Parse external dependencies (optional)
+			if a_value.as_object.has_key ("external_dependencies") then
+				if attached a_value.as_object.item ("external_dependencies") as l_deps_val then
+					if l_deps_val.is_array then
+						l_deps_arr := l_deps_val.as_array
+						from i := 1 until i > l_deps_arr.count loop
+							l_dep_obj := l_deps_arr.item (i)
+							if l_dep_obj.is_object then
+								l_name := ""
+								l_include_path := ""
+								l_library_path := ""
+								if attached a_json.query_string (l_dep_obj, "$.name") as l_n then
+									l_name := l_n
+								end
+								if attached a_json.query_string (l_dep_obj, "$.include_path") as l_inc then
+									l_include_path := l_inc
+								end
+								if attached a_json.query_string (l_dep_obj, "$.library_path") as l_lib then
+									l_library_path := l_lib
+								end
+								if not l_name.is_empty then
+									a_session.add_external_dependency (l_name.to_string_8, l_include_path.to_string_8, l_library_path.to_string_8)
+								end
+							end
+							i := i + 1
+						end
+					end
+				end
 			end
 		end
 

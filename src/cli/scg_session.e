@@ -38,19 +38,31 @@ feature {NONE} -- Initialization
 		require
 			name_not_empty: not a_name.is_empty
 		do
+			create debug_logger.make_to_file ("D:/prod/simple_code/debug_trace.log")
+			debug_logger.set_level (debug_logger.Level_debug)
+			debug_logger.debug_log ("SCG_SESSION.make_new: START name=" + a_name.to_string_8)
+
 			session_name := a_name
 			create last_error.make_empty
 			create last_prompt_path.make_empty
 			create class_specs.make (10)
+			create external_dependencies.make (5)
 			create generated_files.make (10)
+			create workflow_todos.make (10)
 			iteration := 0
 			state := State_initialized
+			current_step := 1
+			use_atomic_prompts := True
 
+			debug_logger.debug_log ("SCG_SESSION.make_new: calling create_session_directory")
 			create_session_directory
 			if is_valid then
+				debug_logger.debug_log ("SCG_SESSION.make_new: calling create_initial_prompt")
 				create_initial_prompt
+				debug_logger.debug_log ("SCG_SESSION.make_new: calling save_session")
 				save_session
 			end
+			debug_logger.debug_log ("SCG_SESSION.make_new: END is_valid=" + is_valid.out)
 		ensure
 			name_set: session_name = a_name
 		end
@@ -60,15 +72,25 @@ feature {NONE} -- Initialization
 		require
 			name_not_empty: not a_name.is_empty
 		do
+			create debug_logger.make_to_file ("D:/prod/simple_code/debug_trace.log")
+			debug_logger.set_level (debug_logger.Level_debug)
+			debug_logger.debug_log ("SCG_SESSION.make_from_existing: START name=" + a_name.to_string_8)
+
 			session_name := a_name
 			create last_error.make_empty
 			create last_prompt_path.make_empty
 			create class_specs.make (10)
+			create external_dependencies.make (5)
 			create generated_files.make (10)
+			create workflow_todos.make (10)
 			iteration := 0
 			state := State_initialized
+			current_step := 1
+			use_atomic_prompts := True
 
+			debug_logger.debug_log ("SCG_SESSION.make_from_existing: calling load_session")
 			load_session
+			debug_logger.debug_log ("SCG_SESSION.make_from_existing: END is_valid=" + is_valid.out)
 		ensure
 			name_set: session_name = a_name
 		end
@@ -94,6 +116,121 @@ feature -- Access
 
 	session_name: STRING_32
 			-- Name of this session
+
+feature -- Workflow Todo Tracking
+
+	workflow_todos: ARRAYED_LIST [TUPLE [task: STRING; status: INTEGER; step: INTEGER]]
+			-- Todo list for workflow tracking
+			-- status: 0=pending, 1=in_progress, 2=completed
+
+	current_step: INTEGER
+			-- Current workflow step index (1-based)
+
+	use_atomic_prompts: BOOLEAN
+			-- Use atomic prompt architecture? (default: True)
+
+	initialize_workflow_todos
+			-- Initialize todo list with system spec as first task and save.
+		do
+			create workflow_todos.make (10)
+			workflow_todos.extend (["Generate system_spec.json", 0, 1])
+			current_step := 1
+			use_atomic_prompts := True
+			save_session
+		ensure
+			todos_initialized: workflow_todos.count = 1
+			step_at_one: current_step = 1
+		end
+
+	add_class_todos
+			-- Add todo item for each class in session and save.
+		local
+			l_step: INTEGER
+		do
+			l_step := 2
+			across class_specs as ic loop
+				workflow_todos.extend (["Generate " + ic.name.to_string_8, 0, l_step])
+				l_step := l_step + 1
+			end
+			workflow_todos.extend (["Assemble project", 0, l_step])
+			workflow_todos.extend (["Compile and verify", 0, l_step + 1])
+			save_session
+		ensure
+			todos_added: workflow_todos.count >= old workflow_todos.count
+		end
+
+	mark_todo_in_progress
+			-- Mark current step as in_progress and save.
+		require
+			valid_step: current_step >= 1 and current_step <= workflow_todos.count
+		do
+			workflow_todos.i_th (current_step).status := 1
+			save_session
+		ensure
+			marked_in_progress: workflow_todos.i_th (current_step).status = 1
+		end
+
+	mark_todo_done
+			-- Mark current step as completed and advance to next.
+		require
+			valid_step: current_step >= 1 and current_step <= workflow_todos.count
+		do
+			workflow_todos.i_th (current_step).status := 2
+			if current_step < workflow_todos.count then
+				current_step := current_step + 1
+			end
+			save_session
+		ensure
+			marked_done: workflow_todos.i_th (old current_step).status = 2
+		end
+
+	get_todo_display: STRING
+			-- Formatted todo list for display.
+		local
+			l_status_char: STRING
+		do
+			create Result.make (500)
+			across workflow_todos as ic loop
+				inspect ic.status
+				when 0 then
+					l_status_char := "  "
+				when 1 then
+					l_status_char := "→ "
+				when 2 then
+					l_status_char := "✓ "
+				else
+					l_status_char := "? "
+				end
+				Result.append (l_status_char)
+				Result.append (ic.task)
+				Result.append ("%N")
+			end
+		end
+
+	get_current_task: STRING
+			-- Get description of current task.
+		require
+			has_todos: not workflow_todos.is_empty
+			valid_step: current_step >= 1 and current_step <= workflow_todos.count
+		do
+			Result := workflow_todos.i_th (current_step).task
+		end
+
+	is_workflow_complete: BOOLEAN
+			-- Are all workflow todos completed?
+		do
+			Result := across workflow_todos as ic all ic.status = 2 end
+		end
+
+	pending_todo_count: INTEGER
+			-- Number of pending (not started) todos.
+		do
+			across workflow_todos as ic loop
+				if ic.status = 0 then
+					Result := Result + 1
+				end
+			end
+		end
 
 	session_path: STRING_32
 			-- Full path to session directory
@@ -128,6 +265,11 @@ feature -- Access
 	class_specs: ARRAYED_LIST [SCG_SESSION_CLASS_SPEC]
 			-- Specifications for classes to generate
 
+	external_dependencies: ARRAYED_LIST [TUPLE [name: STRING_8; include_path: STRING_8; library_path: STRING_8]]
+			-- External C library dependencies for ECF generation
+			-- Each tuple contains: name ("libpq"), include path ("$(POSTGRESQL_HOME)/include"),
+			-- library path ("$(POSTGRESQL_HOME)/lib/libpq.lib")
+
 	generated_files: ARRAYED_LIST [STRING_32]
 			-- List of generated file paths (after assembly)
 
@@ -136,6 +278,9 @@ feature -- Access
 
 	last_prompt_path: STRING_32
 			-- Path to last generated prompt file
+
+	debug_logger: SIMPLE_LOGGER
+			-- Debug logger for tracing
 
 	prompt_count: INTEGER
 			-- Number of prompts generated
@@ -226,6 +371,17 @@ feature -- Element change
 			spec_added: class_specs.count = old class_specs.count + 1
 		end
 
+	add_external_dependency (a_name, a_include_path, a_library_path: STRING_8)
+			-- Add an external C library dependency for ECF generation.
+		require
+			name_not_empty: not a_name.is_empty
+		do
+			external_dependencies.extend ([a_name, a_include_path, a_library_path])
+			save_session
+		ensure
+			dependency_added: external_dependencies.count = old external_dependencies.count + 1
+		end
+
 	add_response (a_content: STRING_32; a_type: STRING_32)
 			-- Add a response from Claude.
 		require
@@ -236,6 +392,7 @@ feature -- Element change
 			l_filename: STRING_32
 			l_ext: STRING
 		do
+			debug_logger.debug_log ("SCG_SESSION.add_response: START type=" + a_type.to_string_8 + " content_len=" + a_content.count.out)
 			response_count := response_count + 1
 
 			-- Determine file extension based on type
@@ -246,9 +403,11 @@ feature -- Element change
 			end
 
 			l_filename := responses_path + "/" + formatted_number (response_count) + "_response" + l_ext
+			debug_logger.debug_log ("SCG_SESSION.add_response: writing to " + l_filename.to_string_8)
 
 			create l_file.make (l_filename.to_string_8)
 			if l_file.write_text (a_content.to_string_8) then
+				debug_logger.debug_log ("SCG_SESSION.add_response: write success, updating state")
 				-- Update state
 				if a_type.is_case_insensitive_equal ("system_spec") then
 					state := State_spec_received
@@ -256,7 +415,10 @@ feature -- Element change
 					state := State_generating
 				end
 				save_session
+			else
+				debug_logger.debug_log ("SCG_SESSION.add_response: WRITE FAILED")
 			end
+			debug_logger.debug_log ("SCG_SESSION.add_response: END")
 		end
 
 	mark_class_generated (a_class_name: STRING_32; a_code: STRING_32)
@@ -281,14 +443,20 @@ feature -- Element change
 			l_file: SIMPLE_FILE
 			l_filename: STRING_32
 		do
+			debug_logger.debug_log ("SCG_SESSION.save_next_prompt: START prompt_len=" + a_prompt.count.out)
 			prompt_count := prompt_count + 1
 			l_filename := prompts_path + "/" + formatted_number (prompt_count) + "_prompt.txt"
 			last_prompt_path := l_filename
+			debug_logger.debug_log ("SCG_SESSION.save_next_prompt: writing to " + l_filename.to_string_8)
 
 			create l_file.make (l_filename.to_string_8)
 			if l_file.write_text (a_prompt.to_string_8) then
+				debug_logger.debug_log ("SCG_SESSION.save_next_prompt: write success")
 				save_session
+			else
+				debug_logger.debug_log ("SCG_SESSION.save_next_prompt: WRITE FAILED")
 			end
+			debug_logger.debug_log ("SCG_SESSION.save_next_prompt: END")
 		ensure
 			prompt_count_incremented: prompt_count = old prompt_count + 1
 		end
@@ -413,9 +581,9 @@ feature -- Operations
 				state := State_assembled
 				save_session
 			else
-				-- No ECF exists - create full project scaffold
+				-- No ECF exists - create full project scaffold with external dependencies
 				create l_simple_libs.make (5)
-				create l_gen.make_with_name (l_path, session_name.to_string_8, l_simple_libs)
+				create l_gen.make_with_externals (l_path, session_name.to_string_8, l_simple_libs, external_dependencies)
 
 				if l_gen.is_generated then
 					-- Write generated class files
@@ -529,6 +697,7 @@ feature {NONE} -- Session Persistence
 			l_discard_obj: SIMPLE_JSON_OBJECT
 			l_discard_arr: SIMPLE_JSON_ARRAY
 		do
+			debug_logger.debug_log ("SCG_SESSION.save_session: START state=" + state.to_string_8 + " class_count=" + class_specs.count.out)
 			create l_json.make
 			l_discard_obj := l_json.put_string (session_name, "name")
 			l_discard_obj := l_json.put_string (state, "state")
@@ -550,11 +719,43 @@ feature {NONE} -- Session Persistence
 			end
 			l_discard_obj := l_json.put_array (l_classes_arr, "classes")
 
-			-- Write to file
-			create l_file.make ((session_path + "/session.json").to_string_8)
-			if not l_file.write_text (l_json.to_json_string.to_string_8) then
-				-- Silently fail on save (log in production)
+			-- Save external dependencies
+			if not external_dependencies.is_empty then
+				create l_classes_arr.make  -- reuse for external deps
+				across external_dependencies as dep loop
+					create l_class_obj.make  -- reuse for dep object
+					l_discard_obj := l_class_obj.put_string (dep.name, "name")
+					l_discard_obj := l_class_obj.put_string (dep.include_path, "include_path")
+					l_discard_obj := l_class_obj.put_string (dep.library_path, "library_path")
+					l_discard_arr := l_classes_arr.add_object (l_class_obj)
+				end
+				l_discard_obj := l_json.put_array (l_classes_arr, "external_dependencies")
 			end
+
+			-- Save workflow todos
+			l_discard_obj := l_json.put_integer (current_step, "current_step")
+			l_discard_obj := l_json.put_boolean (use_atomic_prompts, "use_atomic_prompts")
+			if not workflow_todos.is_empty then
+				create l_classes_arr.make  -- reuse for todos
+				across workflow_todos as todo loop
+					create l_class_obj.make
+					l_discard_obj := l_class_obj.put_string (todo.task, "task")
+					l_discard_obj := l_class_obj.put_integer (todo.status, "status")
+					l_discard_obj := l_class_obj.put_integer (todo.step, "step")
+					l_discard_arr := l_classes_arr.add_object (l_class_obj)
+				end
+				l_discard_obj := l_json.put_array (l_classes_arr, "workflow_todos")
+			end
+
+			-- Write to file
+			debug_logger.debug_log ("SCG_SESSION.save_session: writing to " + (session_path + "/session.json").to_string_8)
+			create l_file.make ((session_path + "/session.json").to_string_8)
+			if l_file.write_text (l_json.to_json_string.to_string_8) then
+				debug_logger.debug_log ("SCG_SESSION.save_session: write success")
+			else
+				debug_logger.debug_log ("SCG_SESSION.save_session: WRITE FAILED")
+			end
+			debug_logger.debug_log ("SCG_SESSION.save_session: END")
 		end
 
 	load_session
@@ -568,14 +769,19 @@ feature {NONE} -- Session Persistence
 			l_classes_arr: SIMPLE_JSON_ARRAY
 			l_class_val: SIMPLE_JSON_VALUE
 			l_name, l_desc: STRING_32
+			l_include, l_lib: STRING_8
 			i: INTEGER
 		do
+			debug_logger.debug_log ("SCG_SESSION.load_session: START session_path=" + session_path.to_string_8)
 			create l_file.make ((session_path + "/session.json").to_string_8)
 			if l_file.exists then
+				debug_logger.debug_log ("SCG_SESSION.load_session: session.json exists, reading")
 				l_json_text := l_file.read_text.to_string_32
+				debug_logger.debug_log ("SCG_SESSION.load_session: read " + l_json_text.count.out + " chars")
 
 				create l_json_parser
 				if attached l_json_parser.parse (l_json_text) as l_value then
+					debug_logger.debug_log ("SCG_SESSION.load_session: JSON parsed successfully")
 					if l_value.is_object then
 						-- Load basic fields
 						if attached l_json_parser.query_string (l_value, "$.state") as l_st then
@@ -584,12 +790,14 @@ feature {NONE} -- Session Persistence
 						iteration := l_json_parser.query_integer (l_value, "$.iteration").to_integer_32
 						prompt_count := l_json_parser.query_integer (l_value, "$.prompt_count").to_integer_32
 						response_count := l_json_parser.query_integer (l_value, "$.response_count").to_integer_32
+						debug_logger.debug_log ("SCG_SESSION.load_session: loaded state=" + state.to_string_8 + " prompt_count=" + prompt_count.out)
 
 						-- Load class specs
 						if l_value.as_object.has_key ("classes") then
 							if attached l_value.as_object.item ("classes") as l_classes_val then
 								if l_classes_val.is_array then
 									l_classes_arr := l_classes_val.as_array
+									debug_logger.debug_log ("SCG_SESSION.load_session: loading " + l_classes_arr.count.out + " class specs")
 									from i := 1 until i > l_classes_arr.count loop
 										l_class_val := l_classes_arr.item (i)
 										if l_class_val.is_object then
@@ -608,6 +816,74 @@ feature {NONE} -- Session Persistence
 													l_spec.set_generated (l_code)
 												end
 												class_specs.extend (l_spec)
+												debug_logger.debug_log ("SCG_SESSION.load_session: loaded class " + l_name.to_string_8)
+											end
+										end
+										i := i + 1
+									end
+								end
+							end
+						end
+
+						-- Load external dependencies
+						if l_value.as_object.has_key ("external_dependencies") then
+							if attached l_value.as_object.item ("external_dependencies") as l_deps_val then
+								if l_deps_val.is_array then
+									l_classes_arr := l_deps_val.as_array
+									from i := 1 until i > l_classes_arr.count loop
+										l_class_val := l_classes_arr.item (i)
+										if l_class_val.is_object then
+											l_name := ""
+											l_include := ""
+											l_lib := ""
+											if attached l_json_parser.query_string (l_class_val, "$.name") as l_n then
+												l_name := l_n
+											end
+											if attached l_json_parser.query_string (l_class_val, "$.include_path") as l_inc then
+												l_include := l_inc.to_string_8
+											end
+											if attached l_json_parser.query_string (l_class_val, "$.library_path") as l_lp then
+												l_lib := l_lp.to_string_8
+											end
+											if not l_name.is_empty then
+												external_dependencies.extend ([l_name.to_string_8, l_include, l_lib])
+											end
+										end
+										i := i + 1
+									end
+								end
+							end
+						end
+
+						-- Load workflow todos
+						current_step := l_json_parser.query_integer (l_value, "$.current_step").to_integer_32
+						if current_step < 1 then
+							current_step := 1
+						end
+						-- Default to atomic prompts; check if explicitly set to false
+						use_atomic_prompts := True
+						if l_value.as_object.has_key ("use_atomic_prompts") then
+							if attached l_value.as_object.item ("use_atomic_prompts") as l_ap_val then
+								use_atomic_prompts := not l_ap_val.to_json_string.is_case_insensitive_equal ("false")
+							end
+						end
+						if l_value.as_object.has_key ("workflow_todos") then
+							if attached l_value.as_object.item ("workflow_todos") as l_todos_val then
+								if l_todos_val.is_array then
+									l_classes_arr := l_todos_val.as_array
+									from i := 1 until i > l_classes_arr.count loop
+										l_class_val := l_classes_arr.item (i)
+										if l_class_val.is_object then
+											l_name := ""
+											if attached l_json_parser.query_string (l_class_val, "$.task") as l_t then
+												l_name := l_t
+											end
+											if not l_name.is_empty then
+												workflow_todos.extend ([
+													l_name.to_string_8,
+													l_json_parser.query_integer (l_class_val, "$.status").to_integer_32,
+													l_json_parser.query_integer (l_class_val, "$.step").to_integer_32
+												])
 											end
 										end
 										i := i + 1
@@ -617,11 +893,14 @@ feature {NONE} -- Session Persistence
 						end
 					end
 				else
+					debug_logger.debug_log ("SCG_SESSION.load_session: JSON PARSE FAILED")
 					last_error := "Invalid session.json: " + l_json_parser.errors_as_string.to_string_8
 				end
 			else
+				debug_logger.debug_log ("SCG_SESSION.load_session: session.json NOT FOUND")
 				last_error := "Session not found: " + session_name.to_string_8
 			end
+			debug_logger.debug_log ("SCG_SESSION.load_session: END class_specs.count=" + class_specs.count.out)
 		end
 
 feature {NONE} -- Helpers
@@ -658,5 +937,6 @@ invariant
 	class_specs_exists: class_specs /= Void
 	generated_files_exists: generated_files /= Void
 	last_error_exists: last_error /= Void
+	workflow_todos_exists: workflow_todos /= Void
 
 end

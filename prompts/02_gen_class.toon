@@ -1,0 +1,44 @@
+TASK: Generate ONE Eiffel class
+CLASS: ${class_name}
+DESC: ${class_description}
+FEATURES: ${feature_list}
+
+CONTEXT (other classes in system):
+${context_classes}
+
+REUSE (available libraries):
+${reuse_info}
+
+REQUIREMENTS:
+1. Write contracts FIRST (Specification Hat)
+2. Preconditions: what callers must guarantee
+3. Postconditions: COMPLETE (not just true)
+4. Class invariant: meaningful constraints
+5. Void-safe: attached/detachable properly used
+6. CQS: queries no side effects, commands no return
+
+NAMING:
+- Class: ALL_CAPS (MY_CLASS)
+- Features: lower_snake_case
+- Args: a_prefix (a_name)
+- Locals: l_prefix (l_result)
+- Booleans: is_/has_/can_
+
+STRUCTURE:
+feature {NONE} -- Initialization
+feature -- Access
+feature -- Status report
+feature -- Element change
+feature {NONE} -- Implementation
+
+OUTPUT:
+```json
+{
+  "type": "class_code",
+  "class_name": "${class_name}",
+  "code": "note\n  description: \"...\"\nclass\n  ${class_name}\n...\nend",
+  "notes": "Implementation decisions"
+}
+```
+
+DONE WHEN: You output complete class JSON

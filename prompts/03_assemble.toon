@@ -1,0 +1,32 @@
+TASK: Assemble project structure
+PROJECT: ${project_name}
+OUTPUT_PATH: ${output_path}
+
+CLASSES TO ASSEMBLE:
+${class_list}
+
+EXTERNAL DEPS:
+${external_deps}
+
+CREATE:
+1. Directory: ${output_path}/src/
+2. ECF file: ${project_name}.ecf
+   - library_target for reuse
+   - app_target (extends library) for exe
+   - void_safety=all, assertions=all
+   - External includes/libraries if needed
+3. Copy all .e files to src/
+
+ECF EXTERNALS (if deps exist):
+<external_include location="$(ENV_VAR)/include"/>
+<external_library location="$(ENV_VAR)/lib/name.lib">
+  <condition><platform value="windows"/></condition>
+</external_library>
+
+VERIFY:
+- All classes present in src/
+- ECF references all clusters
+- External paths use env vars
+- Project can compile
+
+DONE WHEN: Project structure ready for compilation

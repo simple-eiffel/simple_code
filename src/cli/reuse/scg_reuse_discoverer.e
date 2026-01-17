@@ -87,7 +87,7 @@ feature -- Discovery
 			l_candidates: ARRAYED_LIST [SCG_REUSE_CANDIDATE]
 			l_best_score: REAL_64
 		do
-			create Result.make (a_spec.name)
+			create Result.make (a_spec.name.to_string_8)
 
 			-- Phase 1: Search for similar classes in KB (external libs)
 			if attached kb as l_kb then
@@ -318,10 +318,10 @@ feature {NONE} -- Search Implementation
 
 			-- Also search by description keywords
 			if not a_spec.description.is_empty then
-				l_search_results := a_kb.search (a_spec.description.substring (1, a_spec.description.count.min (50)), 5)
+				l_search_results := a_kb.search (a_spec.description.to_string_8.substring (1, a_spec.description.count.min (50)), 5)
 				across l_search_results as sr loop
 					if sr.content_type.is_equal ("class") then
-						l_score := matcher.match_description (a_spec.description, sr.body)
+						l_score := matcher.match_description (a_spec.description.to_string_8, sr.body)
 						if l_score >= 0.3 then
 							-- Check if we already have this class
 							if not across Result as r some r.class_name.is_equal (sr.title) end then
@@ -591,16 +591,16 @@ feature {NONE} -- Internal Discovery
 					create l_shared_features.make (5)
 					across a_spec.features as feat loop
 						if across other_spec.features as other_feat some
-							feature_names_similar (feat.to_string_8, other_feat.to_string_8)
+							feature_names_similar (feat.to_string_32.to_string_8, other_feat.to_string_32.to_string_8)
 						end then
-							l_shared_features.extend (feat.to_string_8)
+							l_shared_features.extend (feat.to_string_32.to_string_8)
 						end
 					end
 
 					-- If significant overlap, add as internal candidate
 					if l_shared_features.count >= 2 then
 						l_score := l_shared_features.count.to_real / a_spec.features.count.max (1).to_real
-						create l_candidate.make_for_class ("(internal)", other_spec.name, other_spec.description, l_score)
+						create l_candidate.make_for_class ("(internal)", other_spec.name.to_string_8, other_spec.description.to_string_8, l_score)
 						a_result.add_internal_candidate (l_candidate)
 					end
 				end
@@ -619,15 +619,15 @@ feature {NONE} -- Internal Discovery
 					create l_shared_features.make (5)
 					across a_spec.features as feat loop
 						across other_spec.features as other_feat loop
-							if feature_names_similar (feat.to_string_8, other_feat.to_string_8) then
-								l_shared_features.extend (feat.to_string_8)
+							if feature_names_similar (feat.to_string_32.to_string_8, other_feat.to_string_32.to_string_8) then
+								l_shared_features.extend (feat.to_string_32.to_string_8)
 							end
 						end
 					end
 
 					-- Threshold: 3+ shared features suggests semantic alignment
 					if l_shared_features.count >= 3 then
-						a_result.add_semantic_alignment (a_spec.name, other_spec.name, l_shared_features)
+						a_result.add_semantic_alignment (a_spec.name.to_string_8, other_spec.name.to_string_8, l_shared_features)
 					end
 				end
 			end
@@ -646,12 +646,12 @@ feature {NONE} -- Internal Discovery
 
 			-- Group classes by pattern
 			across a_specs as spec loop
-				if spec.name.as_lower.has_substring ("renderer") then
-					l_renderer_classes.extend (spec.name)
+				if spec.name.to_string_8.as_lower.has_substring ("renderer") then
+					l_renderer_classes.extend (spec.name.to_string_8)
 				end
-				if spec.name.as_lower.has_substring ("loader") or
-				   spec.name.as_lower.has_substring ("parser") then
-					l_data_loader_classes.extend (spec.name)
+				if spec.name.to_string_8.as_lower.has_substring ("loader") or
+				   spec.name.to_string_8.as_lower.has_substring ("parser") then
+					l_data_loader_classes.extend (spec.name.to_string_8)
 				end
 			end
 

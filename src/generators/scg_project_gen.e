@@ -17,6 +17,7 @@ class
 
 create
 	make_with_name,
+	make_with_externals,
 	make_cli_app
 
 feature {NONE} -- Initialization
@@ -26,6 +27,18 @@ feature {NONE} -- Initialization
 		do
 			project_type := Type_library
 			initialize_common (a_path, a_project_name, a_simple_libs)
+			generate_all
+		ensure
+			is_library: project_type.same_string (Type_library)
+			generated: is_generated
+		end
+
+	make_with_externals (a_path: SIMPLE_PATH; a_project_name: STRING; a_simple_libs: ARRAYED_LIST [STRING]; a_external_deps: ARRAYED_LIST [TUPLE [name: STRING_8; include_path: STRING_8; library_path: STRING_8]])
+			-- Create a LIBRARY project named `a_project_name' at `a_path' with external C dependencies.
+		do
+			project_type := Type_library
+			initialize_common (a_path, a_project_name, a_simple_libs)
+			external_deps := a_external_deps
 			generate_all
 		ensure
 			is_library: project_type.same_string (Type_library)
@@ -49,6 +62,7 @@ feature {NONE} -- Initialization
 			project_name := a_project_name
 			project_path := a_path
 			simple_libs := a_simple_libs
+			create external_deps.make (0)
 			create verification_error.make_empty
 			create project_uuid.make
 		end
@@ -109,6 +123,9 @@ feature -- Access
 	simple_libs: ARRAYED_LIST [STRING]
 			-- List of simple_* libraries to include
 
+	external_deps: ARRAYED_LIST [TUPLE [name: STRING_8; include_path: STRING_8; library_path: STRING_8]]
+			-- External C library dependencies (include paths and library paths for ECF)
+
 	project_type: STRING
 			-- Type of project: library or cli
 
@@ -147,6 +164,7 @@ feature {NONE} -- Generation
 			l_file: SIMPLE_FILE
 			l_content: STRING
 			l_libs: STRING
+			l_externals: STRING
 			l_ok: BOOLEAN
 			i: INTEGER
 		do
@@ -155,6 +173,17 @@ feature {NONE} -- Generation
 			from i := 1 until i > simple_libs.count loop
 				l_libs.append ("%T%T<library name=%"" + simple_libs.i_th (i) + "%" location=%"D:\prod\" + simple_libs.i_th (i) + "\" + simple_libs.i_th (i) + ".ecf%"/>%N")
 				i := i + 1
+			end
+
+			-- Build external C library references
+			create l_externals.make_empty
+			across external_deps as dep loop
+				if not dep.include_path.is_empty then
+					l_externals.append ("%T%T<external_include location=%"" + dep.include_path + "%"/>%N")
+				end
+				if not dep.library_path.is_empty then
+					l_externals.append ("%T%T<external_library location=%"" + dep.library_path + "%"/>%N")
+				end
 			end
 
 			-- Select template based on project type
@@ -166,6 +195,7 @@ feature {NONE} -- Generation
 
 			l_content.replace_substring_all ("${PROJECT_NAME}", project_name)
 			l_content.replace_substring_all ("${PROJECT_UUID}", project_uuid.new_v4_string)
+			l_content.replace_substring_all ("${EXTERNAL_DEPS}", l_externals)
 			l_content.replace_substring_all ("${SIMPLE_LIBS}", l_libs)
 			l_content.replace_substring_all ("${CLASS_NAME}", class_name_from_project)
 
@@ -337,7 +367,7 @@ feature {NONE} -- ECF Templates
 			<concurrency support="scoop"/>
 			<void_safety support="all"/>
 		</capability>
-		<library name="base" location="$ISE_LIBRARY/library/base/base.ecf"/>
+${EXTERNAL_DEPS}		<library name="base" location="$ISE_LIBRARY/library/base/base.ecf"/>
 		<library name="time" location="$ISE_LIBRARY/library/time/time.ecf"/>
 ${SIMPLE_LIBS}		<cluster name="src" location="./src/" recursive="true">
 			<file_rule>
@@ -373,7 +403,7 @@ ${SIMPLE_LIBS}		<cluster name="src" location="./src/" recursive="true">
 			<concurrency support="scoop"/>
 			<void_safety support="all"/>
 		</capability>
-		<library name="base" location="$ISE_LIBRARY/library/base/base.ecf"/>
+${EXTERNAL_DEPS}		<library name="base" location="$ISE_LIBRARY/library/base/base.ecf"/>
 		<library name="time" location="$ISE_LIBRARY/library/time/time.ecf"/>
 ${SIMPLE_LIBS}		<cluster name="src" location="./src/" recursive="true">
 			<file_rule>
@@ -574,31 +604,75 @@ end
 feature {NONE} -- Documentation Templates
 
 	readme_template: STRING = "[
+<p align="center">
+  <img src="https://raw.githubusercontent.com/simple-eiffel/claude_eiffel_op_docs/main/artwork/LOGO.png" alt="simple_ library logo" width="400">
+</p>
+
 # ${PROJECT_NAME}
 
-An Eiffel project in the simple_* ecosystem.
+**[Documentation](https://simple-eiffel.github.io/${PROJECT_NAME}/)** | **[GitHub](https://github.com/simple-eiffel/${PROJECT_NAME})**
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Eiffel](https://img.shields.io/badge/Eiffel-25.02-blue.svg)](https://www.eiffel.org/)
+[![Design by Contract](https://img.shields.io/badge/DbC-enforced-orange.svg)]()
+
+<!-- TODO: Add one-line description of what this library does -->
+
+Part of the [Simple Eiffel](https://github.com/simple-eiffel) ecosystem.
+
+## Status
+
+**Development** - Initial release
+
+## Overview
+
+<!-- TODO: Describe what this library does and why it's useful -->
+
+## Features
+
+<!-- TODO: List key features as bullet points -->
+- **Design by Contract** - Full preconditions, postconditions, invariants
+- **Void Safe** - Fully void-safe implementation
+- **SCOOP Compatible** - Ready for concurrent use
 
 ## Installation
 
-Add to your ECF:
-
-```xml
-<library name="${PROJECT_NAME}" location="path/to/${PROJECT_NAME}.ecf"/>
+1. Set the ecosystem environment variable (one-time setup for all simple_* libraries):
+```bash
+export SIMPLE_EIFFEL=D:\prod
 ```
 
-## Usage
+2. Add to your ECF:
+```xml
+<library name="${PROJECT_NAME}" location="$SIMPLE_EIFFEL/${PROJECT_NAME}/${PROJECT_NAME}.ecf"/>
+```
+
+## Quick Start
 
 ```eiffel
 local
     l_obj: ${CLASS_NAME}
 do
-    create l_obj
+    create l_obj.make
+    -- TODO: Add usage example
 end
 ```
 
+## API Reference
+
+<!-- TODO: Document main features -->
+
+| Feature | Description |
+|---------|-------------|
+| `make` | Create instance |
+
+## Dependencies
+
+- EiffelBase only (or list other simple_* dependencies)
+
 ## License
 
-MIT License
+MIT License - Copyright (c) 2024-2025, Larry Rix
 ]"
 
 	changelog_template: STRING = "[
@@ -638,31 +712,134 @@ Thumbs.db
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${PROJECT_NAME} Documentation</title>
+    <title>${PROJECT_NAME} - Eiffel Library Documentation</title>
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
-        h1 { color: #333; }
-        code { background: #f4f4f4; padding: 2px 6px; border-radius: 3px; }
-        pre { background: #f4f4f4; padding: 15px; border-radius: 5px; overflow-x: auto; }
+        :root { --primary: #2563eb; --secondary: #1e40af; --bg: #f8fafc; --text: #1e293b; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+        header { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 3rem 2rem; text-align: center; }
+        header h1 { font-size: 2.5rem; margin-bottom: 0.5rem; }
+        .tagline { opacity: 0.9; font-size: 1.2rem; margin-bottom: 1rem; }
+        .badges { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; }
+        .badge { padding: 0.25rem 0.75rem; border-radius: 1rem; font-size: 0.8rem; font-weight: 500; }
+        .badge-version { background: #22c55e; }
+        .badge-license { background: #eab308; color: #1e293b; }
+        nav { background: white; border-bottom: 1px solid #e2e8f0; padding: 1rem; position: sticky; top: 0; z-index: 100; }
+        nav ul { list-style: none; display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap; }
+        nav a { color: var(--text); text-decoration: none; font-weight: 500; }
+        nav a:hover { color: var(--primary); }
+        main { max-width: 900px; margin: 0 auto; padding: 2rem; }
+        section { background: white; border-radius: 0.5rem; padding: 2rem; margin-bottom: 2rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        h2 { color: var(--primary); margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid #e2e8f0; }
+        h3 { margin: 1.5rem 0 0.75rem; }
+        pre { background: #1e293b; color: #e2e8f0; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; margin: 1rem 0; }
+        code { font-family: 'Fira Code', 'Consolas', monospace; font-size: 0.9rem; }
+        .inline-code { background: #e2e8f0; padding: 0.125rem 0.375rem; border-radius: 0.25rem; color: var(--text); }
+        table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+        th, td { padding: 0.75rem; text-align: left; border-bottom: 1px solid #e2e8f0; }
+        th { background: #f1f5f9; font-weight: 600; }
+        .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-top: 1rem; }
+        .feature-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 0.5rem; padding: 1rem; }
+        .feature-card h4 { color: var(--primary); margin-bottom: 0.5rem; }
+        footer { text-align: center; padding: 2rem; color: #64748b; border-top: 1px solid #e2e8f0; }
+        .keyword { color: #c084fc; }
+        .type { color: #22d3ee; }
+        .string { color: #4ade80; }
+        .comment { color: #64748b; }
     </style>
 </head>
 <body>
-    <h1>${PROJECT_NAME}</h1>
-    <p>An Eiffel project in the simple_* ecosystem.</p>
+    <header>
+        <h1>${PROJECT_NAME}</h1>
+        <p class="tagline"><!-- TODO: Add tagline --></p>
+        <div class="badges">
+            <span class="badge badge-version">v0.0.1</span>
+            <span class="badge badge-license">MIT</span>
+        </div>
+    </header>
 
-    <h2>Overview</h2>
-    <p>TODO: Add project overview</p>
+    <nav>
+        <ul>
+            <li><a href="#overview">Overview</a></li>
+            <li><a href="#quick-start">Quick Start</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#api">API Reference</a></li>
+            <li><a href="https://github.com/simple-eiffel/${PROJECT_NAME}">GitHub</a></li>
+        </ul>
+    </nav>
 
-    <h2>API Reference</h2>
-    <h3>${CLASS_NAME}</h3>
-    <p>Main class. TODO: Document features.</p>
+    <main>
+        <section id="overview">
+            <h2>Overview</h2>
+            <p>
+                <strong>${PROJECT_NAME}</strong> is part of the <strong>simple_*</strong> ecosystem
+                of focused, single-purpose Eiffel libraries with full Design by Contract support.
+            </p>
+            <!-- TODO: Add detailed description -->
+        </section>
 
-    <h2>Examples</h2>
-    <pre><code>local
-    l_obj: ${CLASS_NAME}
-do
-    create l_obj
-end</code></pre>
+        <section id="quick-start">
+            <h2>Quick Start</h2>
+            <h3>Installation</h3>
+            <p>Set environment variable and add to your ECF:</p>
+<pre><code><span class="comment">-- Set SIMPLE_EIFFEL=D:\prod</span>
+&lt;library name="${PROJECT_NAME}" location="$SIMPLE_EIFFEL/${PROJECT_NAME}/${PROJECT_NAME}.ecf"/&gt;</code></pre>
+
+            <h3>Basic Usage</h3>
+<pre><code><span class="keyword">local</span>
+    l_obj: <span class="type">${CLASS_NAME}</span>
+<span class="keyword">do</span>
+    <span class="keyword">create</span> l_obj.make
+    <span class="comment">-- TODO: Add example</span>
+<span class="keyword">end</span></code></pre>
+        </section>
+
+        <section id="features">
+            <h2>Features</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4>Design by Contract</h4>
+                    <p>Full preconditions, postconditions, and class invariants.</p>
+                </div>
+                <div class="feature-card">
+                    <h4>Void Safety</h4>
+                    <p>Fully void-safe implementation with proper attached/detachable handling.</p>
+                </div>
+                <div class="feature-card">
+                    <h4>SCOOP Compatible</h4>
+                    <p>Ready for concurrent programming with SCOOP.</p>
+                </div>
+                <!-- TODO: Add more feature cards -->
+            </div>
+        </section>
+
+        <section id="api">
+            <h2>API Reference</h2>
+            <h3>${CLASS_NAME}</h3>
+            <table>
+                <thead>
+                    <tr><th>Feature</th><th>Description</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><code class="inline-code">make</code></td><td>Create instance</td></tr>
+                    <!-- TODO: Add more features -->
+                </tbody>
+            </table>
+        </section>
+
+        <section id="testing">
+            <h2>Testing</h2>
+            <p>Run the test suite:</p>
+<pre><code>cd ${PROJECT_NAME}
+ec.exe -batch -config ${PROJECT_NAME}.ecf -target ${PROJECT_NAME}_tests -c_compile
+./EIFGENs/${PROJECT_NAME}_tests/F_code/${PROJECT_NAME}.exe</code></pre>
+        </section>
+    </main>
+
+    <footer>
+        <p><strong>${PROJECT_NAME}</strong> is part of the <a href="https://github.com/simple-eiffel">simple_*</a> ecosystem</p>
+        <p>Copyright &copy; 2024-2025 Larry Rix. MIT License.</p>
+    </footer>
 </body>
 </html>
 ]"

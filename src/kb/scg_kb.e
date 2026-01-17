@@ -45,23 +45,32 @@ feature {NONE} -- Initialization
 
 	initialize_db
 			-- Open database connection and ensure project tracking tables.
+		local
+			l_file: RAW_FILE
 		do
-			create db.make (db_path)
-			if not db.is_open then
+			-- Check if database file exists before trying to open
+			create l_file.make_with_name (db_path)
+			if not l_file.exists then
 				has_error := True
-				last_error := "Cannot open KB database: " + db_path
+				last_error := "KB database not found: " + db_path
 			else
-				ensure_project_tables
+				create db.make (db_path)
+				if not is_open then
+					has_error := True
+					last_error := "Cannot open KB database: " + db_path
+				else
+					ensure_project_tables
+				end
 			end
 		end
 
 	ensure_project_tables
 			-- Create project tracking tables if not exist.
 		require
-			is_open: db.is_open
+			is_open: is_open
 		do
 			-- Projects table
-			db.execute ("[
+			safe_db.execute ("[
 				CREATE TABLE IF NOT EXISTS scg_projects (
 					id INTEGER PRIMARY KEY,
 					name TEXT UNIQUE NOT NULL,
@@ -75,7 +84,7 @@ feature {NONE} -- Initialization
 			]")
 
 			-- Project classes table (tracks generated classes)
-			db.execute ("[
+			safe_db.execute ("[
 				CREATE TABLE IF NOT EXISTS scg_project_classes (
 					id INTEGER PRIMARY KEY,
 					project_id INTEGER REFERENCES scg_projects(id),
@@ -89,7 +98,7 @@ feature {NONE} -- Initialization
 			]")
 
 			-- Project generations log (audit trail)
-			db.execute ("[
+			safe_db.execute ("[
 				CREATE TABLE IF NOT EXISTS scg_generations (
 					id INTEGER PRIMARY KEY,
 					project_id INTEGER REFERENCES scg_projects(id),
@@ -109,15 +118,15 @@ feature -- Access
 	db_path: STRING
 			-- Path to knowledge base database
 
-	db: SIMPLE_SQL_DATABASE
-			-- Database connection
+	db: detachable SIMPLE_SQL_DATABASE
+			-- Database connection (Void if file not found)
 
 feature -- Status
 
 	is_open: BOOLEAN
 			-- Is database open?
 		do
-			Result := db.is_open
+			Result := attached db as l_db and then l_db.is_open
 		end
 
 	has_error: BOOLEAN
@@ -135,7 +144,7 @@ feature -- Class Queries
 		local
 			l_result: SIMPLE_SQL_RESULT
 		do
-			l_result := db.query_with_args (
+			l_result := safe_db.query_with_args (
 				"SELECT id, library, name, description, is_deferred FROM classes WHERE UPPER(name) = ? LIMIT 1",
 				<<a_name.as_upper>>
 			)
@@ -159,7 +168,7 @@ feature -- Class Queries
 			l_result: SIMPLE_SQL_RESULT
 		do
 			create Result.make (20)
-			l_result := db.query_with_args (
+			l_result := safe_db.query_with_args (
 				"SELECT name, kind, signature, preconditions, postconditions FROM features WHERE class_id = ? ORDER BY kind, name",
 				<<a_class_id>>
 			)
@@ -183,7 +192,7 @@ feature -- Class Queries
 			l_result: SIMPLE_SQL_RESULT
 		do
 			create Result.make (5)
-			l_result := db.query_with_args (
+			l_result := safe_db.query_with_args (
 				"SELECT parent_name FROM class_parents WHERE class_id = ? ORDER BY parent_name",
 				<<a_class_id>>
 			)
@@ -201,7 +210,7 @@ feature -- Feature Queries
 		local
 			l_result: SIMPLE_SQL_RESULT
 		do
-			l_result := db.query_with_args ("[
+			l_result := safe_db.query_with_args ("[
 				SELECT f.name, f.kind, f.signature, f.description, f.preconditions, f.postconditions
 				FROM features f
 				JOIN classes c ON c.id = f.class_id
@@ -231,7 +240,7 @@ feature -- Feature Queries
 		do
 			create Result.make (a_limit)
 			l_like_pattern := "%%" + a_pattern.as_upper + "%%"
-			l_result := db.query_with_args ("[
+			l_result := safe_db.query_with_args ("[
 				SELECT c.name, f.name, f.kind, f.signature
 				FROM features f
 				JOIN classes c ON c.id = f.class_id
@@ -260,7 +269,7 @@ feature -- Pattern Queries
 			l_like_pattern: STRING
 		do
 			l_like_pattern := "%%" + a_name.as_upper + "%%"
-			l_result := db.query_with_args (
+			l_result := safe_db.query_with_args (
 				"SELECT name, description, code, when_to_use FROM patterns WHERE UPPER(name) LIKE ? LIMIT 1",
 				<<l_like_pattern>>
 			)
@@ -282,7 +291,7 @@ feature -- Pattern Queries
 			l_result: SIMPLE_SQL_RESULT
 		do
 			create Result.make (20)
-			l_result := db.query ("SELECT name FROM patterns ORDER BY name")
+			l_result := safe_db.query ("SELECT name FROM patterns ORDER BY name")
 			across l_result.rows as row loop
 				Result.extend (row_str (row, 1))
 			end
@@ -301,7 +310,7 @@ feature -- Example Queries
 		do
 			create Result.make (a_limit)
 			l_pattern := "%%" + a_query + "%%"
-			l_result := db.query_with_args (
+			l_result := safe_db.query_with_args (
 				"SELECT title, source, code, tier FROM examples WHERE title LIKE ? OR tags LIKE ? ORDER BY tier, title LIMIT ?",
 				<<l_pattern, l_pattern, a_limit>>
 			)
@@ -324,7 +333,7 @@ feature -- Error Code Queries
 		local
 			l_result: SIMPLE_SQL_RESULT
 		do
-			l_result := db.query_with_args (
+			l_result := safe_db.query_with_args (
 				"SELECT code, meaning, explanation, fixes FROM errors WHERE UPPER(code) = ? LIMIT 1",
 				<<a_code.as_upper>>
 			)
@@ -347,7 +356,7 @@ feature -- Library Queries
 		local
 			l_result: SIMPLE_SQL_RESULT
 		do
-			l_result := db.query_with_args (
+			l_result := safe_db.query_with_args (
 				"SELECT name, description, uuid, dependencies FROM libraries WHERE UPPER(name) = ? LIMIT 1",
 				<<a_name.as_upper>>
 			)
@@ -369,7 +378,7 @@ feature -- Library Queries
 			l_result: SIMPLE_SQL_RESULT
 		do
 			create Result.make (60)
-			l_result := db.query ("SELECT name FROM libraries ORDER BY name")
+			l_result := safe_db.query ("SELECT name FROM libraries ORDER BY name")
 			across l_result.rows as row loop
 				Result.extend (row_str (row, 1))
 			end
@@ -388,7 +397,7 @@ feature -- Full-Text Search
 		do
 			create Result.make (a_limit)
 			l_fts_query := format_fts_query (a_query)
-			l_result := db.query_with_args (
+			l_result := safe_db.query_with_args (
 				"SELECT content_type, title, body FROM kb_search WHERE kb_search MATCH ? ORDER BY bm25(kb_search) LIMIT ?",
 				<<l_fts_query, a_limit>>
 			)
@@ -552,12 +561,24 @@ feature {NONE} -- Implementation
 			end
 		end
 
+	safe_db: SIMPLE_SQL_DATABASE
+			-- Return attached database (precondition: is_open).
+		require
+			is_open: is_open
+		do
+			check attached db as l_db then
+				Result := l_db
+			end
+		end
+
 	count_table (a_table: STRING): INTEGER
 			-- Count rows in table.
+		require
+			is_open: is_open
 		local
 			l_result: SIMPLE_SQL_RESULT
 		do
-			l_result := db.query ("SELECT COUNT(*) FROM " + a_table)
+			l_result := safe_db.query ("SELECT COUNT(*) FROM " + a_table)
 			if not l_result.is_empty and then attached l_result.rows.first as row then
 				Result := row_int (row, 1)
 			end
@@ -608,7 +629,7 @@ feature -- Project Tracking
 				l_libs_json := "[]"
 			end
 
-			db.execute_with_args ("[
+			safe_db.execute_with_args ("[
 				INSERT OR REPLACE INTO scg_projects (name, project_type, path, description, simple_libs)
 				VALUES (?, ?, ?, ?, ?)
 			]", <<a_name, a_type, a_path, a_description, l_libs_json>>)
@@ -621,7 +642,7 @@ feature -- Project Tracking
 		local
 			l_result: SIMPLE_SQL_RESULT
 		do
-			l_result := db.query_with_args (
+			l_result := safe_db.query_with_args (
 				"SELECT id, name, project_type, path, description, created_at FROM scg_projects WHERE name = ?",
 				<<a_name>>
 			)
@@ -645,7 +666,7 @@ feature -- Project Tracking
 			l_result: SIMPLE_SQL_RESULT
 		do
 			create Result.make (20)
-			l_result := db.query ("SELECT name, project_type, path, created_at FROM scg_projects ORDER BY last_modified DESC")
+			l_result := safe_db.query ("SELECT name, project_type, path, created_at FROM scg_projects ORDER BY last_modified DESC")
 			across l_result.rows as row loop
 				Result.extend ([
 					row_str (row, 1),
@@ -665,13 +686,13 @@ feature -- Project Tracking
 		do
 			l_project_id := get_project_id (a_project_name)
 			if l_project_id > 0 then
-				db.execute_with_args ("[
+				safe_db.execute_with_args ("[
 					INSERT OR REPLACE INTO scg_project_classes (project_id, class_name, file_path)
 					VALUES (?, ?, ?)
 				]", <<l_project_id, a_class_name, a_file_path>>)
 
 				-- Update project last_modified
-				db.execute_with_args (
+				safe_db.execute_with_args (
 					"UPDATE scg_projects SET last_modified = CURRENT_TIMESTAMP WHERE id = ?",
 					<<l_project_id>>
 				)
@@ -689,7 +710,7 @@ feature -- Project Tracking
 			create Result.make (10)
 			l_project_id := get_project_id (a_project_name)
 			if l_project_id > 0 then
-				l_result := db.query_with_args (
+				l_result := safe_db.query_with_args (
 					"SELECT class_name, file_path, is_validated FROM scg_project_classes WHERE project_id = ? ORDER BY class_name",
 					<<l_project_id>>
 				)
@@ -712,7 +733,7 @@ feature -- Project Tracking
 		do
 			l_project_id := get_project_id (a_project_name)
 			if l_project_id > 0 then
-				db.execute_with_args ("[
+				safe_db.execute_with_args ("[
 					INSERT INTO scg_generations (project_id, class_name, action, success, notes)
 					VALUES (?, ?, ?, ?, ?)
 				]", <<l_project_id, a_class_name, a_action, bool_to_int (a_success), a_notes>>)
@@ -731,7 +752,7 @@ feature -- Project Tracking
 			create Result.make (a_limit)
 			l_project_id := get_project_id (a_project_name)
 			if l_project_id > 0 then
-				l_result := db.query_with_args (
+				l_result := safe_db.query_with_args (
 					"SELECT class_name, action, success, notes, created_at FROM scg_generations WHERE project_id = ? ORDER BY created_at DESC LIMIT ?",
 					<<l_project_id, a_limit>>
 				)
@@ -762,7 +783,7 @@ feature {NONE} -- Project Tracking Helpers
 		local
 			l_result: SIMPLE_SQL_RESULT
 		do
-			l_result := db.query_with_args ("SELECT id FROM scg_projects WHERE name = ?", <<a_name>>)
+			l_result := safe_db.query_with_args ("SELECT id FROM scg_projects WHERE name = ?", <<a_name>>)
 			if not l_result.is_empty and then attached l_result.rows.first as row then
 				Result := row_int (row, 1)
 			end
@@ -779,12 +800,9 @@ feature -- Cleanup
 	close
 			-- Close database connection.
 		do
-			if db.is_open then
-				db.close
+			if attached db as l_db and then l_db.is_open then
+				l_db.close
 			end
 		end
-
-invariant
-	db_exists: db /= Void
 
 end

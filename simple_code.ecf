@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-23-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-23-0 http://www.eiffel.com/developers/xml/configuration-1-23-0.xsd" name="simple_code" uuid="A1B2C3D4-E5F6-7890-ABCD-EF1234567890" library_target="simple_code">
-	<description>AI-Powered Code Assistant Integration for Eiffel</description>
-	<target name="simple_code">
-		<root all_classes="true"/>
+<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-23-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-23-0 http://www.eiffel.com/developers/xml/configuration-1-23-0.xsd" name="simple_code" uuid="A1B2C3D4-E5F6-7890-ABCD-EF1234567890" library_target="simple_codegen">
+	<description>Simple Code Generator CLI - Claude-in-the-Loop Code Generation</description>
+	<target name="simple_codegen">
+		<root class="SCG_CLI_APP" feature="make"/>
 		<version major="0" minor="0" release="1" build="1"/>
 		<option warning="warning" manifest_array_type="mismatch_warning">
 			<assertions precondition="true" postcondition="true" check="true" invariant="true" loop="true" supplier_precondition="true"/>
@@ -15,49 +15,35 @@
 		</capability>
 		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf"/>
 		<library name="simple_datetime" location="$SIMPLE_EIFFEL\simple_datetime\simple_datetime.ecf"/>
+		<library name="simple_eiffel_parser" location="$SIMPLE_EIFFEL\simple_eiffel_parser\simple_eiffel_parser.ecf"/>
 		<library name="simple_env" location="$SIMPLE_EIFFEL\simple_env\simple_env.ecf"/>
 		<library name="simple_file" location="$SIMPLE_EIFFEL\simple_file\simple_file.ecf"/>
+		<library name="simple_json" location="$SIMPLE_EIFFEL\simple_json\simple_json.ecf"/>
 		<library name="simple_logger" location="$SIMPLE_EIFFEL\simple_logger\simple_logger.ecf"/>
 		<library name="simple_process" location="$SIMPLE_EIFFEL\simple_process\simple_process.ecf"/>
 		<library name="simple_sql" location="$SIMPLE_EIFFEL\simple_sql\simple_sql.ecf"/>
 		<library name="simple_uuid" location="$SIMPLE_EIFFEL\simple_uuid\simple_uuid.ecf"/>
 		<library name="simple_vision" location="$SIMPLE_EIFFEL\simple_vision\simple_vision.ecf"/>
+		<library name="simple_xml" location="$SIMPLE_EIFFEL\simple_xml\simple_xml.ecf"/>
 		<cluster name="src" location=".\src\" recursive="true">
 			<file_rule>
 				<exclude>/.git$</exclude>
 				<exclude>/.svn$</exclude>
 				<exclude>/EIFGENs$</exclude>
-				<exclude>/cli$</exclude>
 				<exclude>/_archived_ai_client$</exclude>
 			</file_rule>
 		</cluster>
 	</target>
-	<target name="simple_code_tests" extends="simple_code">
-		<description>Test target for simple_code</description>
+	<target name="simple_code_tests" extends="simple_codegen">
+		<description>Test target for simple_codegen</description>
 		<root class="TEST_APP" feature="make"/>
-		<library name="simple_eiffel_parser" location="$SIMPLE_EIFFEL\simple_eiffel_parser\simple_eiffel_parser.ecf"/>
-		<library name="simple_json" location="$SIMPLE_EIFFEL\simple_json\simple_json.ecf"/>
 		<library name="simple_testing" location="$SIMPLE_EIFFEL\simple_testing\simple_testing.ecf"/>
-		<library name="simple_xml" location="$SIMPLE_EIFFEL\simple_xml\simple_xml.ecf"/>
 		<library name="testing" location="$ISE_LIBRARY\library\testing\testing.ecf"/>
-		<cluster name="cli" location=".\src\cli\" recursive="true"/>
 		<cluster name="test_classes" location=".\testing\" recursive="true">
 			<file_rule>
 				<exclude>/temp_test_project$</exclude>
 				<exclude>/_archived$</exclude>
 			</file_rule>
 		</cluster>
-	</target>
-	<target name="scg_project" extends="simple_code">
-		<description>Simple Code Generator - Project Generator</description>
-		<root class="SCG_PROJECT_GEN" feature="make"/>
-	</target>
-	<target name="simple_codegen" extends="simple_code">
-		<description>Simple Code Generator CLI - Claude-in-the-Loop Code Generation</description>
-		<root class="SCG_CLI_APP" feature="make"/>
-		<library name="simple_eiffel_parser" location="$SIMPLE_EIFFEL\simple_eiffel_parser\simple_eiffel_parser.ecf"/>
-		<library name="simple_json" location="$SIMPLE_EIFFEL\simple_json\simple_json.ecf"/>
-		<library name="simple_xml" location="$SIMPLE_EIFFEL\simple_xml\simple_xml.ecf"/>
-		<cluster name="cli" location=".\src\cli\" recursive="true"/>
 	</target>
 </system>

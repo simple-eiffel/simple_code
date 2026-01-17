@@ -75,14 +75,24 @@ feature {NONE} -- Initialization
 		local
 			l_args: ARGUMENTS_32
 		do
+			-- Initialize debug logger first
+			create debug_logger.make_to_file ("D:/prod/simple_code/debug_trace.log")
+			debug_logger.set_level (debug_logger.Level_debug)
+			debug_logger.debug_log ("SCG_CLI_APP.make: START")
+
 			create l_args
 			create last_error.make_empty
+			debug_logger.debug_log ("SCG_CLI_APP.make: args and last_error initialized")
 
 			if l_args.argument_count < 1 then
+				debug_logger.debug_log ("SCG_CLI_APP.make: no args, printing usage")
 				print_usage
 			else
+				debug_logger.debug_log ("SCG_CLI_APP.make: calling process_command")
 				process_command (l_args)
+				debug_logger.debug_log ("SCG_CLI_APP.make: process_command returned")
 			end
+			debug_logger.debug_log ("SCG_CLI_APP.make: END - about to exit make")
 		end
 
 feature -- Status
@@ -92,6 +102,11 @@ feature -- Status
 
 	last_error: STRING_32
 			-- Error message from last failed command
+
+feature -- Debug
+
+	debug_logger: SIMPLE_LOGGER
+			-- Logger for debug tracing
 
 feature {NONE} -- Command Processing
 
@@ -103,13 +118,18 @@ feature {NONE} -- Command Processing
 		local
 			l_command: STRING_32
 		do
+			debug_logger.debug_log ("process_command: START")
 			l_command := a_args.argument (1)
+			debug_logger.debug_log ("process_command: command=" + l_command.to_string_8)
 
 			if l_command.is_case_insensitive_equal ("init") then
+				debug_logger.debug_log ("process_command: dispatching to handle_init")
 				handle_init (a_args)
 			elseif l_command.is_case_insensitive_equal ("add-feature") then
+				debug_logger.debug_log ("process_command: dispatching to handle_add_feature")
 				handle_add_feature (a_args)
 			elseif l_command.is_case_insensitive_equal ("process") then
+				debug_logger.debug_log ("process_command: dispatching to handle_process")
 				handle_process (a_args)
 			elseif l_command.is_case_insensitive_equal ("validate") then
 				handle_validate (a_args)
@@ -151,12 +171,19 @@ feature {NONE} -- Command Processing
 				handle_analyze_reuse (a_args)
 			elseif l_command.is_case_insensitive_equal ("list-apis") then
 				handle_list_apis (a_args)
+			elseif l_command.is_case_insensitive_equal ("next") then
+				handle_next (a_args)
+			elseif l_command.is_case_insensitive_equal ("done") then
+				handle_done (a_args)
+			elseif l_command.is_case_insensitive_equal ("wf-status") then
+				handle_workflow_status (a_args)
 			elseif l_command.is_case_insensitive_equal ("--help") or l_command.is_case_insensitive_equal ("-h") then
 				print_usage
 			else
 				print ("Unknown command: " + l_command.to_string_8 + "%N")
 				print_usage
 			end
+			debug_logger.debug_log ("process_command: END")
 		end
 
 	handle_init (a_args: ARGUMENTS_32)
@@ -245,6 +272,7 @@ feature {NONE} -- Command Processing
 					end
 					print ("%NNext step: Copy the prompt to Claude:%N")
 					print ("  " + l_session.last_prompt_path.to_string_8 + "%N")
+					l_builder.close
 					is_success := True
 				end
 			end
@@ -262,9 +290,11 @@ feature {NONE} -- Command Processing
 			l_content: STRING_32
 			l_next_prompt: STRING_32
 		do
+			debug_logger.debug_log ("handle_process: START")
 			l_input := get_option_value (a_args, "--input")
 			l_output := get_option_value (a_args, "--output")
 			l_session_name := get_option_value (a_args, "--session")
+			debug_logger.debug_log ("handle_process: options parsed")
 
 			if not attached l_input then
 				print ("[ERROR] Missing --input option%N")
@@ -273,19 +303,26 @@ feature {NONE} -- Command Processing
 				print ("[ERROR] Missing --session option%N")
 				print ("Usage: simple_codegen process --input <response.txt> --session <name> [--output <prompt.txt>]%N")
 			else
+				debug_logger.debug_log ("handle_process: loading session " + l_session_name.to_string_8)
 				-- Load session
 				create l_session.make_from_existing (l_session_name)
+				debug_logger.debug_log ("handle_process: session loaded, is_valid=" + l_session.is_valid.out)
 				if not l_session.is_valid then
 					print ("[ERROR] Invalid session: " + l_session.last_error.to_string_8 + "%N")
 				else
 					-- Read input file
+					debug_logger.debug_log ("handle_process: reading input file")
 					create l_file.make (l_input.to_string_8)
 					if l_file.exists then
 						l_content := l_file.read_text.to_string_32
+						debug_logger.debug_log ("handle_process: file read, content length=" + l_content.count.out)
 
 						-- Parse response
+						debug_logger.debug_log ("handle_process: creating parser")
 						create l_parser.make
+						debug_logger.debug_log ("handle_process: calling parser.parse")
 						l_parser.parse (l_content, l_session)
+						debug_logger.debug_log ("handle_process: parse complete, is_success=" + l_parser.is_success.out)
 
 						if l_parser.is_success then
 							print ("[OK] Parsed response%N")
@@ -296,12 +333,18 @@ feature {NONE} -- Command Processing
 							end
 
 							-- Save response to session
+							debug_logger.debug_log ("handle_process: calling add_response")
 							l_session.add_response (l_content, l_parser.response_type)
+							debug_logger.debug_log ("handle_process: add_response complete")
 
 							-- Build next prompt if more work needed
+							debug_logger.debug_log ("handle_process: checking has_pending_work")
 							if l_session.has_pending_work then
+								debug_logger.debug_log ("handle_process: has pending work, building prompt")
 								l_builder := create_prompt_builder_with_reuse (l_session)
+								debug_logger.debug_log ("handle_process: builder created")
 								l_next_prompt := l_builder.build_next_prompt
+								debug_logger.debug_log ("handle_process: prompt built, length=" + l_next_prompt.count.out)
 
 								if attached l_output as l_out then
 									create l_file.make (l_out.to_string_8)
@@ -312,16 +355,24 @@ feature {NONE} -- Command Processing
 									end
 								else
 									-- Write to session prompts directory
+									debug_logger.debug_log ("handle_process: saving prompt to session")
 									l_session.save_next_prompt (l_next_prompt)
+									debug_logger.debug_log ("handle_process: prompt saved")
 									print ("[OK] Next prompt saved to session%N")
 									print ("  " + l_session.last_prompt_path.to_string_8 + "%N")
 								end
+								-- Close builder resources (KB database) before going out of scope
+								l_builder.close
+								debug_logger.debug_log ("handle_process: builder closed")
 							else
+								debug_logger.debug_log ("handle_process: no pending work - DONE")
 								print ("%N[DONE] All classes generated. Ready for assembly.%N")
 								print ("Run: simple_codegen assemble --session " + l_session_name.to_string_8 + " --output <path>%N")
 							end
 
+							debug_logger.debug_log ("handle_process: setting is_success := True")
 							is_success := True
+							debug_logger.debug_log ("handle_process: is_success set")
 						else
 							print ("[ERROR] Failed to parse response: " + l_parser.last_error.to_string_8 + "%N")
 						end
@@ -330,6 +381,7 @@ feature {NONE} -- Command Processing
 					end
 				end
 			end
+			debug_logger.debug_log ("handle_process: END")
 		end
 
 	handle_validate (a_args: ARGUMENTS_32)
@@ -474,6 +526,7 @@ feature {NONE} -- Command Processing
 							end
 							print ("%NNext step: Copy the prompt to Claude:%N")
 							print ("  " + l_session.last_prompt_path.to_string_8 + "%N")
+							l_builder.close
 							is_success := True
 						end
 					end
@@ -517,12 +570,13 @@ feature {NONE} -- Command Processing
 					-- Get compiler command with full path
 					l_ec_cmd := get_ec_command
 
-					-- Run compiler
+					-- Run compiler (specify target since ECF has multiple targets)
 					print ("[INFO] Compiling project...%N")
 					print ("[INFO] ECF: " + l_ecf_path + "%N")
+					print ("[INFO] Target: " + l_session_name.to_string_8 + "%N")
 					print ("[INFO] Compiler: " + l_ec_cmd + "%N")
 					create l_process.make
-					l_process.run_in_directory (l_ec_cmd + " -batch -config " + l_ecf_path + " -c_compile", l_project_path.to_string_8)
+					l_process.run_in_directory (l_ec_cmd + " -batch -config " + l_ecf_path + " -target " + l_session_name.to_string_8 + " -c_compile", l_project_path.to_string_8)
 
 					if attached l_process.last_output as l_out then
 						l_output := l_out.to_string_8
@@ -578,6 +632,7 @@ feature {NONE} -- Command Processing
 									end
 									l_class_errors.forth
 								end
+								l_builder.close
 							else
 								print ("[FAIL] Compilation failed (see output)%N")
 								print (l_output + "%N")
@@ -647,6 +702,7 @@ feature {NONE} -- Command Processing
 						print ("  Target class: " + l_class_name.to_string_8 + "%N")
 						print ("%NNext step: Copy the prompt to Claude:%N")
 						print ("  " + l_session.last_prompt_path.to_string_8 + "%N")
+						l_builder.close
 						is_success := True
 					end
 				end
@@ -945,6 +1001,7 @@ feature {NONE} -- Command Processing
 					print ("  7. Create implementation plan%N")
 					print ("%NNext step: Copy the prompt to Claude:%N")
 					print ("  " + l_session.last_prompt_path.to_string_8 + "%N")
+					l_builder.close
 					is_success := True
 				end
 			end
@@ -1005,6 +1062,7 @@ feature {NONE} -- Command Processing
 					print ("  4. TEST - Verification%N")
 					print ("%NNext step: Copy the prompt to Claude:%N")
 					print ("  " + l_session.last_prompt_path.to_string_8 + "%N")
+					l_builder.close
 					is_success := True
 				end
 			end
@@ -1093,6 +1151,7 @@ feature {NONE} -- Command Processing
 									print ("  Refinement prompt: " + l_session.last_prompt_path.to_string_8 + "%N")
 								end
 							end
+							l_builder.close
 						end
 					else
 						print ("[ERROR] No test output - check if test executable exists%N")
@@ -1204,6 +1263,7 @@ feature {NONE} -- Command Processing
 
 					print ("%NNext step: Copy the prompt to Claude:%N")
 					print ("  " + l_session.last_prompt_path.to_string_8 + "%N")
+					l_builder.close
 					is_success := True
 				end
 			end
@@ -1285,6 +1345,7 @@ feature {NONE} -- Command Processing
 					print ("  1. Review and customize the .iss script%N")
 					print ("  2. Add files to include (binaries, DLLs, resources)%N")
 					print ("  3. Run: iscc.exe setup.iss%N")
+					l_builder.close
 					is_success := True
 				end
 			end
@@ -1690,6 +1751,168 @@ feature {NONE} -- Helpers
 			result_not_void: Result /= Void
 		end
 
+feature -- Atomic Workflow Commands
+
+	handle_next (a_args: ARGUMENTS_32)
+			-- Handle 'next --session <name>' command.
+			-- Shows todo list and outputs next atomic prompt (ONE task only).
+		local
+			l_session_name: detachable STRING_32
+			l_session: SCG_SESSION
+			l_builder: SCG_PROMPT_BUILDER
+			l_prompt: STRING_32
+		do
+			l_session_name := get_option_value (a_args, "--session")
+
+			if not attached l_session_name then
+				print ("[ERROR] Missing --session option%N")
+				print ("Usage: simple_codegen next --session <name>%N")
+			else
+				create l_session.make_from_existing (l_session_name)
+				if not l_session.is_valid then
+					print ("[ERROR] Invalid session: " + l_session.last_error.to_string_8 + "%N")
+				else
+					-- Initialize workflow todos if empty
+					if l_session.workflow_todos.is_empty then
+						l_session.initialize_workflow_todos
+						-- If we have class specs, add them as todos
+						if not l_session.class_specs.is_empty then
+							l_session.add_class_todos
+						end
+					end
+
+					-- Display todo list
+					print ("=== WORKFLOW TODO LIST ===%N")
+					print (l_session.get_todo_display)
+					print ("%N")
+
+					if l_session.is_workflow_complete then
+						print ("[DONE] All tasks completed!%N")
+						print ("Run: simple_codegen assemble --session " + l_session_name.to_string_8 + " --output <path>%N")
+					else
+						-- Mark current task as in progress (auto-saves)
+						l_session.mark_todo_in_progress
+
+						-- Get and display atomic prompt
+						print ("=== NEXT TASK ===%N")
+						print (l_session.get_current_task + "%N%N")
+
+						-- Build atomic prompt
+						l_builder := create_prompt_builder_with_reuse (l_session)
+						l_prompt := l_builder.get_atomic_prompt
+
+						-- Save to session
+						l_session.save_next_prompt (l_prompt)
+
+						print ("=== ATOMIC PROMPT (ONE TASK) ===%N")
+						print (l_prompt.to_string_8 + "%N")
+						print ("%N=== END PROMPT ===%N")
+						print ("%NSaved to: " + l_session.last_prompt_path.to_string_8 + "%N")
+						print ("%NWhen done, run: simple_codegen done --session " + l_session_name.to_string_8 + "%N")
+
+						l_builder.close
+					end
+					is_success := True
+				end
+			end
+		end
+
+	handle_done (a_args: ARGUMENTS_32)
+			-- Handle 'done --session <name>' command.
+			-- Marks current task as completed and advances workflow.
+		local
+			l_session_name: detachable STRING_32
+			l_session: SCG_SESSION
+		do
+			l_session_name := get_option_value (a_args, "--session")
+
+			if not attached l_session_name then
+				print ("[ERROR] Missing --session option%N")
+				print ("Usage: simple_codegen done --session <name>%N")
+			else
+				create l_session.make_from_existing (l_session_name)
+				if not l_session.is_valid then
+					print ("[ERROR] Invalid session: " + l_session.last_error.to_string_8 + "%N")
+				else
+					if l_session.workflow_todos.is_empty then
+						print ("[ERROR] No workflow initialized. Run 'next' first.%N")
+					else
+						-- Mark current task done
+						l_session.mark_todo_done
+
+						print ("[OK] Task completed!%N%N")
+						print ("=== UPDATED TODO LIST ===%N")
+						print (l_session.get_todo_display)
+						print ("%N")
+
+						if l_session.is_workflow_complete then
+							print ("[DONE] All tasks completed!%N")
+							print ("Run: simple_codegen assemble --session " + l_session_name.to_string_8 + " --output <path>%N")
+						else
+							print ("Next: simple_codegen next --session " + l_session_name.to_string_8 + "%N")
+						end
+					end
+					is_success := True
+				end
+			end
+		end
+
+	handle_workflow_status (a_args: ARGUMENTS_32)
+			-- Handle 'wf-status --session <name>' command.
+			-- Shows current workflow todo list status.
+		local
+			l_session_name: detachable STRING_32
+			l_session: SCG_SESSION
+			l_completed, l_pending, l_in_progress: INTEGER
+		do
+			l_session_name := get_option_value (a_args, "--session")
+
+			if not attached l_session_name then
+				print ("[ERROR] Missing --session option%N")
+				print ("Usage: simple_codegen wf-status --session <name>%N")
+			else
+				create l_session.make_from_existing (l_session_name)
+				if not l_session.is_valid then
+					print ("[ERROR] Invalid session: " + l_session.last_error.to_string_8 + "%N")
+				else
+					print ("=== WORKFLOW STATUS: " + l_session_name.to_string_8 + " ===%N%N")
+
+					if l_session.workflow_todos.is_empty then
+						print ("No workflow initialized yet.%N")
+						print ("Run: simple_codegen next --session " + l_session_name.to_string_8 + "%N")
+					else
+						-- Count status
+						across l_session.workflow_todos as ic loop
+							inspect ic.status
+							when 0 then
+								l_pending := l_pending + 1
+							when 1 then
+								l_in_progress := l_in_progress + 1
+							when 2 then
+								l_completed := l_completed + 1
+							end
+						end
+
+						print ("=== TODO LIST ===%N")
+						print (l_session.get_todo_display)
+						print ("%N")
+						print ("=== SUMMARY ===%N")
+						print ("Completed:   " + l_completed.out + "%N")
+						print ("In Progress: " + l_in_progress.out + "%N")
+						print ("Pending:     " + l_pending.out + "%N")
+						print ("Total:       " + l_session.workflow_todos.count.out + "%N")
+
+						if l_session.is_workflow_complete then
+							print ("%N[DONE] All tasks completed!%N")
+						elseif l_in_progress > 0 then
+							print ("%NCurrent: " + l_session.get_current_task + "%N")
+						end
+					end
+					is_success := True
+				end
+			end
+		end
+
 	print_usage
 			-- Print usage information.
 		do
@@ -1736,6 +1959,13 @@ feature {NONE} -- Helpers
 			print ("      Generate git history context for Claude prompts%N%N")
 			print ("  projects [--stats] [--project <name>]%N")
 			print ("      List tracked projects or show KB statistics%N%N")
+			print ("Atomic Workflow Commands (TOON format - 30-60%% token reduction):%N")
+			print ("  next --session <name>%N")
+			print ("      Get next atomic prompt (ONE task only) with todo list%N%N")
+			print ("  done --session <name>%N")
+			print ("      Mark current task complete, advance to next%N%N")
+			print ("  wf-status --session <name>%N")
+			print ("      Show workflow todo list status%N%N")
 			print ("Build modes (for compile/run-tests):%N")
 			print ("  Development:  W_code (workbench, fast compile, slow run)%N")
 			print ("  Testing:      F_code with -keep (finalized with assertions)%N")
