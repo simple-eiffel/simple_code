@@ -1,0 +1,2399 @@
+2026-01-17T09:12:06 DEBUG SCG_CLI_APP.make: START
+2026-01-17T09:12:06 DEBUG SCG_CLI_APP.make: args and last_error initialized
+2026-01-17T09:12:06 DEBUG SCG_CLI_APP.make: calling process_command
+2026-01-17T09:12:06 DEBUG process_command: START
+2026-01-17T09:12:06 DEBUG process_command: command=add-feature
+2026-01-17T09:12:06 DEBUG process_command: dispatching to handle_add_feature
+2026-01-17T09:12:06 DEBUG SCG_SESSION.make_from_existing: START name=simple_postgres
+2026-01-17T09:12:06 DEBUG SCG_SESSION.make_from_existing: calling load_session
+2026-01-17T09:12:06 DEBUG SCG_SESSION.load_session: START session_path=sessions/simple_postgres
+2026-01-17T09:12:06 DEBUG SCG_SESSION.load_session: session.json exists, reading
+2026-01-17T09:12:06 DEBUG SCG_SESSION.load_session: read 110 chars
+2026-01-17T09:12:06 DEBUG SCG_SESSION.load_session: JSON parsed successfully
+2026-01-17T09:12:06 DEBUG SCG_SESSION.load_session: loaded state=generating prompt_count=1
+2026-01-17T09:12:06 DEBUG SCG_SESSION.load_session: loading 0 class specs
+2026-01-17T09:12:06 DEBUG SCG_SESSION.load_session: END class_specs.count=0
+2026-01-17T09:12:06 DEBUG SCG_SESSION.make_from_existing: END is_valid=True
+2026-01-17T09:12:06 DEBUG SCG_SESSION.save_next_prompt: START prompt_len=1269
+2026-01-17T09:12:06 DEBUG SCG_SESSION.save_next_prompt: writing to sessions/simple_postgres/prompts/002_prompt.txt
+2026-01-17T09:12:06 DEBUG SCG_SESSION.save_next_prompt: write success
+2026-01-17T09:12:06 DEBUG SCG_SESSION.save_session: START state=generating class_count=0
+2026-01-17T09:12:06 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T09:12:06 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T09:12:06 DEBUG SCG_SESSION.save_session: END
+2026-01-17T09:12:06 DEBUG SCG_SESSION.save_next_prompt: END
+2026-01-17T09:12:06 DEBUG process_command: END
+2026-01-17T09:12:06 DEBUG SCG_CLI_APP.make: process_command returned
+2026-01-17T09:12:06 DEBUG SCG_CLI_APP.make: END - about to exit make
+2026-01-17T09:15:43 DEBUG SCG_CLI_APP.make: START
+2026-01-17T09:15:43 DEBUG SCG_CLI_APP.make: args and last_error initialized
+2026-01-17T09:15:43 DEBUG SCG_CLI_APP.make: calling process_command
+2026-01-17T09:15:43 DEBUG process_command: START
+2026-01-17T09:15:43 DEBUG process_command: command=init
+2026-01-17T09:15:43 DEBUG process_command: dispatching to handle_init
+2026-01-17T09:15:43 DEBUG SCG_SESSION.make_new: START name=simple_postgres
+2026-01-17T09:15:43 DEBUG SCG_SESSION.make_new: calling create_session_directory
+2026-01-17T09:15:43 DEBUG SCG_SESSION.make_new: calling create_initial_prompt
+2026-01-17T09:15:43 DEBUG SCG_SESSION.make_new: calling save_session
+2026-01-17T09:15:43 DEBUG SCG_SESSION.save_session: START state=initialized class_count=0
+2026-01-17T09:15:43 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T09:15:43 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T09:15:43 DEBUG SCG_SESSION.save_session: END
+2026-01-17T09:15:43 DEBUG SCG_SESSION.make_new: END is_valid=True
+2026-01-17T09:15:43 DEBUG process_command: END
+2026-01-17T09:15:43 DEBUG SCG_CLI_APP.make: process_command returned
+2026-01-17T09:15:43 DEBUG SCG_CLI_APP.make: END - about to exit make
+2026-01-17T09:17:59 DEBUG SCG_CLI_APP.make: START
+2026-01-17T09:17:59 DEBUG SCG_CLI_APP.make: args and last_error initialized
+2026-01-17T09:17:59 DEBUG SCG_CLI_APP.make: calling process_command
+2026-01-17T09:17:59 DEBUG process_command: START
+2026-01-17T09:17:59 DEBUG process_command: command=process
+2026-01-17T09:17:59 DEBUG process_command: dispatching to handle_process
+2026-01-17T09:17:59 DEBUG handle_process: START
+2026-01-17T09:17:59 DEBUG handle_process: options parsed
+2026-01-17T09:17:59 DEBUG handle_process: loading session simple_postgres
+2026-01-17T09:17:59 DEBUG SCG_SESSION.make_from_existing: START name=simple_postgres
+2026-01-17T09:17:59 DEBUG SCG_SESSION.make_from_existing: calling load_session
+2026-01-17T09:17:59 DEBUG SCG_SESSION.load_session: START session_path=sessions/simple_postgres
+2026-01-17T09:17:59 DEBUG SCG_SESSION.load_session: session.json exists, reading
+2026-01-17T09:17:59 DEBUG SCG_SESSION.load_session: read 111 chars
+2026-01-17T09:17:59 DEBUG SCG_SESSION.load_session: JSON parsed successfully
+2026-01-17T09:17:59 DEBUG SCG_SESSION.load_session: loaded state=initialized prompt_count=1
+2026-01-17T09:17:59 DEBUG SCG_SESSION.load_session: loading 0 class specs
+2026-01-17T09:17:59 DEBUG SCG_SESSION.load_session: END class_specs.count=0
+2026-01-17T09:17:59 DEBUG SCG_SESSION.make_from_existing: END is_valid=True
+2026-01-17T09:17:59 DEBUG handle_process: session loaded, is_valid=True
+2026-01-17T09:17:59 DEBUG handle_process: reading input file
+2026-01-17T09:17:59 DEBUG handle_process: file read, content length=10135
+2026-01-17T09:17:59 DEBUG handle_process: creating parser
+2026-01-17T09:17:59 DEBUG SCG_RESPONSE_PARSER.make: initialized
+2026-01-17T09:17:59 DEBUG handle_process: calling parser.parse
+2026-01-17T09:17:59 DEBUG SCG_RESPONSE_PARSER.parse: START, response length=10135
+2026-01-17T09:17:59 DEBUG SCG_RESPONSE_PARSER.parse: state reset
+2026-01-17T09:17:59 DEBUG SCG_RESPONSE_PARSER.parse: JSON extracted, length=10135
+2026-01-17T09:17:59 DEBUG SCG_RESPONSE_PARSER.parse: creating SIMPLE_JSON
+2026-01-17T09:17:59 DEBUG SCG_RESPONSE_PARSER.parse: calling l_json.parse
+2026-01-17T09:17:59 DEBUG SCG_RESPONSE_PARSER.parse: JSON parsed, is_object=True
+2026-01-17T09:17:59 DEBUG SCG_RESPONSE_PARSER.parse: calling parse_json_object
+2026-01-17T09:17:59 DEBUG SCG_SESSION.save_session: START state=initialized class_count=1
+2026-01-17T09:17:59 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T09:17:59 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T09:17:59 DEBUG SCG_SESSION.save_session: END
+2026-01-17T09:17:59 DEBUG SCG_SESSION.save_session: START state=initialized class_count=2
+2026-01-17T09:17:59 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T09:17:59 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T09:17:59 DEBUG SCG_SESSION.save_session: END
+2026-01-17T09:17:59 DEBUG SCG_SESSION.save_session: START state=initialized class_count=3
+2026-01-17T09:17:59 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T09:17:59 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T09:17:59 DEBUG SCG_SESSION.save_session: END
+2026-01-17T09:17:59 DEBUG SCG_SESSION.save_session: START state=initialized class_count=4
+2026-01-17T09:17:59 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T09:17:59 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T09:17:59 DEBUG SCG_SESSION.save_session: END
+2026-01-17T09:17:59 DEBUG SCG_SESSION.save_session: START state=initialized class_count=5
+2026-01-17T09:17:59 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T09:17:59 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T09:17:59 DEBUG SCG_SESSION.save_session: END
+2026-01-17T09:17:59 DEBUG SCG_SESSION.save_session: START state=initialized class_count=6
+2026-01-17T09:17:59 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T09:17:59 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T09:17:59 DEBUG SCG_SESSION.save_session: END
+2026-01-17T09:17:59 DEBUG SCG_SESSION.save_session: START state=initialized class_count=7
+2026-01-17T09:17:59 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T09:17:59 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T09:17:59 DEBUG SCG_SESSION.save_session: END
+2026-01-17T09:17:59 DEBUG SCG_RESPONSE_PARSER.parse: parse_json_object returned
+2026-01-17T09:17:59 DEBUG SCG_RESPONSE_PARSER.parse: END, is_success=True
+2026-01-17T09:17:59 DEBUG handle_process: parse complete, is_success=True
+2026-01-17T09:17:59 DEBUG handle_process: calling add_response
+2026-01-17T09:17:59 DEBUG SCG_SESSION.add_response: START type=system_spec content_len=10135
+2026-01-17T09:17:59 DEBUG SCG_SESSION.add_response: writing to sessions/simple_postgres/responses/001_response.json
+2026-01-17T09:17:59 DEBUG SCG_SESSION.add_response: write success, updating state
+2026-01-17T09:17:59 DEBUG SCG_SESSION.save_session: START state=spec_received class_count=7
+2026-01-17T09:17:59 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T09:17:59 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T09:17:59 DEBUG SCG_SESSION.save_session: END
+2026-01-17T09:17:59 DEBUG SCG_SESSION.add_response: END
+2026-01-17T09:17:59 DEBUG handle_process: add_response complete
+2026-01-17T09:17:59 DEBUG handle_process: checking has_pending_work
+2026-01-17T09:17:59 DEBUG handle_process: has pending work, building prompt
+2026-01-17T09:17:59 DEBUG handle_process: builder created
+2026-01-17T09:17:59 DEBUG handle_process: prompt built, length=7618
+2026-01-17T09:17:59 DEBUG handle_process: saving prompt to session
+2026-01-17T09:17:59 DEBUG SCG_SESSION.save_next_prompt: START prompt_len=7618
+2026-01-17T09:17:59 DEBUG SCG_SESSION.save_next_prompt: writing to sessions/simple_postgres/prompts/002_prompt.txt
+2026-01-17T09:17:59 DEBUG SCG_SESSION.save_next_prompt: write success
+2026-01-17T09:17:59 DEBUG SCG_SESSION.save_session: START state=spec_received class_count=7
+2026-01-17T09:17:59 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T09:17:59 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T09:17:59 DEBUG SCG_SESSION.save_session: END
+2026-01-17T09:17:59 DEBUG SCG_SESSION.save_next_prompt: END
+2026-01-17T09:17:59 DEBUG handle_process: prompt saved
+2026-01-17T09:17:59 DEBUG handle_process: builder closed
+2026-01-17T09:17:59 DEBUG handle_process: setting is_success := True
+2026-01-17T09:17:59 DEBUG handle_process: is_success set
+2026-01-17T09:17:59 DEBUG handle_process: END
+2026-01-17T09:17:59 DEBUG process_command: END
+2026-01-17T09:17:59 DEBUG SCG_CLI_APP.make: process_command returned
+2026-01-17T09:17:59 DEBUG SCG_CLI_APP.make: END - about to exit make
+2026-01-17T09:18:39 DEBUG SCG_CLI_APP.make: START
+2026-01-17T09:18:39 DEBUG SCG_CLI_APP.make: args and last_error initialized
+2026-01-17T09:18:39 DEBUG SCG_CLI_APP.make: calling process_command
+2026-01-17T09:18:39 DEBUG process_command: START
+2026-01-17T09:18:39 DEBUG process_command: command=process
+2026-01-17T09:18:39 DEBUG process_command: dispatching to handle_process
+2026-01-17T09:18:39 DEBUG handle_process: START
+2026-01-17T09:18:39 DEBUG handle_process: options parsed
+2026-01-17T09:18:39 DEBUG handle_process: loading session simple_postgres
+2026-01-17T09:18:39 DEBUG SCG_SESSION.make_from_existing: START name=simple_postgres
+2026-01-17T09:18:39 DEBUG SCG_SESSION.make_from_existing: calling load_session
+2026-01-17T09:18:39 DEBUG SCG_SESSION.load_session: START session_path=sessions/simple_postgres
+2026-01-17T09:18:39 DEBUG SCG_SESSION.load_session: session.json exists, reading
+2026-01-17T09:18:39 DEBUG SCG_SESSION.load_session: read 986 chars
+2026-01-17T09:18:39 DEBUG SCG_SESSION.load_session: JSON parsed successfully
+2026-01-17T09:18:39 DEBUG SCG_SESSION.load_session: loaded state=spec_received prompt_count=2
+2026-01-17T09:18:39 DEBUG SCG_SESSION.load_session: loading 7 class specs
+2026-01-17T09:18:39 DEBUG SCG_SESSION.load_session: loaded class PG_TYPE_OIDS
+2026-01-17T09:18:39 DEBUG SCG_SESSION.load_session: loaded class PG_EXTERNALS
+2026-01-17T09:18:39 DEBUG SCG_SESSION.load_session: loaded class PG_ERROR
+2026-01-17T09:18:39 DEBUG SCG_SESSION.load_session: loaded class PG_ROW
+2026-01-17T09:18:39 DEBUG SCG_SESSION.load_session: loaded class PG_RESULT
+2026-01-17T09:18:39 DEBUG SCG_SESSION.load_session: loaded class PG_CONNECTION
+2026-01-17T09:18:39 DEBUG SCG_SESSION.load_session: loaded class SIMPLE_POSTGRES
+2026-01-17T09:18:39 DEBUG SCG_SESSION.load_session: END class_specs.count=7
+2026-01-17T09:18:39 DEBUG SCG_SESSION.make_from_existing: END is_valid=True
+2026-01-17T09:18:39 DEBUG handle_process: session loaded, is_valid=True
+2026-01-17T09:18:39 DEBUG handle_process: reading input file
+2026-01-17T09:18:39 DEBUG handle_process: file read, content length=3344
+2026-01-17T09:18:39 DEBUG handle_process: creating parser
+2026-01-17T09:18:39 DEBUG SCG_RESPONSE_PARSER.make: initialized
+2026-01-17T09:18:39 DEBUG handle_process: calling parser.parse
+2026-01-17T09:18:39 DEBUG SCG_RESPONSE_PARSER.parse: START, response length=3344
+2026-01-17T09:18:39 DEBUG SCG_RESPONSE_PARSER.parse: state reset
+2026-01-17T09:18:39 DEBUG SCG_RESPONSE_PARSER.parse: JSON extracted, length=3344
+2026-01-17T09:18:39 DEBUG SCG_RESPONSE_PARSER.parse: creating SIMPLE_JSON
+2026-01-17T09:18:39 DEBUG SCG_RESPONSE_PARSER.parse: calling l_json.parse
+2026-01-17T09:18:39 DEBUG SCG_RESPONSE_PARSER.parse: JSON parsed, is_object=True
+2026-01-17T09:18:39 DEBUG SCG_RESPONSE_PARSER.parse: calling parse_json_object
+2026-01-17T09:18:39 DEBUG SCG_SESSION.save_session: START state=spec_received class_count=7
+2026-01-17T09:18:39 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T09:18:39 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T09:18:39 DEBUG SCG_SESSION.save_session: END
+2026-01-17T09:18:39 DEBUG SCG_RESPONSE_PARSER.parse: parse_json_object returned
+2026-01-17T09:18:39 DEBUG SCG_RESPONSE_PARSER.parse: END, is_success=True
+2026-01-17T09:18:39 DEBUG handle_process: parse complete, is_success=True
+2026-01-17T09:18:39 DEBUG handle_process: calling add_response
+2026-01-17T09:18:39 DEBUG SCG_SESSION.add_response: START type=class_code content_len=3344
+2026-01-17T09:18:39 DEBUG SCG_SESSION.add_response: writing to sessions/simple_postgres/responses/002_response.e
+2026-01-17T09:18:39 DEBUG SCG_SESSION.add_response: write success, updating state
+2026-01-17T09:18:39 DEBUG SCG_SESSION.save_session: START state=generating class_count=7
+2026-01-17T09:18:39 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T09:18:39 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T09:18:39 DEBUG SCG_SESSION.save_session: END
+2026-01-17T09:18:39 DEBUG SCG_SESSION.add_response: END
+2026-01-17T09:18:39 DEBUG handle_process: add_response complete
+2026-01-17T09:18:39 DEBUG handle_process: checking has_pending_work
+2026-01-17T09:18:39 DEBUG handle_process: has pending work, building prompt
+2026-01-17T09:18:39 DEBUG handle_process: builder created
+2026-01-17T09:18:39 DEBUG handle_process: prompt built, length=6355
+2026-01-17T09:18:39 DEBUG handle_process: saving prompt to session
+2026-01-17T09:18:39 DEBUG SCG_SESSION.save_next_prompt: START prompt_len=6355
+2026-01-17T09:18:39 DEBUG SCG_SESSION.save_next_prompt: writing to sessions/simple_postgres/prompts/003_prompt.txt
+2026-01-17T09:18:39 DEBUG SCG_SESSION.save_next_prompt: write success
+2026-01-17T09:18:39 DEBUG SCG_SESSION.save_session: START state=generating class_count=7
+2026-01-17T09:18:39 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T09:18:39 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T09:18:39 DEBUG SCG_SESSION.save_session: END
+2026-01-17T09:18:39 DEBUG SCG_SESSION.save_next_prompt: END
+2026-01-17T09:18:39 DEBUG handle_process: prompt saved
+2026-01-17T09:18:39 DEBUG handle_process: builder closed
+2026-01-17T09:18:39 DEBUG handle_process: setting is_success := True
+2026-01-17T09:18:39 DEBUG handle_process: is_success set
+2026-01-17T09:18:39 DEBUG handle_process: END
+2026-01-17T09:18:39 DEBUG process_command: END
+2026-01-17T09:18:39 DEBUG SCG_CLI_APP.make: process_command returned
+2026-01-17T09:18:39 DEBUG SCG_CLI_APP.make: END - about to exit make
+2026-01-17T09:19:34 DEBUG SCG_CLI_APP.make: START
+2026-01-17T09:19:34 DEBUG SCG_CLI_APP.make: args and last_error initialized
+2026-01-17T09:19:34 DEBUG SCG_CLI_APP.make: calling process_command
+2026-01-17T09:19:34 DEBUG process_command: START
+2026-01-17T09:19:34 DEBUG process_command: command=process
+2026-01-17T09:19:34 DEBUG process_command: dispatching to handle_process
+2026-01-17T09:19:34 DEBUG handle_process: START
+2026-01-17T09:19:34 DEBUG handle_process: options parsed
+2026-01-17T09:19:34 DEBUG handle_process: loading session simple_postgres
+2026-01-17T09:19:34 DEBUG SCG_SESSION.make_from_existing: START name=simple_postgres
+2026-01-17T09:19:34 DEBUG SCG_SESSION.make_from_existing: calling load_session
+2026-01-17T09:19:34 DEBUG SCG_SESSION.load_session: START session_path=sessions/simple_postgres
+2026-01-17T09:19:34 DEBUG SCG_SESSION.load_session: session.json exists, reading
+2026-01-17T09:19:34 DEBUG SCG_SESSION.load_session: read 4109 chars
+2026-01-17T09:19:34 DEBUG SCG_SESSION.load_session: JSON parsed successfully
+2026-01-17T09:19:34 DEBUG SCG_SESSION.load_session: loaded state=generating prompt_count=3
+2026-01-17T09:19:34 DEBUG SCG_SESSION.load_session: loading 7 class specs
+2026-01-17T09:19:34 DEBUG SCG_SESSION.load_session: loaded class PG_TYPE_OIDS
+2026-01-17T09:19:34 DEBUG SCG_SESSION.load_session: loaded class PG_EXTERNALS
+2026-01-17T09:19:34 DEBUG SCG_SESSION.load_session: loaded class PG_ERROR
+2026-01-17T09:19:34 DEBUG SCG_SESSION.load_session: loaded class PG_ROW
+2026-01-17T09:19:34 DEBUG SCG_SESSION.load_session: loaded class PG_RESULT
+2026-01-17T09:19:34 DEBUG SCG_SESSION.load_session: loaded class PG_CONNECTION
+2026-01-17T09:19:34 DEBUG SCG_SESSION.load_session: loaded class SIMPLE_POSTGRES
+2026-01-17T09:19:34 DEBUG SCG_SESSION.load_session: END class_specs.count=7
+2026-01-17T09:19:34 DEBUG SCG_SESSION.make_from_existing: END is_valid=True
+2026-01-17T09:19:34 DEBUG handle_process: session loaded, is_valid=True
+2026-01-17T09:19:34 DEBUG handle_process: reading input file
+2026-01-17T09:19:34 DEBUG handle_process: file read, content length=5729
+2026-01-17T09:19:34 DEBUG handle_process: creating parser
+2026-01-17T09:19:34 DEBUG SCG_RESPONSE_PARSER.make: initialized
+2026-01-17T09:19:34 DEBUG handle_process: calling parser.parse
+2026-01-17T09:19:34 DEBUG SCG_RESPONSE_PARSER.parse: START, response length=5729
+2026-01-17T09:19:34 DEBUG SCG_RESPONSE_PARSER.parse: state reset
+2026-01-17T09:19:34 DEBUG SCG_RESPONSE_PARSER.parse: JSON extracted, length=5729
+2026-01-17T09:19:34 DEBUG SCG_RESPONSE_PARSER.parse: creating SIMPLE_JSON
+2026-01-17T09:19:34 DEBUG SCG_RESPONSE_PARSER.parse: calling l_json.parse
+2026-01-17T09:19:34 DEBUG SCG_RESPONSE_PARSER.parse: JSON parsed, is_object=True
+2026-01-17T09:19:34 DEBUG SCG_RESPONSE_PARSER.parse: calling parse_json_object
+2026-01-17T09:19:34 DEBUG SCG_SESSION.save_session: START state=generating class_count=7
+2026-01-17T09:19:34 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T09:19:34 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T09:19:34 DEBUG SCG_SESSION.save_session: END
+2026-01-17T09:19:34 DEBUG SCG_RESPONSE_PARSER.parse: parse_json_object returned
+2026-01-17T09:19:34 DEBUG SCG_RESPONSE_PARSER.parse: END, is_success=True
+2026-01-17T09:19:34 DEBUG handle_process: parse complete, is_success=True
+2026-01-17T09:19:34 DEBUG handle_process: calling add_response
+2026-01-17T09:19:34 DEBUG SCG_SESSION.add_response: START type=class_code content_len=5729
+2026-01-17T09:19:34 DEBUG SCG_SESSION.add_response: writing to sessions/simple_postgres/responses/003_response.e
+2026-01-17T09:19:34 DEBUG SCG_SESSION.add_response: write success, updating state
+2026-01-17T09:19:34 DEBUG SCG_SESSION.save_session: START state=generating class_count=7
+2026-01-17T09:19:34 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T09:19:34 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T09:19:34 DEBUG SCG_SESSION.save_session: END
+2026-01-17T09:19:34 DEBUG SCG_SESSION.add_response: END
+2026-01-17T09:19:34 DEBUG handle_process: add_response complete
+2026-01-17T09:19:34 DEBUG handle_process: checking has_pending_work
+2026-01-17T09:19:34 DEBUG handle_process: has pending work, building prompt
+2026-01-17T09:19:34 DEBUG handle_process: builder created
+2026-01-17T09:19:34 DEBUG handle_process: prompt built, length=7754
+2026-01-17T09:19:34 DEBUG handle_process: saving prompt to session
+2026-01-17T09:19:34 DEBUG SCG_SESSION.save_next_prompt: START prompt_len=7754
+2026-01-17T09:19:34 DEBUG SCG_SESSION.save_next_prompt: writing to sessions/simple_postgres/prompts/004_prompt.txt
+2026-01-17T09:19:34 DEBUG SCG_SESSION.save_next_prompt: write success
+2026-01-17T09:19:34 DEBUG SCG_SESSION.save_session: START state=generating class_count=7
+2026-01-17T09:19:34 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T09:19:34 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T09:19:34 DEBUG SCG_SESSION.save_session: END
+2026-01-17T09:19:34 DEBUG SCG_SESSION.save_next_prompt: END
+2026-01-17T09:19:34 DEBUG handle_process: prompt saved
+2026-01-17T09:19:34 DEBUG handle_process: builder closed
+2026-01-17T09:19:34 DEBUG handle_process: setting is_success := True
+2026-01-17T09:19:34 DEBUG handle_process: is_success set
+2026-01-17T09:19:34 DEBUG handle_process: END
+2026-01-17T09:19:34 DEBUG process_command: END
+2026-01-17T09:19:34 DEBUG SCG_CLI_APP.make: process_command returned
+2026-01-17T09:19:34 DEBUG SCG_CLI_APP.make: END - about to exit make
+2026-01-17T09:20:28 DEBUG SCG_CLI_APP.make: START
+2026-01-17T09:20:28 DEBUG SCG_CLI_APP.make: args and last_error initialized
+2026-01-17T09:20:28 DEBUG SCG_CLI_APP.make: calling process_command
+2026-01-17T09:20:28 DEBUG process_command: START
+2026-01-17T09:20:28 DEBUG process_command: command=process
+2026-01-17T09:20:28 DEBUG process_command: dispatching to handle_process
+2026-01-17T09:20:28 DEBUG handle_process: START
+2026-01-17T09:20:28 DEBUG handle_process: options parsed
+2026-01-17T09:20:28 DEBUG handle_process: loading session simple_postgres
+2026-01-17T09:20:28 DEBUG SCG_SESSION.make_from_existing: START name=simple_postgres
+2026-01-17T09:20:28 DEBUG SCG_SESSION.make_from_existing: calling load_session
+2026-01-17T09:20:28 DEBUG SCG_SESSION.load_session: START session_path=sessions/simple_postgres
+2026-01-17T09:20:28 DEBUG SCG_SESSION.load_session: session.json exists, reading
+2026-01-17T09:20:28 DEBUG SCG_SESSION.load_session: read 9623 chars
+2026-01-17T09:20:28 DEBUG SCG_SESSION.load_session: JSON parsed successfully
+2026-01-17T09:20:28 DEBUG SCG_SESSION.load_session: loaded state=generating prompt_count=4
+2026-01-17T09:20:28 DEBUG SCG_SESSION.load_session: loading 7 class specs
+2026-01-17T09:20:28 DEBUG SCG_SESSION.load_session: loaded class PG_TYPE_OIDS
+2026-01-17T09:20:28 DEBUG SCG_SESSION.load_session: loaded class PG_EXTERNALS
+2026-01-17T09:20:28 DEBUG SCG_SESSION.load_session: loaded class PG_ERROR
+2026-01-17T09:20:28 DEBUG SCG_SESSION.load_session: loaded class PG_ROW
+2026-01-17T09:20:28 DEBUG SCG_SESSION.load_session: loaded class PG_RESULT
+2026-01-17T09:20:28 DEBUG SCG_SESSION.load_session: loaded class PG_CONNECTION
+2026-01-17T09:20:28 DEBUG SCG_SESSION.load_session: loaded class SIMPLE_POSTGRES
+2026-01-17T09:20:28 DEBUG SCG_SESSION.load_session: END class_specs.count=7
+2026-01-17T09:20:28 DEBUG SCG_SESSION.make_from_existing: END is_valid=True
+2026-01-17T09:20:28 DEBUG handle_process: session loaded, is_valid=True
+2026-01-17T09:20:28 DEBUG handle_process: reading input file
+2026-01-17T09:20:28 DEBUG handle_process: file read, content length=5561
+2026-01-17T09:20:28 DEBUG handle_process: creating parser
+2026-01-17T09:20:28 DEBUG SCG_RESPONSE_PARSER.make: initialized
+2026-01-17T09:20:28 DEBUG handle_process: calling parser.parse
+2026-01-17T09:20:28 DEBUG SCG_RESPONSE_PARSER.parse: START, response length=5561
+2026-01-17T09:20:28 DEBUG SCG_RESPONSE_PARSER.parse: state reset
+2026-01-17T09:20:28 DEBUG SCG_RESPONSE_PARSER.parse: JSON extracted, length=5561
+2026-01-17T09:20:28 DEBUG SCG_RESPONSE_PARSER.parse: creating SIMPLE_JSON
+2026-01-17T09:20:28 DEBUG SCG_RESPONSE_PARSER.parse: calling l_json.parse
+2026-01-17T09:20:28 DEBUG SCG_RESPONSE_PARSER.parse: JSON parsed, is_object=True
+2026-01-17T09:20:28 DEBUG SCG_RESPONSE_PARSER.parse: calling parse_json_object
+2026-01-17T09:20:28 DEBUG SCG_SESSION.save_session: START state=generating class_count=7
+2026-01-17T09:20:28 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T09:20:28 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T09:20:28 DEBUG SCG_SESSION.save_session: END
+2026-01-17T09:20:28 DEBUG SCG_RESPONSE_PARSER.parse: parse_json_object returned
+2026-01-17T09:20:28 DEBUG SCG_RESPONSE_PARSER.parse: END, is_success=True
+2026-01-17T09:20:28 DEBUG handle_process: parse complete, is_success=True
+2026-01-17T09:20:28 DEBUG handle_process: calling add_response
+2026-01-17T09:20:28 DEBUG SCG_SESSION.add_response: START type=class_code content_len=5561
+2026-01-17T09:20:28 DEBUG SCG_SESSION.add_response: writing to sessions/simple_postgres/responses/004_response.e
+2026-01-17T09:20:28 DEBUG SCG_SESSION.add_response: write success, updating state
+2026-01-17T09:20:28 DEBUG SCG_SESSION.save_session: START state=generating class_count=7
+2026-01-17T09:20:28 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T09:20:28 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T09:20:28 DEBUG SCG_SESSION.save_session: END
+2026-01-17T09:20:28 DEBUG SCG_SESSION.add_response: END
+2026-01-17T09:20:28 DEBUG handle_process: add_response complete
+2026-01-17T09:20:28 DEBUG handle_process: checking has_pending_work
+2026-01-17T09:20:28 DEBUG handle_process: has pending work, building prompt
+2026-01-17T09:20:28 DEBUG handle_process: builder created
+2026-01-17T09:20:28 DEBUG handle_process: prompt built, length=6305
+2026-01-17T09:20:28 DEBUG handle_process: saving prompt to session
+2026-01-17T09:20:28 DEBUG SCG_SESSION.save_next_prompt: START prompt_len=6305
+2026-01-17T09:20:28 DEBUG SCG_SESSION.save_next_prompt: writing to sessions/simple_postgres/prompts/005_prompt.txt
+2026-01-17T09:20:28 DEBUG SCG_SESSION.save_next_prompt: write success
+2026-01-17T09:20:28 DEBUG SCG_SESSION.save_session: START state=generating class_count=7
+2026-01-17T09:20:28 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T09:20:28 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T09:20:28 DEBUG SCG_SESSION.save_session: END
+2026-01-17T09:20:28 DEBUG SCG_SESSION.save_next_prompt: END
+2026-01-17T09:20:28 DEBUG handle_process: prompt saved
+2026-01-17T09:20:28 DEBUG handle_process: builder closed
+2026-01-17T09:20:28 DEBUG handle_process: setting is_success := True
+2026-01-17T09:20:28 DEBUG handle_process: is_success set
+2026-01-17T09:20:28 DEBUG handle_process: END
+2026-01-17T09:20:28 DEBUG process_command: END
+2026-01-17T09:20:28 DEBUG SCG_CLI_APP.make: process_command returned
+2026-01-17T09:20:28 DEBUG SCG_CLI_APP.make: END - about to exit make
+2026-01-17T09:21:28 DEBUG SCG_CLI_APP.make: START
+2026-01-17T09:21:28 DEBUG SCG_CLI_APP.make: args and last_error initialized
+2026-01-17T09:21:28 DEBUG SCG_CLI_APP.make: calling process_command
+2026-01-17T09:21:28 DEBUG process_command: START
+2026-01-17T09:21:28 DEBUG process_command: command=process
+2026-01-17T09:21:28 DEBUG process_command: dispatching to handle_process
+2026-01-17T09:21:28 DEBUG handle_process: START
+2026-01-17T09:21:28 DEBUG handle_process: options parsed
+2026-01-17T09:21:28 DEBUG handle_process: loading session simple_postgres
+2026-01-17T09:21:28 DEBUG SCG_SESSION.make_from_existing: START name=simple_postgres
+2026-01-17T09:21:28 DEBUG SCG_SESSION.make_from_existing: calling load_session
+2026-01-17T09:21:28 DEBUG SCG_SESSION.load_session: START session_path=sessions/simple_postgres
+2026-01-17T09:21:28 DEBUG SCG_SESSION.load_session: session.json exists, reading
+2026-01-17T09:21:28 DEBUG SCG_SESSION.load_session: read 14987 chars
+2026-01-17T09:21:28 DEBUG SCG_SESSION.load_session: JSON parsed successfully
+2026-01-17T09:21:28 DEBUG SCG_SESSION.load_session: loaded state=generating prompt_count=5
+2026-01-17T09:21:28 DEBUG SCG_SESSION.load_session: loading 7 class specs
+2026-01-17T09:21:28 DEBUG SCG_SESSION.load_session: loaded class PG_TYPE_OIDS
+2026-01-17T09:21:28 DEBUG SCG_SESSION.load_session: loaded class PG_EXTERNALS
+2026-01-17T09:21:28 DEBUG SCG_SESSION.load_session: loaded class PG_ERROR
+2026-01-17T09:21:28 DEBUG SCG_SESSION.load_session: loaded class PG_ROW
+2026-01-17T09:21:28 DEBUG SCG_SESSION.load_session: loaded class PG_RESULT
+2026-01-17T09:21:28 DEBUG SCG_SESSION.load_session: loaded class PG_CONNECTION
+2026-01-17T09:21:28 DEBUG SCG_SESSION.load_session: loaded class SIMPLE_POSTGRES
+2026-01-17T09:21:28 DEBUG SCG_SESSION.load_session: END class_specs.count=7
+2026-01-17T09:21:28 DEBUG SCG_SESSION.make_from_existing: END is_valid=True
+2026-01-17T09:21:28 DEBUG handle_process: session loaded, is_valid=True
+2026-01-17T09:21:28 DEBUG handle_process: reading input file
+2026-01-17T09:21:28 DEBUG handle_process: file read, content length=6146
+2026-01-17T09:21:28 DEBUG handle_process: creating parser
+2026-01-17T09:21:28 DEBUG SCG_RESPONSE_PARSER.make: initialized
+2026-01-17T09:21:28 DEBUG handle_process: calling parser.parse
+2026-01-17T09:21:28 DEBUG SCG_RESPONSE_PARSER.parse: START, response length=6146
+2026-01-17T09:21:28 DEBUG SCG_RESPONSE_PARSER.parse: state reset
+2026-01-17T09:21:28 DEBUG SCG_RESPONSE_PARSER.parse: JSON extracted, length=6146
+2026-01-17T09:21:28 DEBUG SCG_RESPONSE_PARSER.parse: creating SIMPLE_JSON
+2026-01-17T09:21:28 DEBUG SCG_RESPONSE_PARSER.parse: calling l_json.parse
+2026-01-17T09:21:28 DEBUG SCG_RESPONSE_PARSER.parse: JSON parsed, is_object=True
+2026-01-17T09:21:28 DEBUG SCG_RESPONSE_PARSER.parse: calling parse_json_object
+2026-01-17T09:21:28 DEBUG SCG_SESSION.save_session: START state=generating class_count=7
+2026-01-17T09:21:28 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T09:21:28 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T09:21:28 DEBUG SCG_SESSION.save_session: END
+2026-01-17T09:21:28 DEBUG SCG_RESPONSE_PARSER.parse: parse_json_object returned
+2026-01-17T09:21:28 DEBUG SCG_RESPONSE_PARSER.parse: END, is_success=True
+2026-01-17T09:21:28 DEBUG handle_process: parse complete, is_success=True
+2026-01-17T09:21:28 DEBUG handle_process: calling add_response
+2026-01-17T09:21:28 DEBUG SCG_SESSION.add_response: START type=class_code content_len=6146
+2026-01-17T09:21:28 DEBUG SCG_SESSION.add_response: writing to sessions/simple_postgres/responses/005_response.e
+2026-01-17T09:21:28 DEBUG SCG_SESSION.add_response: write success, updating state
+2026-01-17T09:21:28 DEBUG SCG_SESSION.save_session: START state=generating class_count=7
+2026-01-17T09:21:28 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T09:21:28 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T09:21:28 DEBUG SCG_SESSION.save_session: END
+2026-01-17T09:21:28 DEBUG SCG_SESSION.add_response: END
+2026-01-17T09:21:28 DEBUG handle_process: add_response complete
+2026-01-17T09:21:28 DEBUG handle_process: checking has_pending_work
+2026-01-17T09:21:28 DEBUG handle_process: has pending work, building prompt
+2026-01-17T09:21:28 DEBUG handle_process: builder created
+2026-01-17T09:21:28 DEBUG handle_process: prompt built, length=8077
+2026-01-17T09:21:28 DEBUG handle_process: saving prompt to session
+2026-01-17T09:21:28 DEBUG SCG_SESSION.save_next_prompt: START prompt_len=8077
+2026-01-17T09:21:28 DEBUG SCG_SESSION.save_next_prompt: writing to sessions/simple_postgres/prompts/006_prompt.txt
+2026-01-17T09:21:28 DEBUG SCG_SESSION.save_next_prompt: write success
+2026-01-17T09:21:28 DEBUG SCG_SESSION.save_session: START state=generating class_count=7
+2026-01-17T09:21:28 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T09:21:28 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T09:21:28 DEBUG SCG_SESSION.save_session: END
+2026-01-17T09:21:28 DEBUG SCG_SESSION.save_next_prompt: END
+2026-01-17T09:21:28 DEBUG handle_process: prompt saved
+2026-01-17T09:21:28 DEBUG handle_process: builder closed
+2026-01-17T09:21:28 DEBUG handle_process: setting is_success := True
+2026-01-17T09:21:28 DEBUG handle_process: is_success set
+2026-01-17T09:21:28 DEBUG handle_process: END
+2026-01-17T09:21:28 DEBUG process_command: END
+2026-01-17T09:21:28 DEBUG SCG_CLI_APP.make: process_command returned
+2026-01-17T09:21:28 DEBUG SCG_CLI_APP.make: END - about to exit make
+2026-01-17T09:22:23 DEBUG SCG_CLI_APP.make: START
+2026-01-17T09:22:23 DEBUG SCG_CLI_APP.make: args and last_error initialized
+2026-01-17T09:22:23 DEBUG SCG_CLI_APP.make: calling process_command
+2026-01-17T09:22:23 DEBUG process_command: START
+2026-01-17T09:22:23 DEBUG process_command: command=process
+2026-01-17T09:22:23 DEBUG process_command: dispatching to handle_process
+2026-01-17T09:22:23 DEBUG handle_process: START
+2026-01-17T09:22:23 DEBUG handle_process: options parsed
+2026-01-17T09:22:23 DEBUG handle_process: loading session simple_postgres
+2026-01-17T09:22:23 DEBUG SCG_SESSION.make_from_existing: START name=simple_postgres
+2026-01-17T09:22:23 DEBUG SCG_SESSION.make_from_existing: calling load_session
+2026-01-17T09:22:23 DEBUG SCG_SESSION.load_session: START session_path=sessions/simple_postgres
+2026-01-17T09:22:23 DEBUG SCG_SESSION.load_session: session.json exists, reading
+2026-01-17T09:22:23 DEBUG SCG_SESSION.load_session: read 20923 chars
+2026-01-17T09:22:23 DEBUG SCG_SESSION.load_session: JSON parsed successfully
+2026-01-17T09:22:23 DEBUG SCG_SESSION.load_session: loaded state=generating prompt_count=6
+2026-01-17T09:22:23 DEBUG SCG_SESSION.load_session: loading 7 class specs
+2026-01-17T09:22:23 DEBUG SCG_SESSION.load_session: loaded class PG_TYPE_OIDS
+2026-01-17T09:22:23 DEBUG SCG_SESSION.load_session: loaded class PG_EXTERNALS
+2026-01-17T09:22:23 DEBUG SCG_SESSION.load_session: loaded class PG_ERROR
+2026-01-17T09:22:23 DEBUG SCG_SESSION.load_session: loaded class PG_ROW
+2026-01-17T09:22:23 DEBUG SCG_SESSION.load_session: loaded class PG_RESULT
+2026-01-17T09:22:23 DEBUG SCG_SESSION.load_session: loaded class PG_CONNECTION
+2026-01-17T09:22:23 DEBUG SCG_SESSION.load_session: loaded class SIMPLE_POSTGRES
+2026-01-17T09:22:23 DEBUG SCG_SESSION.load_session: END class_specs.count=7
+2026-01-17T09:22:23 DEBUG SCG_SESSION.make_from_existing: END is_valid=True
+2026-01-17T09:22:23 DEBUG handle_process: session loaded, is_valid=True
+2026-01-17T09:22:23 DEBUG handle_process: reading input file
+2026-01-17T09:22:23 DEBUG handle_process: file read, content length=4482
+2026-01-17T09:22:23 DEBUG handle_process: creating parser
+2026-01-17T09:22:23 DEBUG SCG_RESPONSE_PARSER.make: initialized
+2026-01-17T09:22:23 DEBUG handle_process: calling parser.parse
+2026-01-17T09:22:23 DEBUG SCG_RESPONSE_PARSER.parse: START, response length=4482
+2026-01-17T09:22:23 DEBUG SCG_RESPONSE_PARSER.parse: state reset
+2026-01-17T09:22:23 DEBUG SCG_RESPONSE_PARSER.parse: JSON extracted, length=4482
+2026-01-17T09:22:23 DEBUG SCG_RESPONSE_PARSER.parse: creating SIMPLE_JSON
+2026-01-17T09:22:23 DEBUG SCG_RESPONSE_PARSER.parse: calling l_json.parse
+2026-01-17T09:22:23 DEBUG SCG_RESPONSE_PARSER.parse: JSON parsed, is_object=True
+2026-01-17T09:22:23 DEBUG SCG_RESPONSE_PARSER.parse: calling parse_json_object
+2026-01-17T09:22:23 DEBUG SCG_SESSION.save_session: START state=generating class_count=7
+2026-01-17T09:22:23 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T09:22:23 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T09:22:23 DEBUG SCG_SESSION.save_session: END
+2026-01-17T09:22:23 DEBUG SCG_RESPONSE_PARSER.parse: parse_json_object returned
+2026-01-17T09:22:23 DEBUG SCG_RESPONSE_PARSER.parse: END, is_success=True
+2026-01-17T09:22:23 DEBUG handle_process: parse complete, is_success=True
+2026-01-17T09:22:23 DEBUG handle_process: calling add_response
+2026-01-17T09:22:23 DEBUG SCG_SESSION.add_response: START type=class_code content_len=4482
+2026-01-17T09:22:23 DEBUG SCG_SESSION.add_response: writing to sessions/simple_postgres/responses/006_response.e
+2026-01-17T09:22:23 DEBUG SCG_SESSION.add_response: write success, updating state
+2026-01-17T09:22:23 DEBUG SCG_SESSION.save_session: START state=generating class_count=7
+2026-01-17T09:22:23 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T09:22:23 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T09:22:23 DEBUG SCG_SESSION.save_session: END
+2026-01-17T09:22:23 DEBUG SCG_SESSION.add_response: END
+2026-01-17T09:22:23 DEBUG handle_process: add_response complete
+2026-01-17T09:22:23 DEBUG handle_process: checking has_pending_work
+2026-01-17T09:22:23 DEBUG handle_process: has pending work, building prompt
+2026-01-17T09:22:23 DEBUG handle_process: builder created
+2026-01-17T09:22:23 DEBUG handle_process: prompt built, length=7366
+2026-01-17T09:22:23 DEBUG handle_process: saving prompt to session
+2026-01-17T09:22:23 DEBUG SCG_SESSION.save_next_prompt: START prompt_len=7366
+2026-01-17T09:22:23 DEBUG SCG_SESSION.save_next_prompt: writing to sessions/simple_postgres/prompts/007_prompt.txt
+2026-01-17T09:22:23 DEBUG SCG_SESSION.save_next_prompt: write success
+2026-01-17T09:22:23 DEBUG SCG_SESSION.save_session: START state=generating class_count=7
+2026-01-17T09:22:23 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T09:22:23 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T09:22:23 DEBUG SCG_SESSION.save_session: END
+2026-01-17T09:22:23 DEBUG SCG_SESSION.save_next_prompt: END
+2026-01-17T09:22:23 DEBUG handle_process: prompt saved
+2026-01-17T09:22:23 DEBUG handle_process: builder closed
+2026-01-17T09:22:23 DEBUG handle_process: setting is_success := True
+2026-01-17T09:22:23 DEBUG handle_process: is_success set
+2026-01-17T09:22:23 DEBUG handle_process: END
+2026-01-17T09:22:23 DEBUG process_command: END
+2026-01-17T09:22:23 DEBUG SCG_CLI_APP.make: process_command returned
+2026-01-17T09:22:23 DEBUG SCG_CLI_APP.make: END - about to exit make
+2026-01-17T09:23:17 DEBUG SCG_CLI_APP.make: START
+2026-01-17T09:23:17 DEBUG SCG_CLI_APP.make: args and last_error initialized
+2026-01-17T09:23:17 DEBUG SCG_CLI_APP.make: calling process_command
+2026-01-17T09:23:17 DEBUG process_command: START
+2026-01-17T09:23:17 DEBUG process_command: command=process
+2026-01-17T09:23:17 DEBUG process_command: dispatching to handle_process
+2026-01-17T09:23:17 DEBUG handle_process: START
+2026-01-17T09:23:17 DEBUG handle_process: options parsed
+2026-01-17T09:23:17 DEBUG handle_process: loading session simple_postgres
+2026-01-17T09:23:17 DEBUG SCG_SESSION.make_from_existing: START name=simple_postgres
+2026-01-17T09:23:17 DEBUG SCG_SESSION.make_from_existing: calling load_session
+2026-01-17T09:23:17 DEBUG SCG_SESSION.load_session: START session_path=sessions/simple_postgres
+2026-01-17T09:23:17 DEBUG SCG_SESSION.load_session: session.json exists, reading
+2026-01-17T09:23:17 DEBUG SCG_SESSION.load_session: read 25211 chars
+2026-01-17T09:23:17 DEBUG SCG_SESSION.load_session: JSON parsed successfully
+2026-01-17T09:23:17 DEBUG SCG_SESSION.load_session: loaded state=generating prompt_count=7
+2026-01-17T09:23:17 DEBUG SCG_SESSION.load_session: loading 7 class specs
+2026-01-17T09:23:17 DEBUG SCG_SESSION.load_session: loaded class PG_TYPE_OIDS
+2026-01-17T09:23:17 DEBUG SCG_SESSION.load_session: loaded class PG_EXTERNALS
+2026-01-17T09:23:17 DEBUG SCG_SESSION.load_session: loaded class PG_ERROR
+2026-01-17T09:23:17 DEBUG SCG_SESSION.load_session: loaded class PG_ROW
+2026-01-17T09:23:17 DEBUG SCG_SESSION.load_session: loaded class PG_RESULT
+2026-01-17T09:23:17 DEBUG SCG_SESSION.load_session: loaded class PG_CONNECTION
+2026-01-17T09:23:17 DEBUG SCG_SESSION.load_session: loaded class SIMPLE_POSTGRES
+2026-01-17T09:23:17 DEBUG SCG_SESSION.load_session: END class_specs.count=7
+2026-01-17T09:23:17 DEBUG SCG_SESSION.make_from_existing: END is_valid=True
+2026-01-17T09:23:17 DEBUG handle_process: session loaded, is_valid=True
+2026-01-17T09:23:17 DEBUG handle_process: reading input file
+2026-01-17T09:23:18 DEBUG handle_process: file read, content length=4645
+2026-01-17T09:23:18 DEBUG handle_process: creating parser
+2026-01-17T09:23:18 DEBUG SCG_RESPONSE_PARSER.make: initialized
+2026-01-17T09:23:18 DEBUG handle_process: calling parser.parse
+2026-01-17T09:23:18 DEBUG SCG_RESPONSE_PARSER.parse: START, response length=4645
+2026-01-17T09:23:18 DEBUG SCG_RESPONSE_PARSER.parse: state reset
+2026-01-17T09:23:18 DEBUG SCG_RESPONSE_PARSER.parse: JSON extracted, length=4645
+2026-01-17T09:23:18 DEBUG SCG_RESPONSE_PARSER.parse: creating SIMPLE_JSON
+2026-01-17T09:23:18 DEBUG SCG_RESPONSE_PARSER.parse: calling l_json.parse
+2026-01-17T09:23:18 DEBUG SCG_RESPONSE_PARSER.parse: JSON parsed, is_object=True
+2026-01-17T09:23:18 DEBUG SCG_RESPONSE_PARSER.parse: calling parse_json_object
+2026-01-17T09:23:18 DEBUG SCG_SESSION.save_session: START state=generating class_count=7
+2026-01-17T09:23:18 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T09:23:18 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T09:23:18 DEBUG SCG_SESSION.save_session: END
+2026-01-17T09:23:18 DEBUG SCG_RESPONSE_PARSER.parse: parse_json_object returned
+2026-01-17T09:23:18 DEBUG SCG_RESPONSE_PARSER.parse: END, is_success=True
+2026-01-17T09:23:18 DEBUG handle_process: parse complete, is_success=True
+2026-01-17T09:23:18 DEBUG handle_process: calling add_response
+2026-01-17T09:23:18 DEBUG SCG_SESSION.add_response: START type=class_code content_len=4645
+2026-01-17T09:23:18 DEBUG SCG_SESSION.add_response: writing to sessions/simple_postgres/responses/007_response.e
+2026-01-17T09:23:18 DEBUG SCG_SESSION.add_response: write success, updating state
+2026-01-17T09:23:18 DEBUG SCG_SESSION.save_session: START state=generating class_count=7
+2026-01-17T09:23:18 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T09:23:18 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T09:23:18 DEBUG SCG_SESSION.save_session: END
+2026-01-17T09:23:18 DEBUG SCG_SESSION.add_response: END
+2026-01-17T09:23:18 DEBUG handle_process: add_response complete
+2026-01-17T09:23:18 DEBUG handle_process: checking has_pending_work
+2026-01-17T09:23:18 DEBUG handle_process: has pending work, building prompt
+2026-01-17T09:23:18 DEBUG handle_process: builder created
+2026-01-17T09:23:18 DEBUG handle_process: prompt built, length=7621
+2026-01-17T09:23:18 DEBUG handle_process: saving prompt to session
+2026-01-17T09:23:18 DEBUG SCG_SESSION.save_next_prompt: START prompt_len=7621
+2026-01-17T09:23:18 DEBUG SCG_SESSION.save_next_prompt: writing to sessions/simple_postgres/prompts/008_prompt.txt
+2026-01-17T09:23:18 DEBUG SCG_SESSION.save_next_prompt: write success
+2026-01-17T09:23:18 DEBUG SCG_SESSION.save_session: START state=generating class_count=7
+2026-01-17T09:23:18 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T09:23:18 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T09:23:18 DEBUG SCG_SESSION.save_session: END
+2026-01-17T09:23:18 DEBUG SCG_SESSION.save_next_prompt: END
+2026-01-17T09:23:18 DEBUG handle_process: prompt saved
+2026-01-17T09:23:18 DEBUG handle_process: builder closed
+2026-01-17T09:23:18 DEBUG handle_process: setting is_success := True
+2026-01-17T09:23:18 DEBUG handle_process: is_success set
+2026-01-17T09:23:18 DEBUG handle_process: END
+2026-01-17T09:23:18 DEBUG process_command: END
+2026-01-17T09:23:18 DEBUG SCG_CLI_APP.make: process_command returned
+2026-01-17T09:23:18 DEBUG SCG_CLI_APP.make: END - about to exit make
+2026-01-17T09:24:27 DEBUG SCG_CLI_APP.make: START
+2026-01-17T09:24:27 DEBUG SCG_CLI_APP.make: args and last_error initialized
+2026-01-17T09:24:27 DEBUG SCG_CLI_APP.make: calling process_command
+2026-01-17T09:24:27 DEBUG process_command: START
+2026-01-17T09:24:27 DEBUG process_command: command=process
+2026-01-17T09:24:27 DEBUG process_command: dispatching to handle_process
+2026-01-17T09:24:27 DEBUG handle_process: START
+2026-01-17T09:24:27 DEBUG handle_process: options parsed
+2026-01-17T09:24:27 DEBUG handle_process: loading session simple_postgres
+2026-01-17T09:24:27 DEBUG SCG_SESSION.make_from_existing: START name=simple_postgres
+2026-01-17T09:24:27 DEBUG SCG_SESSION.make_from_existing: calling load_session
+2026-01-17T09:24:27 DEBUG SCG_SESSION.load_session: START session_path=sessions/simple_postgres
+2026-01-17T09:24:27 DEBUG SCG_SESSION.load_session: session.json exists, reading
+2026-01-17T09:24:27 DEBUG SCG_SESSION.load_session: read 29629 chars
+2026-01-17T09:24:27 DEBUG SCG_SESSION.load_session: JSON parsed successfully
+2026-01-17T09:24:27 DEBUG SCG_SESSION.load_session: loaded state=generating prompt_count=8
+2026-01-17T09:24:27 DEBUG SCG_SESSION.load_session: loading 7 class specs
+2026-01-17T09:24:27 DEBUG SCG_SESSION.load_session: loaded class PG_TYPE_OIDS
+2026-01-17T09:24:27 DEBUG SCG_SESSION.load_session: loaded class PG_EXTERNALS
+2026-01-17T09:24:27 DEBUG SCG_SESSION.load_session: loaded class PG_ERROR
+2026-01-17T09:24:27 DEBUG SCG_SESSION.load_session: loaded class PG_ROW
+2026-01-17T09:24:27 DEBUG SCG_SESSION.load_session: loaded class PG_RESULT
+2026-01-17T09:24:27 DEBUG SCG_SESSION.load_session: loaded class PG_CONNECTION
+2026-01-17T09:24:27 DEBUG SCG_SESSION.load_session: loaded class SIMPLE_POSTGRES
+2026-01-17T09:24:27 DEBUG SCG_SESSION.load_session: END class_specs.count=7
+2026-01-17T09:24:27 DEBUG SCG_SESSION.make_from_existing: END is_valid=True
+2026-01-17T09:24:27 DEBUG handle_process: session loaded, is_valid=True
+2026-01-17T09:24:27 DEBUG handle_process: reading input file
+2026-01-17T09:24:27 DEBUG handle_process: file read, content length=6958
+2026-01-17T09:24:27 DEBUG handle_process: creating parser
+2026-01-17T09:24:27 DEBUG SCG_RESPONSE_PARSER.make: initialized
+2026-01-17T09:24:27 DEBUG handle_process: calling parser.parse
+2026-01-17T09:24:27 DEBUG SCG_RESPONSE_PARSER.parse: START, response length=6958
+2026-01-17T09:24:27 DEBUG SCG_RESPONSE_PARSER.parse: state reset
+2026-01-17T09:24:27 DEBUG SCG_RESPONSE_PARSER.parse: JSON extracted, length=6958
+2026-01-17T09:24:27 DEBUG SCG_RESPONSE_PARSER.parse: creating SIMPLE_JSON
+2026-01-17T09:24:27 DEBUG SCG_RESPONSE_PARSER.parse: calling l_json.parse
+2026-01-17T09:24:27 DEBUG SCG_RESPONSE_PARSER.parse: JSON parsed, is_object=True
+2026-01-17T09:24:27 DEBUG SCG_RESPONSE_PARSER.parse: calling parse_json_object
+2026-01-17T09:24:27 DEBUG SCG_SESSION.save_session: START state=generating class_count=7
+2026-01-17T09:24:27 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T09:24:27 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T09:24:27 DEBUG SCG_SESSION.save_session: END
+2026-01-17T09:24:27 DEBUG SCG_RESPONSE_PARSER.parse: parse_json_object returned
+2026-01-17T09:24:27 DEBUG SCG_RESPONSE_PARSER.parse: END, is_success=True
+2026-01-17T09:24:27 DEBUG handle_process: parse complete, is_success=True
+2026-01-17T09:24:27 DEBUG handle_process: calling add_response
+2026-01-17T09:24:27 DEBUG SCG_SESSION.add_response: START type=class_code content_len=6958
+2026-01-17T09:24:27 DEBUG SCG_SESSION.add_response: writing to sessions/simple_postgres/responses/008_response.e
+2026-01-17T09:24:27 DEBUG SCG_SESSION.add_response: write success, updating state
+2026-01-17T09:24:27 DEBUG SCG_SESSION.save_session: START state=generating class_count=7
+2026-01-17T09:24:27 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T09:24:27 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T09:24:27 DEBUG SCG_SESSION.save_session: END
+2026-01-17T09:24:27 DEBUG SCG_SESSION.add_response: END
+2026-01-17T09:24:27 DEBUG handle_process: add_response complete
+2026-01-17T09:24:27 DEBUG handle_process: checking has_pending_work
+2026-01-17T09:24:27 DEBUG handle_process: no pending work - DONE
+2026-01-17T09:24:27 DEBUG handle_process: setting is_success := True
+2026-01-17T09:24:27 DEBUG handle_process: is_success set
+2026-01-17T09:24:27 DEBUG handle_process: END
+2026-01-17T09:24:27 DEBUG process_command: END
+2026-01-17T09:24:27 DEBUG SCG_CLI_APP.make: process_command returned
+2026-01-17T09:24:27 DEBUG SCG_CLI_APP.make: END - about to exit make
+2026-01-17T09:24:39 DEBUG SCG_CLI_APP.make: START
+2026-01-17T09:24:39 DEBUG SCG_CLI_APP.make: args and last_error initialized
+2026-01-17T09:24:39 DEBUG SCG_CLI_APP.make: calling process_command
+2026-01-17T09:24:39 DEBUG process_command: START
+2026-01-17T09:24:39 DEBUG process_command: command=assemble
+2026-01-17T09:24:39 DEBUG SCG_SESSION.make_from_existing: START name=simple_postgres
+2026-01-17T09:24:39 DEBUG SCG_SESSION.make_from_existing: calling load_session
+2026-01-17T09:24:39 DEBUG SCG_SESSION.load_session: START session_path=sessions/simple_postgres
+2026-01-17T09:24:39 DEBUG SCG_SESSION.load_session: session.json exists, reading
+2026-01-17T09:24:39 DEBUG SCG_SESSION.load_session: read 36355 chars
+2026-01-17T09:24:39 DEBUG SCG_SESSION.load_session: JSON parsed successfully
+2026-01-17T09:24:39 DEBUG SCG_SESSION.load_session: loaded state=generating prompt_count=8
+2026-01-17T09:24:39 DEBUG SCG_SESSION.load_session: loading 7 class specs
+2026-01-17T09:24:39 DEBUG SCG_SESSION.load_session: loaded class PG_TYPE_OIDS
+2026-01-17T09:24:39 DEBUG SCG_SESSION.load_session: loaded class PG_EXTERNALS
+2026-01-17T09:24:39 DEBUG SCG_SESSION.load_session: loaded class PG_ERROR
+2026-01-17T09:24:39 DEBUG SCG_SESSION.load_session: loaded class PG_ROW
+2026-01-17T09:24:39 DEBUG SCG_SESSION.load_session: loaded class PG_RESULT
+2026-01-17T09:24:39 DEBUG SCG_SESSION.load_session: loaded class PG_CONNECTION
+2026-01-17T09:24:39 DEBUG SCG_SESSION.load_session: loaded class SIMPLE_POSTGRES
+2026-01-17T09:24:39 DEBUG SCG_SESSION.load_session: END class_specs.count=7
+2026-01-17T09:24:39 DEBUG SCG_SESSION.make_from_existing: END is_valid=True
+2026-01-17T09:24:53 DEBUG SCG_SESSION.save_session: START state=assembled class_count=7
+2026-01-17T09:24:53 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T09:24:53 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T09:24:53 DEBUG SCG_SESSION.save_session: END
+2026-01-17T09:24:53 DEBUG process_command: END
+2026-01-17T09:24:53 DEBUG SCG_CLI_APP.make: process_command returned
+2026-01-17T09:24:53 DEBUG SCG_CLI_APP.make: END - about to exit make
+2026-01-17T09:26:11 DEBUG SCG_CLI_APP.make: START
+2026-01-17T09:26:11 DEBUG SCG_CLI_APP.make: args and last_error initialized
+2026-01-17T09:26:11 DEBUG SCG_CLI_APP.make: calling process_command
+2026-01-17T09:26:11 DEBUG process_command: START
+2026-01-17T09:26:11 DEBUG process_command: command=compile
+2026-01-17T09:26:11 DEBUG SCG_SESSION.make_from_existing: START name=simple_postgres
+2026-01-17T09:26:11 DEBUG SCG_SESSION.make_from_existing: calling load_session
+2026-01-17T09:26:11 DEBUG SCG_SESSION.load_session: START session_path=sessions/simple_postgres
+2026-01-17T09:26:11 DEBUG SCG_SESSION.load_session: session.json exists, reading
+2026-01-17T09:26:11 DEBUG SCG_SESSION.load_session: read 36354 chars
+2026-01-17T09:26:11 DEBUG SCG_SESSION.load_session: JSON parsed successfully
+2026-01-17T09:26:11 DEBUG SCG_SESSION.load_session: loaded state=assembled prompt_count=8
+2026-01-17T09:26:11 DEBUG SCG_SESSION.load_session: loading 7 class specs
+2026-01-17T09:26:11 DEBUG SCG_SESSION.load_session: loaded class PG_TYPE_OIDS
+2026-01-17T09:26:11 DEBUG SCG_SESSION.load_session: loaded class PG_EXTERNALS
+2026-01-17T09:26:11 DEBUG SCG_SESSION.load_session: loaded class PG_ERROR
+2026-01-17T09:26:11 DEBUG SCG_SESSION.load_session: loaded class PG_ROW
+2026-01-17T09:26:11 DEBUG SCG_SESSION.load_session: loaded class PG_RESULT
+2026-01-17T09:26:11 DEBUG SCG_SESSION.load_session: loaded class PG_CONNECTION
+2026-01-17T09:26:11 DEBUG SCG_SESSION.load_session: loaded class SIMPLE_POSTGRES
+2026-01-17T09:26:11 DEBUG SCG_SESSION.load_session: END class_specs.count=7
+2026-01-17T09:26:11 DEBUG SCG_SESSION.make_from_existing: END is_valid=True
+2026-01-17T09:26:11 DEBUG process_command: END
+2026-01-17T09:26:11 DEBUG SCG_CLI_APP.make: process_command returned
+2026-01-17T09:26:11 DEBUG SCG_CLI_APP.make: END - about to exit make
+2026-01-17T09:33:33 DEBUG SCG_CLI_APP.make: START
+2026-01-17T09:33:33 DEBUG SCG_CLI_APP.make: args and last_error initialized
+2026-01-17T09:33:33 DEBUG SCG_CLI_APP.make: no args, printing usage
+2026-01-17T09:33:33 DEBUG SCG_CLI_APP.make: END - about to exit make
+2026-01-17T09:46:27 DEBUG SCG_CLI_APP.make: START
+2026-01-17T09:46:27 DEBUG SCG_CLI_APP.make: args and last_error initialized
+2026-01-17T09:46:27 DEBUG SCG_CLI_APP.make: calling process_command
+2026-01-17T09:46:27 DEBUG process_command: START
+2026-01-17T09:46:27 DEBUG process_command: command=init
+2026-01-17T09:46:27 DEBUG process_command: dispatching to handle_init
+2026-01-17T09:46:27 DEBUG SCG_SESSION.make_new: START name=simple_postgres
+2026-01-17T09:46:27 DEBUG SCG_SESSION.make_new: calling create_session_directory
+2026-01-17T09:46:27 DEBUG SCG_SESSION.make_new: calling create_initial_prompt
+2026-01-17T09:46:27 DEBUG SCG_SESSION.make_new: calling save_session
+2026-01-17T09:46:27 DEBUG SCG_SESSION.save_session: START state=initialized class_count=0
+2026-01-17T09:46:27 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T09:46:27 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T09:46:27 DEBUG SCG_SESSION.save_session: END
+2026-01-17T09:46:27 DEBUG SCG_SESSION.make_new: END is_valid=True
+2026-01-17T09:46:27 DEBUG process_command: END
+2026-01-17T09:46:27 DEBUG SCG_CLI_APP.make: process_command returned
+2026-01-17T09:46:27 DEBUG SCG_CLI_APP.make: END - about to exit make
+2026-01-17T09:47:20 DEBUG SCG_CLI_APP.make: START
+2026-01-17T09:47:20 DEBUG SCG_CLI_APP.make: args and last_error initialized
+2026-01-17T09:47:20 DEBUG SCG_CLI_APP.make: calling process_command
+2026-01-17T09:47:20 DEBUG process_command: START
+2026-01-17T09:47:20 DEBUG process_command: command=process
+2026-01-17T09:47:20 DEBUG process_command: dispatching to handle_process
+2026-01-17T09:47:20 DEBUG handle_process: START
+2026-01-17T09:47:20 DEBUG handle_process: options parsed
+2026-01-17T09:47:20 DEBUG handle_process: loading session simple_postgres
+2026-01-17T09:47:20 DEBUG SCG_SESSION.make_from_existing: START name=simple_postgres
+2026-01-17T09:47:20 DEBUG SCG_SESSION.make_from_existing: calling load_session
+2026-01-17T09:47:20 DEBUG SCG_SESSION.load_session: START session_path=sessions/simple_postgres
+2026-01-17T09:47:20 DEBUG SCG_SESSION.load_session: session.json exists, reading
+2026-01-17T09:47:20 DEBUG SCG_SESSION.load_session: read 111 chars
+2026-01-17T09:47:20 DEBUG SCG_SESSION.load_session: JSON parsed successfully
+2026-01-17T09:47:20 DEBUG SCG_SESSION.load_session: loaded state=initialized prompt_count=1
+2026-01-17T09:47:20 DEBUG SCG_SESSION.load_session: loading 0 class specs
+2026-01-17T09:47:20 DEBUG SCG_SESSION.load_session: END class_specs.count=0
+2026-01-17T09:47:20 DEBUG SCG_SESSION.make_from_existing: END is_valid=True
+2026-01-17T09:47:20 DEBUG handle_process: session loaded, is_valid=True
+2026-01-17T09:47:20 DEBUG handle_process: reading input file
+2026-01-17T09:47:20 DEBUG handle_process: file read, content length=11332
+2026-01-17T09:47:20 DEBUG handle_process: creating parser
+2026-01-17T09:47:20 DEBUG SCG_RESPONSE_PARSER.make: initialized
+2026-01-17T09:47:20 DEBUG handle_process: calling parser.parse
+2026-01-17T09:47:20 DEBUG SCG_RESPONSE_PARSER.parse: START, response length=11332
+2026-01-17T09:47:20 DEBUG SCG_RESPONSE_PARSER.parse: state reset
+2026-01-17T09:47:20 DEBUG SCG_RESPONSE_PARSER.parse: JSON extracted, length=11332
+2026-01-17T09:47:20 DEBUG SCG_RESPONSE_PARSER.parse: creating SIMPLE_JSON
+2026-01-17T09:47:20 DEBUG SCG_RESPONSE_PARSER.parse: calling l_json.parse
+2026-01-17T09:47:20 DEBUG SCG_RESPONSE_PARSER.parse: JSON parsed, is_object=True
+2026-01-17T09:47:20 DEBUG SCG_RESPONSE_PARSER.parse: calling parse_json_object
+2026-01-17T09:47:20 DEBUG SCG_SESSION.save_session: START state=initialized class_count=1
+2026-01-17T09:47:20 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T09:47:20 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T09:47:20 DEBUG SCG_SESSION.save_session: END
+2026-01-17T09:47:20 DEBUG SCG_SESSION.save_session: START state=initialized class_count=2
+2026-01-17T09:47:20 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T09:47:20 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T09:47:20 DEBUG SCG_SESSION.save_session: END
+2026-01-17T09:47:20 DEBUG SCG_SESSION.save_session: START state=initialized class_count=3
+2026-01-17T09:47:20 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T09:47:20 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T09:47:20 DEBUG SCG_SESSION.save_session: END
+2026-01-17T09:47:20 DEBUG SCG_SESSION.save_session: START state=initialized class_count=4
+2026-01-17T09:47:20 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T09:47:20 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T09:47:20 DEBUG SCG_SESSION.save_session: END
+2026-01-17T09:47:21 DEBUG SCG_SESSION.save_session: START state=initialized class_count=5
+2026-01-17T09:47:21 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T09:47:21 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T09:47:21 DEBUG SCG_SESSION.save_session: END
+2026-01-17T09:47:21 DEBUG SCG_SESSION.save_session: START state=initialized class_count=6
+2026-01-17T09:47:21 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T09:47:21 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T09:47:21 DEBUG SCG_SESSION.save_session: END
+2026-01-17T09:47:21 DEBUG SCG_SESSION.save_session: START state=initialized class_count=7
+2026-01-17T09:47:21 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T09:47:21 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T09:47:21 DEBUG SCG_SESSION.save_session: END
+2026-01-17T09:47:21 DEBUG SCG_SESSION.save_session: START state=initialized class_count=7
+2026-01-17T09:47:21 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T09:47:21 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T09:47:21 DEBUG SCG_SESSION.save_session: END
+2026-01-17T09:47:21 DEBUG SCG_RESPONSE_PARSER.parse: parse_json_object returned
+2026-01-17T09:47:21 DEBUG SCG_RESPONSE_PARSER.parse: END, is_success=True
+2026-01-17T09:47:21 DEBUG handle_process: parse complete, is_success=True
+2026-01-17T09:47:21 DEBUG handle_process: calling add_response
+2026-01-17T09:47:21 DEBUG SCG_SESSION.add_response: START type=system_spec content_len=11332
+2026-01-17T09:47:21 DEBUG SCG_SESSION.add_response: writing to sessions/simple_postgres/responses/001_response.json
+2026-01-17T09:47:21 DEBUG SCG_SESSION.add_response: write success, updating state
+2026-01-17T09:47:21 DEBUG SCG_SESSION.save_session: START state=spec_received class_count=7
+2026-01-17T09:47:21 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T09:47:21 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T09:47:21 DEBUG SCG_SESSION.save_session: END
+2026-01-17T09:47:21 DEBUG SCG_SESSION.add_response: END
+2026-01-17T09:47:21 DEBUG handle_process: add_response complete
+2026-01-17T09:47:21 DEBUG handle_process: checking has_pending_work
+2026-01-17T09:47:21 DEBUG handle_process: has pending work, building prompt
+2026-01-17T09:47:21 DEBUG handle_process: builder created
+2026-01-17T09:47:21 DEBUG handle_process: prompt built, length=6570
+2026-01-17T09:47:21 DEBUG handle_process: saving prompt to session
+2026-01-17T09:47:21 DEBUG SCG_SESSION.save_next_prompt: START prompt_len=6570
+2026-01-17T09:47:21 DEBUG SCG_SESSION.save_next_prompt: writing to sessions/simple_postgres/prompts/002_prompt.txt
+2026-01-17T09:47:21 DEBUG SCG_SESSION.save_next_prompt: write success
+2026-01-17T09:47:21 DEBUG SCG_SESSION.save_session: START state=spec_received class_count=7
+2026-01-17T09:47:21 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T09:47:21 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T09:47:21 DEBUG SCG_SESSION.save_session: END
+2026-01-17T09:47:21 DEBUG SCG_SESSION.save_next_prompt: END
+2026-01-17T09:47:21 DEBUG handle_process: prompt saved
+2026-01-17T09:47:21 DEBUG handle_process: builder closed
+2026-01-17T09:47:21 DEBUG handle_process: setting is_success := True
+2026-01-17T09:47:21 DEBUG handle_process: is_success set
+2026-01-17T09:47:21 DEBUG handle_process: END
+2026-01-17T09:47:21 DEBUG process_command: END
+2026-01-17T09:47:21 DEBUG SCG_CLI_APP.make: process_command returned
+2026-01-17T09:47:21 DEBUG SCG_CLI_APP.make: END - about to exit make
+2026-01-17T09:48:15 DEBUG SCG_CLI_APP.make: START
+2026-01-17T09:48:15 DEBUG SCG_CLI_APP.make: args and last_error initialized
+2026-01-17T09:48:15 DEBUG SCG_CLI_APP.make: calling process_command
+2026-01-17T09:48:15 DEBUG process_command: START
+2026-01-17T09:48:15 DEBUG process_command: command=process
+2026-01-17T09:48:15 DEBUG process_command: dispatching to handle_process
+2026-01-17T09:48:15 DEBUG handle_process: START
+2026-01-17T09:48:15 DEBUG handle_process: options parsed
+2026-01-17T09:48:15 DEBUG handle_process: loading session simple_postgres
+2026-01-17T09:48:15 DEBUG SCG_SESSION.make_from_existing: START name=simple_postgres
+2026-01-17T09:48:15 DEBUG SCG_SESSION.make_from_existing: calling load_session
+2026-01-17T09:48:15 DEBUG SCG_SESSION.load_session: START session_path=sessions/simple_postgres
+2026-01-17T09:48:15 DEBUG SCG_SESSION.load_session: session.json exists, reading
+2026-01-17T09:48:15 DEBUG SCG_SESSION.load_session: read 1066 chars
+2026-01-17T09:48:15 DEBUG SCG_SESSION.load_session: JSON parsed successfully
+2026-01-17T09:48:15 DEBUG SCG_SESSION.load_session: loaded state=spec_received prompt_count=2
+2026-01-17T09:48:15 DEBUG SCG_SESSION.load_session: loading 7 class specs
+2026-01-17T09:48:15 DEBUG SCG_SESSION.load_session: loaded class PG_EXTERNALS
+2026-01-17T09:48:15 DEBUG SCG_SESSION.load_session: loaded class PG_TYPE_OIDS
+2026-01-17T09:48:15 DEBUG SCG_SESSION.load_session: loaded class PG_ERROR
+2026-01-17T09:48:15 DEBUG SCG_SESSION.load_session: loaded class PG_CONNECTION
+2026-01-17T09:48:15 DEBUG SCG_SESSION.load_session: loaded class PG_ROW
+2026-01-17T09:48:15 DEBUG SCG_SESSION.load_session: loaded class PG_RESULT
+2026-01-17T09:48:15 DEBUG SCG_SESSION.load_session: loaded class SIMPLE_POSTGRES
+2026-01-17T09:48:15 DEBUG SCG_SESSION.load_session: END class_specs.count=7
+2026-01-17T09:48:15 DEBUG SCG_SESSION.make_from_existing: END is_valid=True
+2026-01-17T09:48:15 DEBUG handle_process: session loaded, is_valid=True
+2026-01-17T09:48:15 DEBUG handle_process: reading input file
+2026-01-17T09:48:15 DEBUG handle_process: file read, content length=6730
+2026-01-17T09:48:15 DEBUG handle_process: creating parser
+2026-01-17T09:48:15 DEBUG SCG_RESPONSE_PARSER.make: initialized
+2026-01-17T09:48:15 DEBUG handle_process: calling parser.parse
+2026-01-17T09:48:15 DEBUG SCG_RESPONSE_PARSER.parse: START, response length=6730
+2026-01-17T09:48:15 DEBUG SCG_RESPONSE_PARSER.parse: state reset
+2026-01-17T09:48:15 DEBUG SCG_RESPONSE_PARSER.parse: JSON extracted, length=6730
+2026-01-17T09:48:15 DEBUG SCG_RESPONSE_PARSER.parse: creating SIMPLE_JSON
+2026-01-17T09:48:15 DEBUG SCG_RESPONSE_PARSER.parse: calling l_json.parse
+2026-01-17T09:48:15 DEBUG SCG_RESPONSE_PARSER.parse: JSON parsed, is_object=True
+2026-01-17T09:48:15 DEBUG SCG_RESPONSE_PARSER.parse: calling parse_json_object
+2026-01-17T09:48:15 DEBUG SCG_SESSION.save_session: START state=spec_received class_count=7
+2026-01-17T09:48:15 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T09:48:15 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T09:48:15 DEBUG SCG_SESSION.save_session: END
+2026-01-17T09:48:15 DEBUG SCG_RESPONSE_PARSER.parse: parse_json_object returned
+2026-01-17T09:48:15 DEBUG SCG_RESPONSE_PARSER.parse: END, is_success=True
+2026-01-17T09:48:15 DEBUG handle_process: parse complete, is_success=True
+2026-01-17T09:48:15 DEBUG handle_process: calling add_response
+2026-01-17T09:48:15 DEBUG SCG_SESSION.add_response: START type=class_code content_len=6730
+2026-01-17T09:48:15 DEBUG SCG_SESSION.add_response: writing to sessions/simple_postgres/responses/002_response.e
+2026-01-17T09:48:15 DEBUG SCG_SESSION.add_response: write success, updating state
+2026-01-17T09:48:15 DEBUG SCG_SESSION.save_session: START state=generating class_count=7
+2026-01-17T09:48:15 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T09:48:15 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T09:48:15 DEBUG SCG_SESSION.save_session: END
+2026-01-17T09:48:15 DEBUG SCG_SESSION.add_response: END
+2026-01-17T09:48:15 DEBUG handle_process: add_response complete
+2026-01-17T09:48:15 DEBUG handle_process: checking has_pending_work
+2026-01-17T09:48:15 DEBUG handle_process: has pending work, building prompt
+2026-01-17T09:48:15 DEBUG handle_process: builder created
+2026-01-17T09:48:15 DEBUG handle_process: prompt built, length=7365
+2026-01-17T09:48:15 DEBUG handle_process: saving prompt to session
+2026-01-17T09:48:15 DEBUG SCG_SESSION.save_next_prompt: START prompt_len=7365
+2026-01-17T09:48:15 DEBUG SCG_SESSION.save_next_prompt: writing to sessions/simple_postgres/prompts/003_prompt.txt
+2026-01-17T09:48:15 DEBUG SCG_SESSION.save_next_prompt: write success
+2026-01-17T09:48:15 DEBUG SCG_SESSION.save_session: START state=generating class_count=7
+2026-01-17T09:48:15 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T09:48:15 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T09:48:15 DEBUG SCG_SESSION.save_session: END
+2026-01-17T09:48:15 DEBUG SCG_SESSION.save_next_prompt: END
+2026-01-17T09:48:15 DEBUG handle_process: prompt saved
+2026-01-17T09:48:15 DEBUG handle_process: builder closed
+2026-01-17T09:48:15 DEBUG handle_process: setting is_success := True
+2026-01-17T09:48:15 DEBUG handle_process: is_success set
+2026-01-17T09:48:15 DEBUG handle_process: END
+2026-01-17T09:48:15 DEBUG process_command: END
+2026-01-17T09:48:15 DEBUG SCG_CLI_APP.make: process_command returned
+2026-01-17T09:48:15 DEBUG SCG_CLI_APP.make: END - about to exit make
+2026-01-17T09:48:40 DEBUG SCG_CLI_APP.make: START
+2026-01-17T09:48:40 DEBUG SCG_CLI_APP.make: args and last_error initialized
+2026-01-17T09:48:40 DEBUG SCG_CLI_APP.make: calling process_command
+2026-01-17T09:48:40 DEBUG process_command: START
+2026-01-17T09:48:40 DEBUG process_command: command=process
+2026-01-17T09:48:40 DEBUG process_command: dispatching to handle_process
+2026-01-17T09:48:40 DEBUG handle_process: START
+2026-01-17T09:48:40 DEBUG handle_process: options parsed
+2026-01-17T09:48:40 DEBUG handle_process: loading session simple_postgres
+2026-01-17T09:48:40 DEBUG SCG_SESSION.make_from_existing: START name=simple_postgres
+2026-01-17T09:48:40 DEBUG SCG_SESSION.make_from_existing: calling load_session
+2026-01-17T09:48:40 DEBUG SCG_SESSION.load_session: START session_path=sessions/simple_postgres
+2026-01-17T09:48:40 DEBUG SCG_SESSION.load_session: session.json exists, reading
+2026-01-17T09:48:40 DEBUG SCG_SESSION.load_session: read 7540 chars
+2026-01-17T09:48:40 DEBUG SCG_SESSION.load_session: JSON parsed successfully
+2026-01-17T09:48:40 DEBUG SCG_SESSION.load_session: loaded state=generating prompt_count=3
+2026-01-17T09:48:40 DEBUG SCG_SESSION.load_session: loading 7 class specs
+2026-01-17T09:48:40 DEBUG SCG_SESSION.load_session: loaded class PG_EXTERNALS
+2026-01-17T09:48:40 DEBUG SCG_SESSION.load_session: loaded class PG_TYPE_OIDS
+2026-01-17T09:48:40 DEBUG SCG_SESSION.load_session: loaded class PG_ERROR
+2026-01-17T09:48:40 DEBUG SCG_SESSION.load_session: loaded class PG_CONNECTION
+2026-01-17T09:48:40 DEBUG SCG_SESSION.load_session: loaded class PG_ROW
+2026-01-17T09:48:40 DEBUG SCG_SESSION.load_session: loaded class PG_RESULT
+2026-01-17T09:48:40 DEBUG SCG_SESSION.load_session: loaded class SIMPLE_POSTGRES
+2026-01-17T09:48:40 DEBUG SCG_SESSION.load_session: END class_specs.count=7
+2026-01-17T09:48:40 DEBUG SCG_SESSION.make_from_existing: END is_valid=True
+2026-01-17T09:48:40 DEBUG handle_process: session loaded, is_valid=True
+2026-01-17T09:48:40 DEBUG handle_process: reading input file
+2026-01-17T09:48:40 DEBUG handle_process: file read, content length=1751
+2026-01-17T09:48:40 DEBUG handle_process: creating parser
+2026-01-17T09:48:40 DEBUG SCG_RESPONSE_PARSER.make: initialized
+2026-01-17T09:48:40 DEBUG handle_process: calling parser.parse
+2026-01-17T09:48:40 DEBUG SCG_RESPONSE_PARSER.parse: START, response length=1751
+2026-01-17T09:48:40 DEBUG SCG_RESPONSE_PARSER.parse: state reset
+2026-01-17T09:48:40 DEBUG SCG_RESPONSE_PARSER.parse: JSON extracted, length=1751
+2026-01-17T09:48:40 DEBUG SCG_RESPONSE_PARSER.parse: creating SIMPLE_JSON
+2026-01-17T09:48:40 DEBUG SCG_RESPONSE_PARSER.parse: calling l_json.parse
+2026-01-17T09:48:40 DEBUG SCG_RESPONSE_PARSER.parse: JSON parsed, is_object=True
+2026-01-17T09:48:40 DEBUG SCG_RESPONSE_PARSER.parse: calling parse_json_object
+2026-01-17T09:48:40 DEBUG SCG_SESSION.save_session: START state=generating class_count=7
+2026-01-17T09:48:40 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T09:48:40 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T09:48:40 DEBUG SCG_SESSION.save_session: END
+2026-01-17T09:48:40 DEBUG SCG_RESPONSE_PARSER.parse: parse_json_object returned
+2026-01-17T09:48:40 DEBUG SCG_RESPONSE_PARSER.parse: END, is_success=True
+2026-01-17T09:48:40 DEBUG handle_process: parse complete, is_success=True
+2026-01-17T09:48:40 DEBUG handle_process: calling add_response
+2026-01-17T09:48:40 DEBUG SCG_SESSION.add_response: START type=class_code content_len=1751
+2026-01-17T09:48:40 DEBUG SCG_SESSION.add_response: writing to sessions/simple_postgres/responses/003_response.e
+2026-01-17T09:48:40 DEBUG SCG_SESSION.add_response: write success, updating state
+2026-01-17T09:48:40 DEBUG SCG_SESSION.save_session: START state=generating class_count=7
+2026-01-17T09:48:40 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T09:48:40 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T09:48:40 DEBUG SCG_SESSION.save_session: END
+2026-01-17T09:48:40 DEBUG SCG_SESSION.add_response: END
+2026-01-17T09:48:40 DEBUG handle_process: add_response complete
+2026-01-17T09:48:40 DEBUG handle_process: checking has_pending_work
+2026-01-17T09:48:40 DEBUG handle_process: has pending work, building prompt
+2026-01-17T09:48:40 DEBUG handle_process: builder created
+2026-01-17T09:48:40 DEBUG handle_process: prompt built, length=7750
+2026-01-17T09:48:40 DEBUG handle_process: saving prompt to session
+2026-01-17T09:48:40 DEBUG SCG_SESSION.save_next_prompt: START prompt_len=7750
+2026-01-17T09:48:40 DEBUG SCG_SESSION.save_next_prompt: writing to sessions/simple_postgres/prompts/004_prompt.txt
+2026-01-17T09:48:40 DEBUG SCG_SESSION.save_next_prompt: write success
+2026-01-17T09:48:40 DEBUG SCG_SESSION.save_session: START state=generating class_count=7
+2026-01-17T09:48:40 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T09:48:40 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T09:48:40 DEBUG SCG_SESSION.save_session: END
+2026-01-17T09:48:40 DEBUG SCG_SESSION.save_next_prompt: END
+2026-01-17T09:48:40 DEBUG handle_process: prompt saved
+2026-01-17T09:48:40 DEBUG handle_process: builder closed
+2026-01-17T09:48:40 DEBUG handle_process: setting is_success := True
+2026-01-17T09:48:40 DEBUG handle_process: is_success set
+2026-01-17T09:48:40 DEBUG handle_process: END
+2026-01-17T09:48:40 DEBUG process_command: END
+2026-01-17T09:48:40 DEBUG SCG_CLI_APP.make: process_command returned
+2026-01-17T09:48:40 DEBUG SCG_CLI_APP.make: END - about to exit make
+2026-01-17T09:49:23 DEBUG SCG_CLI_APP.make: START
+2026-01-17T09:49:23 DEBUG SCG_CLI_APP.make: args and last_error initialized
+2026-01-17T09:49:23 DEBUG SCG_CLI_APP.make: calling process_command
+2026-01-17T09:49:23 DEBUG process_command: START
+2026-01-17T09:49:23 DEBUG process_command: command=process
+2026-01-17T09:49:23 DEBUG process_command: dispatching to handle_process
+2026-01-17T09:49:23 DEBUG handle_process: START
+2026-01-17T09:49:23 DEBUG handle_process: options parsed
+2026-01-17T09:49:23 DEBUG handle_process: loading session simple_postgres
+2026-01-17T09:49:23 DEBUG SCG_SESSION.make_from_existing: START name=simple_postgres
+2026-01-17T09:49:23 DEBUG SCG_SESSION.make_from_existing: calling load_session
+2026-01-17T09:49:23 DEBUG SCG_SESSION.load_session: START session_path=sessions/simple_postgres
+2026-01-17T09:49:23 DEBUG SCG_SESSION.load_session: session.json exists, reading
+2026-01-17T09:49:23 DEBUG SCG_SESSION.load_session: read 9138 chars
+2026-01-17T09:49:23 DEBUG SCG_SESSION.load_session: JSON parsed successfully
+2026-01-17T09:49:23 DEBUG SCG_SESSION.load_session: loaded state=generating prompt_count=4
+2026-01-17T09:49:23 DEBUG SCG_SESSION.load_session: loading 7 class specs
+2026-01-17T09:49:23 DEBUG SCG_SESSION.load_session: loaded class PG_EXTERNALS
+2026-01-17T09:49:23 DEBUG SCG_SESSION.load_session: loaded class PG_TYPE_OIDS
+2026-01-17T09:49:23 DEBUG SCG_SESSION.load_session: loaded class PG_ERROR
+2026-01-17T09:49:23 DEBUG SCG_SESSION.load_session: loaded class PG_CONNECTION
+2026-01-17T09:49:23 DEBUG SCG_SESSION.load_session: loaded class PG_ROW
+2026-01-17T09:49:23 DEBUG SCG_SESSION.load_session: loaded class PG_RESULT
+2026-01-17T09:49:23 DEBUG SCG_SESSION.load_session: loaded class SIMPLE_POSTGRES
+2026-01-17T09:49:23 DEBUG SCG_SESSION.load_session: END class_specs.count=7
+2026-01-17T09:49:23 DEBUG SCG_SESSION.make_from_existing: END is_valid=True
+2026-01-17T09:49:23 DEBUG handle_process: session loaded, is_valid=True
+2026-01-17T09:49:23 DEBUG handle_process: reading input file
+2026-01-17T09:49:23 DEBUG handle_process: file read, content length=5568
+2026-01-17T09:49:23 DEBUG handle_process: creating parser
+2026-01-17T09:49:23 DEBUG SCG_RESPONSE_PARSER.make: initialized
+2026-01-17T09:49:23 DEBUG handle_process: calling parser.parse
+2026-01-17T09:49:23 DEBUG SCG_RESPONSE_PARSER.parse: START, response length=5568
+2026-01-17T09:49:23 DEBUG SCG_RESPONSE_PARSER.parse: state reset
+2026-01-17T09:49:23 DEBUG SCG_RESPONSE_PARSER.parse: JSON extracted, length=5568
+2026-01-17T09:49:23 DEBUG SCG_RESPONSE_PARSER.parse: creating SIMPLE_JSON
+2026-01-17T09:49:23 DEBUG SCG_RESPONSE_PARSER.parse: calling l_json.parse
+2026-01-17T09:49:23 DEBUG SCG_RESPONSE_PARSER.parse: JSON parsed, is_object=True
+2026-01-17T09:49:23 DEBUG SCG_RESPONSE_PARSER.parse: calling parse_json_object
+2026-01-17T09:49:23 DEBUG SCG_SESSION.save_session: START state=generating class_count=7
+2026-01-17T09:49:23 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T09:49:23 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T09:49:23 DEBUG SCG_SESSION.save_session: END
+2026-01-17T09:49:23 DEBUG SCG_RESPONSE_PARSER.parse: parse_json_object returned
+2026-01-17T09:49:23 DEBUG SCG_RESPONSE_PARSER.parse: END, is_success=True
+2026-01-17T09:49:23 DEBUG handle_process: parse complete, is_success=True
+2026-01-17T09:49:23 DEBUG handle_process: calling add_response
+2026-01-17T09:49:23 DEBUG SCG_SESSION.add_response: START type=class_code content_len=5568
+2026-01-17T09:49:23 DEBUG SCG_SESSION.add_response: writing to sessions/simple_postgres/responses/004_response.e
+2026-01-17T09:49:23 DEBUG SCG_SESSION.add_response: write success, updating state
+2026-01-17T09:49:23 DEBUG SCG_SESSION.save_session: START state=generating class_count=7
+2026-01-17T09:49:23 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T09:49:23 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T09:49:23 DEBUG SCG_SESSION.save_session: END
+2026-01-17T09:49:23 DEBUG SCG_SESSION.add_response: END
+2026-01-17T09:49:23 DEBUG handle_process: add_response complete
+2026-01-17T09:49:23 DEBUG handle_process: checking has_pending_work
+2026-01-17T09:49:23 DEBUG handle_process: has pending work, building prompt
+2026-01-17T09:49:23 DEBUG handle_process: builder created
+2026-01-17T09:49:23 DEBUG handle_process: prompt built, length=7370
+2026-01-17T09:49:23 DEBUG handle_process: saving prompt to session
+2026-01-17T09:49:23 DEBUG SCG_SESSION.save_next_prompt: START prompt_len=7370
+2026-01-17T09:49:23 DEBUG SCG_SESSION.save_next_prompt: writing to sessions/simple_postgres/prompts/005_prompt.txt
+2026-01-17T09:49:23 DEBUG SCG_SESSION.save_next_prompt: write success
+2026-01-17T09:49:23 DEBUG SCG_SESSION.save_session: START state=generating class_count=7
+2026-01-17T09:49:23 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T09:49:23 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T09:49:23 DEBUG SCG_SESSION.save_session: END
+2026-01-17T09:49:23 DEBUG SCG_SESSION.save_next_prompt: END
+2026-01-17T09:49:23 DEBUG handle_process: prompt saved
+2026-01-17T09:49:23 DEBUG handle_process: builder closed
+2026-01-17T09:49:23 DEBUG handle_process: setting is_success := True
+2026-01-17T09:49:23 DEBUG handle_process: is_success set
+2026-01-17T09:49:23 DEBUG handle_process: END
+2026-01-17T09:49:23 DEBUG process_command: END
+2026-01-17T09:49:23 DEBUG SCG_CLI_APP.make: process_command returned
+2026-01-17T09:49:23 DEBUG SCG_CLI_APP.make: END - about to exit make
+2026-01-17T09:50:05 DEBUG SCG_CLI_APP.make: START
+2026-01-17T09:50:05 DEBUG SCG_CLI_APP.make: args and last_error initialized
+2026-01-17T09:50:05 DEBUG SCG_CLI_APP.make: calling process_command
+2026-01-17T09:50:05 DEBUG process_command: START
+2026-01-17T09:50:05 DEBUG process_command: command=process
+2026-01-17T09:50:05 DEBUG process_command: dispatching to handle_process
+2026-01-17T09:50:05 DEBUG handle_process: START
+2026-01-17T09:50:05 DEBUG handle_process: options parsed
+2026-01-17T09:50:05 DEBUG handle_process: loading session simple_postgres
+2026-01-17T09:50:05 DEBUG SCG_SESSION.make_from_existing: START name=simple_postgres
+2026-01-17T09:50:05 DEBUG SCG_SESSION.make_from_existing: calling load_session
+2026-01-17T09:50:05 DEBUG SCG_SESSION.load_session: START session_path=sessions/simple_postgres
+2026-01-17T09:50:05 DEBUG SCG_SESSION.load_session: session.json exists, reading
+2026-01-17T09:50:05 DEBUG SCG_SESSION.load_session: read 14511 chars
+2026-01-17T09:50:05 DEBUG SCG_SESSION.load_session: JSON parsed successfully
+2026-01-17T09:50:05 DEBUG SCG_SESSION.load_session: loaded state=generating prompt_count=5
+2026-01-17T09:50:05 DEBUG SCG_SESSION.load_session: loading 7 class specs
+2026-01-17T09:50:05 DEBUG SCG_SESSION.load_session: loaded class PG_EXTERNALS
+2026-01-17T09:50:05 DEBUG SCG_SESSION.load_session: loaded class PG_TYPE_OIDS
+2026-01-17T09:50:05 DEBUG SCG_SESSION.load_session: loaded class PG_ERROR
+2026-01-17T09:50:05 DEBUG SCG_SESSION.load_session: loaded class PG_CONNECTION
+2026-01-17T09:50:05 DEBUG SCG_SESSION.load_session: loaded class PG_ROW
+2026-01-17T09:50:05 DEBUG SCG_SESSION.load_session: loaded class PG_RESULT
+2026-01-17T09:50:05 DEBUG SCG_SESSION.load_session: loaded class SIMPLE_POSTGRES
+2026-01-17T09:50:05 DEBUG SCG_SESSION.load_session: END class_specs.count=7
+2026-01-17T09:50:05 DEBUG SCG_SESSION.make_from_existing: END is_valid=True
+2026-01-17T09:50:05 DEBUG handle_process: session loaded, is_valid=True
+2026-01-17T09:50:05 DEBUG handle_process: reading input file
+2026-01-17T09:50:05 DEBUG handle_process: file read, content length=4582
+2026-01-17T09:50:05 DEBUG handle_process: creating parser
+2026-01-17T09:50:05 DEBUG SCG_RESPONSE_PARSER.make: initialized
+2026-01-17T09:50:05 DEBUG handle_process: calling parser.parse
+2026-01-17T09:50:05 DEBUG SCG_RESPONSE_PARSER.parse: START, response length=4582
+2026-01-17T09:50:05 DEBUG SCG_RESPONSE_PARSER.parse: state reset
+2026-01-17T09:50:05 DEBUG SCG_RESPONSE_PARSER.parse: JSON extracted, length=4582
+2026-01-17T09:50:05 DEBUG SCG_RESPONSE_PARSER.parse: creating SIMPLE_JSON
+2026-01-17T09:50:05 DEBUG SCG_RESPONSE_PARSER.parse: calling l_json.parse
+2026-01-17T09:50:05 DEBUG SCG_RESPONSE_PARSER.parse: JSON parsed, is_object=True
+2026-01-17T09:50:05 DEBUG SCG_RESPONSE_PARSER.parse: calling parse_json_object
+2026-01-17T09:50:05 DEBUG SCG_SESSION.save_session: START state=generating class_count=7
+2026-01-17T09:50:05 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T09:50:05 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T09:50:05 DEBUG SCG_SESSION.save_session: END
+2026-01-17T09:50:05 DEBUG SCG_RESPONSE_PARSER.parse: parse_json_object returned
+2026-01-17T09:50:05 DEBUG SCG_RESPONSE_PARSER.parse: END, is_success=True
+2026-01-17T09:50:05 DEBUG handle_process: parse complete, is_success=True
+2026-01-17T09:50:05 DEBUG handle_process: calling add_response
+2026-01-17T09:50:05 DEBUG SCG_SESSION.add_response: START type=class_code content_len=4582
+2026-01-17T09:50:05 DEBUG SCG_SESSION.add_response: writing to sessions/simple_postgres/responses/005_response.e
+2026-01-17T09:50:05 DEBUG SCG_SESSION.add_response: write success, updating state
+2026-01-17T09:50:05 DEBUG SCG_SESSION.save_session: START state=generating class_count=7
+2026-01-17T09:50:05 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T09:50:05 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T09:50:05 DEBUG SCG_SESSION.save_session: END
+2026-01-17T09:50:05 DEBUG SCG_SESSION.add_response: END
+2026-01-17T09:50:05 DEBUG handle_process: add_response complete
+2026-01-17T09:50:05 DEBUG handle_process: checking has_pending_work
+2026-01-17T09:50:05 DEBUG handle_process: has pending work, building prompt
+2026-01-17T09:50:05 DEBUG handle_process: builder created
+2026-01-17T09:50:05 DEBUG handle_process: prompt built, length=7623
+2026-01-17T09:50:05 DEBUG handle_process: saving prompt to session
+2026-01-17T09:50:05 DEBUG SCG_SESSION.save_next_prompt: START prompt_len=7623
+2026-01-17T09:50:05 DEBUG SCG_SESSION.save_next_prompt: writing to sessions/simple_postgres/prompts/006_prompt.txt
+2026-01-17T09:50:05 DEBUG SCG_SESSION.save_next_prompt: write success
+2026-01-17T09:50:05 DEBUG SCG_SESSION.save_session: START state=generating class_count=7
+2026-01-17T09:50:05 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T09:50:05 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T09:50:05 DEBUG SCG_SESSION.save_session: END
+2026-01-17T09:50:05 DEBUG SCG_SESSION.save_next_prompt: END
+2026-01-17T09:50:05 DEBUG handle_process: prompt saved
+2026-01-17T09:50:05 DEBUG handle_process: builder closed
+2026-01-17T09:50:05 DEBUG handle_process: setting is_success := True
+2026-01-17T09:50:05 DEBUG handle_process: is_success set
+2026-01-17T09:50:05 DEBUG handle_process: END
+2026-01-17T09:50:06 DEBUG process_command: END
+2026-01-17T09:50:06 DEBUG SCG_CLI_APP.make: process_command returned
+2026-01-17T09:50:06 DEBUG SCG_CLI_APP.make: END - about to exit make
+2026-01-17T09:50:46 DEBUG SCG_CLI_APP.make: START
+2026-01-17T09:50:46 DEBUG SCG_CLI_APP.make: args and last_error initialized
+2026-01-17T09:50:46 DEBUG SCG_CLI_APP.make: calling process_command
+2026-01-17T09:50:46 DEBUG process_command: START
+2026-01-17T09:50:46 DEBUG process_command: command=process
+2026-01-17T09:50:46 DEBUG process_command: dispatching to handle_process
+2026-01-17T09:50:46 DEBUG handle_process: START
+2026-01-17T09:50:46 DEBUG handle_process: options parsed
+2026-01-17T09:50:46 DEBUG handle_process: loading session simple_postgres
+2026-01-17T09:50:46 DEBUG SCG_SESSION.make_from_existing: START name=simple_postgres
+2026-01-17T09:50:46 DEBUG SCG_SESSION.make_from_existing: calling load_session
+2026-01-17T09:50:46 DEBUG SCG_SESSION.load_session: START session_path=sessions/simple_postgres
+2026-01-17T09:50:46 DEBUG SCG_SESSION.load_session: session.json exists, reading
+2026-01-17T09:50:46 DEBUG SCG_SESSION.load_session: read 18929 chars
+2026-01-17T09:50:46 DEBUG SCG_SESSION.load_session: JSON parsed successfully
+2026-01-17T09:50:46 DEBUG SCG_SESSION.load_session: loaded state=generating prompt_count=6
+2026-01-17T09:50:46 DEBUG SCG_SESSION.load_session: loading 7 class specs
+2026-01-17T09:50:46 DEBUG SCG_SESSION.load_session: loaded class PG_EXTERNALS
+2026-01-17T09:50:46 DEBUG SCG_SESSION.load_session: loaded class PG_TYPE_OIDS
+2026-01-17T09:50:46 DEBUG SCG_SESSION.load_session: loaded class PG_ERROR
+2026-01-17T09:50:46 DEBUG SCG_SESSION.load_session: loaded class PG_CONNECTION
+2026-01-17T09:50:46 DEBUG SCG_SESSION.load_session: loaded class PG_ROW
+2026-01-17T09:50:46 DEBUG SCG_SESSION.load_session: loaded class PG_RESULT
+2026-01-17T09:50:46 DEBUG SCG_SESSION.load_session: loaded class SIMPLE_POSTGRES
+2026-01-17T09:50:46 DEBUG SCG_SESSION.load_session: END class_specs.count=7
+2026-01-17T09:50:46 DEBUG SCG_SESSION.make_from_existing: END is_valid=True
+2026-01-17T09:50:46 DEBUG handle_process: session loaded, is_valid=True
+2026-01-17T09:50:46 DEBUG handle_process: reading input file
+2026-01-17T09:50:46 DEBUG handle_process: file read, content length=5361
+2026-01-17T09:50:46 DEBUG handle_process: creating parser
+2026-01-17T09:50:46 DEBUG SCG_RESPONSE_PARSER.make: initialized
+2026-01-17T09:50:46 DEBUG handle_process: calling parser.parse
+2026-01-17T09:50:46 DEBUG SCG_RESPONSE_PARSER.parse: START, response length=5361
+2026-01-17T09:50:46 DEBUG SCG_RESPONSE_PARSER.parse: state reset
+2026-01-17T09:50:46 DEBUG SCG_RESPONSE_PARSER.parse: JSON extracted, length=5361
+2026-01-17T09:50:46 DEBUG SCG_RESPONSE_PARSER.parse: creating SIMPLE_JSON
+2026-01-17T09:50:46 DEBUG SCG_RESPONSE_PARSER.parse: calling l_json.parse
+2026-01-17T09:50:46 DEBUG SCG_RESPONSE_PARSER.parse: JSON parsed, is_object=True
+2026-01-17T09:50:46 DEBUG SCG_RESPONSE_PARSER.parse: calling parse_json_object
+2026-01-17T09:50:46 DEBUG SCG_SESSION.save_session: START state=generating class_count=7
+2026-01-17T09:50:46 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T09:50:46 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T09:50:46 DEBUG SCG_SESSION.save_session: END
+2026-01-17T09:50:46 DEBUG SCG_RESPONSE_PARSER.parse: parse_json_object returned
+2026-01-17T09:50:46 DEBUG SCG_RESPONSE_PARSER.parse: END, is_success=True
+2026-01-17T09:50:46 DEBUG handle_process: parse complete, is_success=True
+2026-01-17T09:50:46 DEBUG handle_process: calling add_response
+2026-01-17T09:50:46 DEBUG SCG_SESSION.add_response: START type=class_code content_len=5361
+2026-01-17T09:50:46 DEBUG SCG_SESSION.add_response: writing to sessions/simple_postgres/responses/006_response.e
+2026-01-17T09:50:46 DEBUG SCG_SESSION.add_response: write success, updating state
+2026-01-17T09:50:46 DEBUG SCG_SESSION.save_session: START state=generating class_count=7
+2026-01-17T09:50:46 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T09:50:46 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T09:50:46 DEBUG SCG_SESSION.save_session: END
+2026-01-17T09:50:46 DEBUG SCG_SESSION.add_response: END
+2026-01-17T09:50:46 DEBUG handle_process: add_response complete
+2026-01-17T09:50:46 DEBUG handle_process: checking has_pending_work
+2026-01-17T09:50:46 DEBUG handle_process: has pending work, building prompt
+2026-01-17T09:50:46 DEBUG handle_process: builder created
+2026-01-17T09:50:46 DEBUG handle_process: prompt built, length=8079
+2026-01-17T09:50:46 DEBUG handle_process: saving prompt to session
+2026-01-17T09:50:46 DEBUG SCG_SESSION.save_next_prompt: START prompt_len=8079
+2026-01-17T09:50:46 DEBUG SCG_SESSION.save_next_prompt: writing to sessions/simple_postgres/prompts/007_prompt.txt
+2026-01-17T09:50:46 DEBUG SCG_SESSION.save_next_prompt: write success
+2026-01-17T09:50:46 DEBUG SCG_SESSION.save_session: START state=generating class_count=7
+2026-01-17T09:50:46 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T09:50:46 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T09:50:46 DEBUG SCG_SESSION.save_session: END
+2026-01-17T09:50:46 DEBUG SCG_SESSION.save_next_prompt: END
+2026-01-17T09:50:46 DEBUG handle_process: prompt saved
+2026-01-17T09:50:46 DEBUG handle_process: builder closed
+2026-01-17T09:50:46 DEBUG handle_process: setting is_success := True
+2026-01-17T09:50:46 DEBUG handle_process: is_success set
+2026-01-17T09:50:46 DEBUG handle_process: END
+2026-01-17T09:50:46 DEBUG process_command: END
+2026-01-17T09:50:46 DEBUG SCG_CLI_APP.make: process_command returned
+2026-01-17T09:50:46 DEBUG SCG_CLI_APP.make: END - about to exit make
+2026-01-17T09:51:21 DEBUG SCG_CLI_APP.make: START
+2026-01-17T09:51:21 DEBUG SCG_CLI_APP.make: args and last_error initialized
+2026-01-17T09:51:21 DEBUG SCG_CLI_APP.make: calling process_command
+2026-01-17T09:51:21 DEBUG process_command: START
+2026-01-17T09:51:21 DEBUG process_command: command=process
+2026-01-17T09:51:21 DEBUG process_command: dispatching to handle_process
+2026-01-17T09:51:21 DEBUG handle_process: START
+2026-01-17T09:51:21 DEBUG handle_process: options parsed
+2026-01-17T09:51:21 DEBUG handle_process: loading session simple_postgres
+2026-01-17T09:51:21 DEBUG SCG_SESSION.make_from_existing: START name=simple_postgres
+2026-01-17T09:51:21 DEBUG SCG_SESSION.make_from_existing: calling load_session
+2026-01-17T09:51:21 DEBUG SCG_SESSION.load_session: START session_path=sessions/simple_postgres
+2026-01-17T09:51:21 DEBUG SCG_SESSION.load_session: session.json exists, reading
+2026-01-17T09:51:21 DEBUG SCG_SESSION.load_session: read 24100 chars
+2026-01-17T09:51:21 DEBUG SCG_SESSION.load_session: JSON parsed successfully
+2026-01-17T09:51:21 DEBUG SCG_SESSION.load_session: loaded state=generating prompt_count=7
+2026-01-17T09:51:21 DEBUG SCG_SESSION.load_session: loading 7 class specs
+2026-01-17T09:51:21 DEBUG SCG_SESSION.load_session: loaded class PG_EXTERNALS
+2026-01-17T09:51:21 DEBUG SCG_SESSION.load_session: loaded class PG_TYPE_OIDS
+2026-01-17T09:51:21 DEBUG SCG_SESSION.load_session: loaded class PG_ERROR
+2026-01-17T09:51:21 DEBUG SCG_SESSION.load_session: loaded class PG_CONNECTION
+2026-01-17T09:51:21 DEBUG SCG_SESSION.load_session: loaded class PG_ROW
+2026-01-17T09:51:21 DEBUG SCG_SESSION.load_session: loaded class PG_RESULT
+2026-01-17T09:51:21 DEBUG SCG_SESSION.load_session: loaded class SIMPLE_POSTGRES
+2026-01-17T09:51:21 DEBUG SCG_SESSION.load_session: END class_specs.count=7
+2026-01-17T09:51:21 DEBUG SCG_SESSION.make_from_existing: END is_valid=True
+2026-01-17T09:51:21 DEBUG handle_process: session loaded, is_valid=True
+2026-01-17T09:51:21 DEBUG handle_process: reading input file
+2026-01-17T09:51:21 DEBUG handle_process: file read, content length=4407
+2026-01-17T09:51:21 DEBUG handle_process: creating parser
+2026-01-17T09:51:21 DEBUG SCG_RESPONSE_PARSER.make: initialized
+2026-01-17T09:51:21 DEBUG handle_process: calling parser.parse
+2026-01-17T09:51:21 DEBUG SCG_RESPONSE_PARSER.parse: START, response length=4407
+2026-01-17T09:51:21 DEBUG SCG_RESPONSE_PARSER.parse: state reset
+2026-01-17T09:51:21 DEBUG SCG_RESPONSE_PARSER.parse: JSON extracted, length=4407
+2026-01-17T09:51:21 DEBUG SCG_RESPONSE_PARSER.parse: creating SIMPLE_JSON
+2026-01-17T09:51:21 DEBUG SCG_RESPONSE_PARSER.parse: calling l_json.parse
+2026-01-17T09:51:21 DEBUG SCG_RESPONSE_PARSER.parse: JSON parsed, is_object=True
+2026-01-17T09:51:21 DEBUG SCG_RESPONSE_PARSER.parse: calling parse_json_object
+2026-01-17T09:51:21 DEBUG SCG_SESSION.save_session: START state=generating class_count=7
+2026-01-17T09:51:21 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T09:51:21 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T09:51:21 DEBUG SCG_SESSION.save_session: END
+2026-01-17T09:51:21 DEBUG SCG_RESPONSE_PARSER.parse: parse_json_object returned
+2026-01-17T09:51:21 DEBUG SCG_RESPONSE_PARSER.parse: END, is_success=True
+2026-01-17T09:51:21 DEBUG handle_process: parse complete, is_success=True
+2026-01-17T09:51:21 DEBUG handle_process: calling add_response
+2026-01-17T09:51:21 DEBUG SCG_SESSION.add_response: START type=class_code content_len=4407
+2026-01-17T09:51:21 DEBUG SCG_SESSION.add_response: writing to sessions/simple_postgres/responses/007_response.e
+2026-01-17T09:51:21 DEBUG SCG_SESSION.add_response: write success, updating state
+2026-01-17T09:51:21 DEBUG SCG_SESSION.save_session: START state=generating class_count=7
+2026-01-17T09:51:21 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T09:51:21 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T09:51:21 DEBUG SCG_SESSION.save_session: END
+2026-01-17T09:51:21 DEBUG SCG_SESSION.add_response: END
+2026-01-17T09:51:21 DEBUG handle_process: add_response complete
+2026-01-17T09:51:21 DEBUG handle_process: checking has_pending_work
+2026-01-17T09:51:21 DEBUG handle_process: has pending work, building prompt
+2026-01-17T09:51:21 DEBUG handle_process: builder created
+2026-01-17T09:51:21 DEBUG handle_process: prompt built, length=7382
+2026-01-17T09:51:21 DEBUG handle_process: saving prompt to session
+2026-01-17T09:51:21 DEBUG SCG_SESSION.save_next_prompt: START prompt_len=7382
+2026-01-17T09:51:21 DEBUG SCG_SESSION.save_next_prompt: writing to sessions/simple_postgres/prompts/008_prompt.txt
+2026-01-17T09:51:21 DEBUG SCG_SESSION.save_next_prompt: write success
+2026-01-17T09:51:21 DEBUG SCG_SESSION.save_session: START state=generating class_count=7
+2026-01-17T09:51:21 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T09:51:21 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T09:51:21 DEBUG SCG_SESSION.save_session: END
+2026-01-17T09:51:21 DEBUG SCG_SESSION.save_next_prompt: END
+2026-01-17T09:51:21 DEBUG handle_process: prompt saved
+2026-01-17T09:51:21 DEBUG handle_process: builder closed
+2026-01-17T09:51:21 DEBUG handle_process: setting is_success := True
+2026-01-17T09:51:21 DEBUG handle_process: is_success set
+2026-01-17T09:51:21 DEBUG handle_process: END
+2026-01-17T09:51:21 DEBUG process_command: END
+2026-01-17T09:51:21 DEBUG SCG_CLI_APP.make: process_command returned
+2026-01-17T09:51:21 DEBUG SCG_CLI_APP.make: END - about to exit make
+2026-01-17T09:52:14 DEBUG SCG_CLI_APP.make: START
+2026-01-17T09:52:14 DEBUG SCG_CLI_APP.make: args and last_error initialized
+2026-01-17T09:52:14 DEBUG SCG_CLI_APP.make: calling process_command
+2026-01-17T09:52:14 DEBUG process_command: START
+2026-01-17T09:52:14 DEBUG process_command: command=process
+2026-01-17T09:52:14 DEBUG process_command: dispatching to handle_process
+2026-01-17T09:52:14 DEBUG handle_process: START
+2026-01-17T09:52:14 DEBUG handle_process: options parsed
+2026-01-17T09:52:14 DEBUG handle_process: loading session simple_postgres
+2026-01-17T09:52:14 DEBUG SCG_SESSION.make_from_existing: START name=simple_postgres
+2026-01-17T09:52:14 DEBUG SCG_SESSION.make_from_existing: calling load_session
+2026-01-17T09:52:14 DEBUG SCG_SESSION.load_session: START session_path=sessions/simple_postgres
+2026-01-17T09:52:14 DEBUG SCG_SESSION.load_session: session.json exists, reading
+2026-01-17T09:52:14 DEBUG SCG_SESSION.load_session: read 28327 chars
+2026-01-17T09:52:14 DEBUG SCG_SESSION.load_session: JSON parsed successfully
+2026-01-17T09:52:14 DEBUG SCG_SESSION.load_session: loaded state=generating prompt_count=8
+2026-01-17T09:52:14 DEBUG SCG_SESSION.load_session: loading 7 class specs
+2026-01-17T09:52:14 DEBUG SCG_SESSION.load_session: loaded class PG_EXTERNALS
+2026-01-17T09:52:14 DEBUG SCG_SESSION.load_session: loaded class PG_TYPE_OIDS
+2026-01-17T09:52:14 DEBUG SCG_SESSION.load_session: loaded class PG_ERROR
+2026-01-17T09:52:14 DEBUG SCG_SESSION.load_session: loaded class PG_CONNECTION
+2026-01-17T09:52:14 DEBUG SCG_SESSION.load_session: loaded class PG_ROW
+2026-01-17T09:52:14 DEBUG SCG_SESSION.load_session: loaded class PG_RESULT
+2026-01-17T09:52:14 DEBUG SCG_SESSION.load_session: loaded class SIMPLE_POSTGRES
+2026-01-17T09:52:14 DEBUG SCG_SESSION.load_session: END class_specs.count=7
+2026-01-17T09:52:14 DEBUG SCG_SESSION.make_from_existing: END is_valid=True
+2026-01-17T09:52:14 DEBUG handle_process: session loaded, is_valid=True
+2026-01-17T09:52:14 DEBUG handle_process: reading input file
+2026-01-17T09:52:14 DEBUG handle_process: file read, content length=6925
+2026-01-17T09:52:14 DEBUG handle_process: creating parser
+2026-01-17T09:52:14 DEBUG SCG_RESPONSE_PARSER.make: initialized
+2026-01-17T09:52:14 DEBUG handle_process: calling parser.parse
+2026-01-17T09:52:14 DEBUG SCG_RESPONSE_PARSER.parse: START, response length=6925
+2026-01-17T09:52:14 DEBUG SCG_RESPONSE_PARSER.parse: state reset
+2026-01-17T09:52:14 DEBUG SCG_RESPONSE_PARSER.parse: JSON extracted, length=6925
+2026-01-17T09:52:14 DEBUG SCG_RESPONSE_PARSER.parse: creating SIMPLE_JSON
+2026-01-17T09:52:14 DEBUG SCG_RESPONSE_PARSER.parse: calling l_json.parse
+2026-01-17T09:52:14 DEBUG SCG_RESPONSE_PARSER.parse: JSON parsed, is_object=True
+2026-01-17T09:52:14 DEBUG SCG_RESPONSE_PARSER.parse: calling parse_json_object
+2026-01-17T09:52:14 DEBUG SCG_SESSION.save_session: START state=generating class_count=7
+2026-01-17T09:52:14 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T09:52:14 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T09:52:14 DEBUG SCG_SESSION.save_session: END
+2026-01-17T09:52:14 DEBUG SCG_RESPONSE_PARSER.parse: parse_json_object returned
+2026-01-17T09:52:14 DEBUG SCG_RESPONSE_PARSER.parse: END, is_success=True
+2026-01-17T09:52:14 DEBUG handle_process: parse complete, is_success=True
+2026-01-17T09:52:14 DEBUG handle_process: calling add_response
+2026-01-17T09:52:14 DEBUG SCG_SESSION.add_response: START type=class_code content_len=6925
+2026-01-17T09:52:14 DEBUG SCG_SESSION.add_response: writing to sessions/simple_postgres/responses/008_response.e
+2026-01-17T09:52:14 DEBUG SCG_SESSION.add_response: write success, updating state
+2026-01-17T09:52:14 DEBUG SCG_SESSION.save_session: START state=generating class_count=7
+2026-01-17T09:52:14 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T09:52:14 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T09:52:14 DEBUG SCG_SESSION.save_session: END
+2026-01-17T09:52:14 DEBUG SCG_SESSION.add_response: END
+2026-01-17T09:52:14 DEBUG handle_process: add_response complete
+2026-01-17T09:52:14 DEBUG handle_process: checking has_pending_work
+2026-01-17T09:52:14 DEBUG handle_process: no pending work - DONE
+2026-01-17T09:52:14 DEBUG handle_process: setting is_success := True
+2026-01-17T09:52:14 DEBUG handle_process: is_success set
+2026-01-17T09:52:14 DEBUG handle_process: END
+2026-01-17T09:52:14 DEBUG process_command: END
+2026-01-17T09:52:14 DEBUG SCG_CLI_APP.make: process_command returned
+2026-01-17T09:52:14 DEBUG SCG_CLI_APP.make: END - about to exit make
+2026-01-17T09:52:26 DEBUG SCG_CLI_APP.make: START
+2026-01-17T09:52:26 DEBUG SCG_CLI_APP.make: args and last_error initialized
+2026-01-17T09:52:26 DEBUG SCG_CLI_APP.make: calling process_command
+2026-01-17T09:52:26 DEBUG process_command: START
+2026-01-17T09:52:26 DEBUG process_command: command=assemble
+2026-01-17T09:52:26 DEBUG SCG_SESSION.make_from_existing: START name=simple_postgres
+2026-01-17T09:52:26 DEBUG SCG_SESSION.make_from_existing: calling load_session
+2026-01-17T09:52:26 DEBUG SCG_SESSION.load_session: START session_path=sessions/simple_postgres
+2026-01-17T09:52:26 DEBUG SCG_SESSION.load_session: session.json exists, reading
+2026-01-17T09:52:26 DEBUG SCG_SESSION.load_session: read 35025 chars
+2026-01-17T09:52:26 DEBUG SCG_SESSION.load_session: JSON parsed successfully
+2026-01-17T09:52:26 DEBUG SCG_SESSION.load_session: loaded state=generating prompt_count=8
+2026-01-17T09:52:26 DEBUG SCG_SESSION.load_session: loading 7 class specs
+2026-01-17T09:52:26 DEBUG SCG_SESSION.load_session: loaded class PG_EXTERNALS
+2026-01-17T09:52:26 DEBUG SCG_SESSION.load_session: loaded class PG_TYPE_OIDS
+2026-01-17T09:52:26 DEBUG SCG_SESSION.load_session: loaded class PG_ERROR
+2026-01-17T09:52:26 DEBUG SCG_SESSION.load_session: loaded class PG_CONNECTION
+2026-01-17T09:52:26 DEBUG SCG_SESSION.load_session: loaded class PG_ROW
+2026-01-17T09:52:26 DEBUG SCG_SESSION.load_session: loaded class PG_RESULT
+2026-01-17T09:52:26 DEBUG SCG_SESSION.load_session: loaded class SIMPLE_POSTGRES
+2026-01-17T09:52:26 DEBUG SCG_SESSION.load_session: END class_specs.count=7
+2026-01-17T09:52:26 DEBUG SCG_SESSION.make_from_existing: END is_valid=True
+2026-01-17T09:52:37 DEBUG SCG_SESSION.save_session: START state=assembled class_count=7
+2026-01-17T09:52:37 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T09:52:37 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T09:52:37 DEBUG SCG_SESSION.save_session: END
+2026-01-17T09:52:37 DEBUG process_command: END
+2026-01-17T09:52:37 DEBUG SCG_CLI_APP.make: process_command returned
+2026-01-17T09:52:37 DEBUG SCG_CLI_APP.make: END - about to exit make
+2026-01-17T09:52:50 DEBUG SCG_CLI_APP.make: START
+2026-01-17T09:52:50 DEBUG SCG_CLI_APP.make: args and last_error initialized
+2026-01-17T09:52:50 DEBUG SCG_CLI_APP.make: calling process_command
+2026-01-17T09:52:50 DEBUG process_command: START
+2026-01-17T09:52:50 DEBUG process_command: command=compile
+2026-01-17T09:52:50 DEBUG SCG_SESSION.make_from_existing: START name=simple_postgres
+2026-01-17T09:52:50 DEBUG SCG_SESSION.make_from_existing: calling load_session
+2026-01-17T09:52:50 DEBUG SCG_SESSION.load_session: START session_path=sessions/simple_postgres
+2026-01-17T09:52:50 DEBUG SCG_SESSION.load_session: session.json exists, reading
+2026-01-17T09:52:50 DEBUG SCG_SESSION.load_session: read 35024 chars
+2026-01-17T09:52:50 DEBUG SCG_SESSION.load_session: JSON parsed successfully
+2026-01-17T09:52:50 DEBUG SCG_SESSION.load_session: loaded state=assembled prompt_count=8
+2026-01-17T09:52:50 DEBUG SCG_SESSION.load_session: loading 7 class specs
+2026-01-17T09:52:50 DEBUG SCG_SESSION.load_session: loaded class PG_EXTERNALS
+2026-01-17T09:52:50 DEBUG SCG_SESSION.load_session: loaded class PG_TYPE_OIDS
+2026-01-17T09:52:50 DEBUG SCG_SESSION.load_session: loaded class PG_ERROR
+2026-01-17T09:52:50 DEBUG SCG_SESSION.load_session: loaded class PG_CONNECTION
+2026-01-17T09:52:50 DEBUG SCG_SESSION.load_session: loaded class PG_ROW
+2026-01-17T09:52:50 DEBUG SCG_SESSION.load_session: loaded class PG_RESULT
+2026-01-17T09:52:50 DEBUG SCG_SESSION.load_session: loaded class SIMPLE_POSTGRES
+2026-01-17T09:52:50 DEBUG SCG_SESSION.load_session: END class_specs.count=7
+2026-01-17T09:52:50 DEBUG SCG_SESSION.make_from_existing: END is_valid=True
+2026-01-17T09:52:51 DEBUG process_command: END
+2026-01-17T09:52:51 DEBUG SCG_CLI_APP.make: process_command returned
+2026-01-17T09:52:51 DEBUG SCG_CLI_APP.make: END - about to exit make
+2026-01-17T10:15:12 DEBUG SCG_CLI_APP.make: START
+2026-01-17T10:15:12 DEBUG SCG_CLI_APP.make: args and last_error initialized
+2026-01-17T10:15:12 DEBUG SCG_CLI_APP.make: calling process_command
+2026-01-17T10:15:12 DEBUG process_command: START
+2026-01-17T10:15:12 DEBUG process_command: command=init
+2026-01-17T10:15:12 DEBUG process_command: dispatching to handle_init
+2026-01-17T10:15:12 DEBUG SCG_SESSION.make_new: START name=simple_postgres
+2026-01-17T10:15:12 DEBUG SCG_SESSION.make_new: calling create_session_directory
+2026-01-17T10:15:12 DEBUG SCG_SESSION.make_new: calling create_initial_prompt
+2026-01-17T10:15:12 DEBUG SCG_SESSION.make_new: calling save_session
+2026-01-17T10:15:12 DEBUG SCG_SESSION.save_session: START state=initialized class_count=0
+2026-01-17T10:15:12 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T10:15:13 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T10:15:13 DEBUG SCG_SESSION.save_session: END
+2026-01-17T10:15:13 DEBUG SCG_SESSION.make_new: END is_valid=True
+2026-01-17T10:15:13 DEBUG process_command: END
+2026-01-17T10:15:13 DEBUG SCG_CLI_APP.make: process_command returned
+2026-01-17T10:15:13 DEBUG SCG_CLI_APP.make: END - about to exit make
+2026-01-17T10:15:18 DEBUG SCG_CLI_APP.make: START
+2026-01-17T10:15:18 DEBUG SCG_CLI_APP.make: args and last_error initialized
+2026-01-17T10:15:18 DEBUG SCG_CLI_APP.make: calling process_command
+2026-01-17T10:15:18 DEBUG process_command: START
+2026-01-17T10:15:18 DEBUG process_command: command=next
+2026-01-17T10:15:18 DEBUG SCG_SESSION.make_from_existing: START name=simple_postgres
+2026-01-17T10:15:18 DEBUG SCG_SESSION.make_from_existing: calling load_session
+2026-01-17T10:15:18 DEBUG SCG_SESSION.load_session: START session_path=sessions/simple_postgres
+2026-01-17T10:15:18 DEBUG SCG_SESSION.load_session: session.json exists, reading
+2026-01-17T10:15:18 DEBUG SCG_SESSION.load_session: read 111 chars
+2026-01-17T10:15:18 DEBUG SCG_SESSION.load_session: JSON parsed successfully
+2026-01-17T10:15:18 DEBUG SCG_SESSION.load_session: loaded state=initialized prompt_count=1
+2026-01-17T10:15:18 DEBUG SCG_SESSION.load_session: loading 0 class specs
+2026-01-17T10:15:18 DEBUG SCG_SESSION.load_session: END class_specs.count=0
+2026-01-17T10:15:18 DEBUG SCG_SESSION.make_from_existing: END is_valid=True
+2026-01-17T10:15:18 DEBUG SCG_SESSION.save_next_prompt: START prompt_len=823
+2026-01-17T10:15:18 DEBUG SCG_SESSION.save_next_prompt: writing to sessions/simple_postgres/prompts/002_prompt.txt
+2026-01-17T10:15:18 DEBUG SCG_SESSION.save_next_prompt: write success
+2026-01-17T10:15:18 DEBUG SCG_SESSION.save_session: START state=initialized class_count=0
+2026-01-17T10:15:18 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T10:15:18 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T10:15:18 DEBUG SCG_SESSION.save_session: END
+2026-01-17T10:15:18 DEBUG SCG_SESSION.save_next_prompt: END
+2026-01-17T10:15:18 DEBUG process_command: END
+2026-01-17T10:15:18 DEBUG SCG_CLI_APP.make: process_command returned
+2026-01-17T10:15:18 DEBUG SCG_CLI_APP.make: END - about to exit make
+2026-01-17T10:15:24 DEBUG SCG_CLI_APP.make: START
+2026-01-17T10:15:24 DEBUG SCG_CLI_APP.make: args and last_error initialized
+2026-01-17T10:15:24 DEBUG SCG_CLI_APP.make: calling process_command
+2026-01-17T10:15:24 DEBUG process_command: START
+2026-01-17T10:15:24 DEBUG process_command: command=wf-status
+2026-01-17T10:15:24 DEBUG SCG_SESSION.make_from_existing: START name=simple_postgres
+2026-01-17T10:15:24 DEBUG SCG_SESSION.make_from_existing: calling load_session
+2026-01-17T10:15:24 DEBUG SCG_SESSION.load_session: START session_path=sessions/simple_postgres
+2026-01-17T10:15:24 DEBUG SCG_SESSION.load_session: session.json exists, reading
+2026-01-17T10:15:24 DEBUG SCG_SESSION.load_session: read 111 chars
+2026-01-17T10:15:24 DEBUG SCG_SESSION.load_session: JSON parsed successfully
+2026-01-17T10:15:24 DEBUG SCG_SESSION.load_session: loaded state=initialized prompt_count=2
+2026-01-17T10:15:24 DEBUG SCG_SESSION.load_session: loading 0 class specs
+2026-01-17T10:15:24 DEBUG SCG_SESSION.load_session: END class_specs.count=0
+2026-01-17T10:15:24 DEBUG SCG_SESSION.make_from_existing: END is_valid=True
+2026-01-17T10:15:24 DEBUG process_command: END
+2026-01-17T10:15:24 DEBUG SCG_CLI_APP.make: process_command returned
+2026-01-17T10:15:24 DEBUG SCG_CLI_APP.make: END - about to exit make
+2026-01-17T10:17:59 DEBUG SCG_CLI_APP.make: START
+2026-01-17T10:17:59 DEBUG SCG_CLI_APP.make: args and last_error initialized
+2026-01-17T10:17:59 DEBUG SCG_CLI_APP.make: calling process_command
+2026-01-17T10:17:59 DEBUG process_command: START
+2026-01-17T10:17:59 DEBUG process_command: command=init
+2026-01-17T10:17:59 DEBUG process_command: dispatching to handle_init
+2026-01-17T10:17:59 DEBUG SCG_SESSION.make_new: START name=simple_postgres
+2026-01-17T10:17:59 DEBUG SCG_SESSION.make_new: calling create_session_directory
+2026-01-17T10:17:59 DEBUG SCG_SESSION.make_new: calling create_initial_prompt
+2026-01-17T10:17:59 DEBUG SCG_SESSION.make_new: calling save_session
+2026-01-17T10:17:59 DEBUG SCG_SESSION.save_session: START state=initialized class_count=0
+2026-01-17T10:17:59 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T10:17:59 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T10:17:59 DEBUG SCG_SESSION.save_session: END
+2026-01-17T10:17:59 DEBUG SCG_SESSION.make_new: END is_valid=True
+2026-01-17T10:17:59 DEBUG process_command: END
+2026-01-17T10:17:59 DEBUG SCG_CLI_APP.make: process_command returned
+2026-01-17T10:17:59 DEBUG SCG_CLI_APP.make: END - about to exit make
+2026-01-17T10:18:04 DEBUG SCG_CLI_APP.make: START
+2026-01-17T10:18:04 DEBUG SCG_CLI_APP.make: args and last_error initialized
+2026-01-17T10:18:04 DEBUG SCG_CLI_APP.make: calling process_command
+2026-01-17T10:18:04 DEBUG process_command: START
+2026-01-17T10:18:04 DEBUG process_command: command=next
+2026-01-17T10:18:04 DEBUG SCG_SESSION.make_from_existing: START name=simple_postgres
+2026-01-17T10:18:04 DEBUG SCG_SESSION.make_from_existing: calling load_session
+2026-01-17T10:18:04 DEBUG SCG_SESSION.load_session: START session_path=sessions/simple_postgres
+2026-01-17T10:18:04 DEBUG SCG_SESSION.load_session: session.json exists, reading
+2026-01-17T10:18:04 DEBUG SCG_SESSION.load_session: read 154 chars
+2026-01-17T10:18:04 DEBUG SCG_SESSION.load_session: JSON parsed successfully
+2026-01-17T10:18:04 DEBUG SCG_SESSION.load_session: loaded state=initialized prompt_count=1
+2026-01-17T10:18:04 DEBUG SCG_SESSION.load_session: loading 0 class specs
+2026-01-17T10:18:04 DEBUG SCG_SESSION.load_session: END class_specs.count=0
+2026-01-17T10:18:04 DEBUG SCG_SESSION.make_from_existing: END is_valid=True
+2026-01-17T10:18:04 DEBUG SCG_SESSION.save_session: START state=initialized class_count=0
+2026-01-17T10:18:04 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T10:18:04 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T10:18:04 DEBUG SCG_SESSION.save_session: END
+2026-01-17T10:18:04 DEBUG SCG_SESSION.save_session: START state=initialized class_count=0
+2026-01-17T10:18:04 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T10:18:04 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T10:18:04 DEBUG SCG_SESSION.save_session: END
+2026-01-17T10:18:04 DEBUG SCG_SESSION.save_next_prompt: START prompt_len=823
+2026-01-17T10:18:04 DEBUG SCG_SESSION.save_next_prompt: writing to sessions/simple_postgres/prompts/002_prompt.txt
+2026-01-17T10:18:04 DEBUG SCG_SESSION.save_next_prompt: write success
+2026-01-17T10:18:04 DEBUG SCG_SESSION.save_session: START state=initialized class_count=0
+2026-01-17T10:18:04 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T10:18:04 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T10:18:04 DEBUG SCG_SESSION.save_session: END
+2026-01-17T10:18:04 DEBUG SCG_SESSION.save_next_prompt: END
+2026-01-17T10:18:04 DEBUG process_command: END
+2026-01-17T10:18:04 DEBUG SCG_CLI_APP.make: process_command returned
+2026-01-17T10:18:04 DEBUG SCG_CLI_APP.make: END - about to exit make
+2026-01-17T10:18:10 DEBUG SCG_CLI_APP.make: START
+2026-01-17T10:18:10 DEBUG SCG_CLI_APP.make: args and last_error initialized
+2026-01-17T10:18:10 DEBUG SCG_CLI_APP.make: calling process_command
+2026-01-17T10:18:10 DEBUG process_command: START
+2026-01-17T10:18:10 DEBUG process_command: command=wf-status
+2026-01-17T10:18:10 DEBUG SCG_SESSION.make_from_existing: START name=simple_postgres
+2026-01-17T10:18:10 DEBUG SCG_SESSION.make_from_existing: calling load_session
+2026-01-17T10:18:10 DEBUG SCG_SESSION.load_session: START session_path=sessions/simple_postgres
+2026-01-17T10:18:10 DEBUG SCG_SESSION.load_session: session.json exists, reading
+2026-01-17T10:18:10 DEBUG SCG_SESSION.load_session: read 230 chars
+2026-01-17T10:18:10 DEBUG SCG_SESSION.load_session: JSON parsed successfully
+2026-01-17T10:18:10 DEBUG SCG_SESSION.load_session: loaded state=initialized prompt_count=2
+2026-01-17T10:18:10 DEBUG SCG_SESSION.load_session: loading 0 class specs
+2026-01-17T10:18:10 DEBUG SCG_SESSION.load_session: END class_specs.count=0
+2026-01-17T10:18:10 DEBUG SCG_SESSION.make_from_existing: END is_valid=True
+2026-01-17T10:18:10 DEBUG process_command: END
+2026-01-17T10:18:10 DEBUG SCG_CLI_APP.make: process_command returned
+2026-01-17T10:18:10 DEBUG SCG_CLI_APP.make: END - about to exit make
+2026-01-17T10:18:22 DEBUG SCG_CLI_APP.make: START
+2026-01-17T10:18:22 DEBUG SCG_CLI_APP.make: args and last_error initialized
+2026-01-17T10:18:22 DEBUG SCG_CLI_APP.make: calling process_command
+2026-01-17T10:18:22 DEBUG process_command: START
+2026-01-17T10:18:22 DEBUG process_command: command=done
+2026-01-17T10:18:22 DEBUG SCG_SESSION.make_from_existing: START name=simple_postgres
+2026-01-17T10:18:22 DEBUG SCG_SESSION.make_from_existing: calling load_session
+2026-01-17T10:18:22 DEBUG SCG_SESSION.load_session: START session_path=sessions/simple_postgres
+2026-01-17T10:18:22 DEBUG SCG_SESSION.load_session: session.json exists, reading
+2026-01-17T10:18:22 DEBUG SCG_SESSION.load_session: read 230 chars
+2026-01-17T10:18:22 DEBUG SCG_SESSION.load_session: JSON parsed successfully
+2026-01-17T10:18:22 DEBUG SCG_SESSION.load_session: loaded state=initialized prompt_count=2
+2026-01-17T10:18:22 DEBUG SCG_SESSION.load_session: loading 0 class specs
+2026-01-17T10:18:22 DEBUG SCG_SESSION.load_session: END class_specs.count=0
+2026-01-17T10:18:22 DEBUG SCG_SESSION.make_from_existing: END is_valid=True
+2026-01-17T10:18:22 DEBUG SCG_SESSION.save_session: START state=initialized class_count=0
+2026-01-17T10:18:22 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T10:18:22 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T10:18:22 DEBUG SCG_SESSION.save_session: END
+2026-01-17T10:18:22 DEBUG process_command: END
+2026-01-17T10:18:22 DEBUG SCG_CLI_APP.make: process_command returned
+2026-01-17T10:18:22 DEBUG SCG_CLI_APP.make: END - about to exit make
+2026-01-17T10:18:32 DEBUG SCG_CLI_APP.make: START
+2026-01-17T10:18:32 DEBUG SCG_CLI_APP.make: args and last_error initialized
+2026-01-17T10:18:32 DEBUG SCG_CLI_APP.make: calling process_command
+2026-01-17T10:18:32 DEBUG process_command: START
+2026-01-17T10:18:32 DEBUG process_command: command=init
+2026-01-17T10:18:32 DEBUG process_command: dispatching to handle_init
+2026-01-17T10:18:32 DEBUG SCG_SESSION.make_new: START name=simple_postgres
+2026-01-17T10:18:32 DEBUG SCG_SESSION.make_new: calling create_session_directory
+2026-01-17T10:18:32 DEBUG SCG_SESSION.make_new: calling create_initial_prompt
+2026-01-17T10:18:32 DEBUG SCG_SESSION.make_new: calling save_session
+2026-01-17T10:18:32 DEBUG SCG_SESSION.save_session: START state=initialized class_count=0
+2026-01-17T10:18:32 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T10:18:32 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T10:18:32 DEBUG SCG_SESSION.save_session: END
+2026-01-17T10:18:32 DEBUG SCG_SESSION.make_new: END is_valid=True
+2026-01-17T10:18:32 DEBUG process_command: END
+2026-01-17T10:18:32 DEBUG SCG_CLI_APP.make: process_command returned
+2026-01-17T10:18:32 DEBUG SCG_CLI_APP.make: END - about to exit make
+2026-01-17T10:18:49 DEBUG SCG_CLI_APP.make: START
+2026-01-17T10:18:49 DEBUG SCG_CLI_APP.make: args and last_error initialized
+2026-01-17T10:18:49 DEBUG SCG_CLI_APP.make: calling process_command
+2026-01-17T10:18:49 DEBUG process_command: START
+2026-01-17T10:18:49 DEBUG process_command: command=process
+2026-01-17T10:18:49 DEBUG process_command: dispatching to handle_process
+2026-01-17T10:18:49 DEBUG handle_process: START
+2026-01-17T10:18:49 DEBUG handle_process: options parsed
+2026-01-17T10:18:49 DEBUG handle_process: loading session simple_postgres
+2026-01-17T10:18:49 DEBUG SCG_SESSION.make_from_existing: START name=simple_postgres
+2026-01-17T10:18:49 DEBUG SCG_SESSION.make_from_existing: calling load_session
+2026-01-17T10:18:49 DEBUG SCG_SESSION.load_session: START session_path=sessions/simple_postgres
+2026-01-17T10:18:49 DEBUG SCG_SESSION.load_session: session.json exists, reading
+2026-01-17T10:18:49 DEBUG SCG_SESSION.load_session: read 154 chars
+2026-01-17T10:18:49 DEBUG SCG_SESSION.load_session: JSON parsed successfully
+2026-01-17T10:18:49 DEBUG SCG_SESSION.load_session: loaded state=initialized prompt_count=1
+2026-01-17T10:18:49 DEBUG SCG_SESSION.load_session: loading 0 class specs
+2026-01-17T10:18:49 DEBUG SCG_SESSION.load_session: END class_specs.count=0
+2026-01-17T10:18:49 DEBUG SCG_SESSION.make_from_existing: END is_valid=True
+2026-01-17T10:18:49 DEBUG handle_process: session loaded, is_valid=True
+2026-01-17T10:18:49 DEBUG handle_process: reading input file
+2026-01-17T10:18:49 DEBUG handle_process: file read, content length=1531
+2026-01-17T10:18:49 DEBUG handle_process: creating parser
+2026-01-17T10:18:49 DEBUG SCG_RESPONSE_PARSER.make: initialized
+2026-01-17T10:18:49 DEBUG handle_process: calling parser.parse
+2026-01-17T10:18:49 DEBUG SCG_RESPONSE_PARSER.parse: START, response length=1531
+2026-01-17T10:18:49 DEBUG SCG_RESPONSE_PARSER.parse: state reset
+2026-01-17T10:18:49 DEBUG SCG_RESPONSE_PARSER.parse: JSON extracted, length=1519
+2026-01-17T10:18:49 DEBUG SCG_RESPONSE_PARSER.parse: creating SIMPLE_JSON
+2026-01-17T10:18:49 DEBUG SCG_RESPONSE_PARSER.parse: calling l_json.parse
+2026-01-17T10:18:49 DEBUG SCG_RESPONSE_PARSER.parse: JSON parsed, is_object=True
+2026-01-17T10:18:49 DEBUG SCG_RESPONSE_PARSER.parse: calling parse_json_object
+2026-01-17T10:18:49 DEBUG SCG_SESSION.save_session: START state=initialized class_count=1
+2026-01-17T10:18:49 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T10:18:49 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T10:18:49 DEBUG SCG_SESSION.save_session: END
+2026-01-17T10:18:49 DEBUG SCG_SESSION.save_session: START state=initialized class_count=2
+2026-01-17T10:18:49 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T10:18:49 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T10:18:49 DEBUG SCG_SESSION.save_session: END
+2026-01-17T10:18:49 DEBUG SCG_SESSION.save_session: START state=initialized class_count=3
+2026-01-17T10:18:49 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T10:18:49 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T10:18:49 DEBUG SCG_SESSION.save_session: END
+2026-01-17T10:18:49 DEBUG SCG_SESSION.save_session: START state=initialized class_count=4
+2026-01-17T10:18:49 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T10:18:49 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T10:18:49 DEBUG SCG_SESSION.save_session: END
+2026-01-17T10:18:49 DEBUG SCG_SESSION.save_session: START state=initialized class_count=4
+2026-01-17T10:18:49 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T10:18:49 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T10:18:49 DEBUG SCG_SESSION.save_session: END
+2026-01-17T10:18:49 DEBUG SCG_RESPONSE_PARSER.parse: parse_json_object returned
+2026-01-17T10:18:49 DEBUG SCG_RESPONSE_PARSER.parse: END, is_success=True
+2026-01-17T10:18:49 DEBUG handle_process: parse complete, is_success=True
+2026-01-17T10:18:49 DEBUG handle_process: calling add_response
+2026-01-17T10:18:49 DEBUG SCG_SESSION.add_response: START type=system_spec content_len=1531
+2026-01-17T10:18:49 DEBUG SCG_SESSION.add_response: writing to sessions/simple_postgres/responses/001_response.json
+2026-01-17T10:18:49 DEBUG SCG_SESSION.add_response: write success, updating state
+2026-01-17T10:18:49 DEBUG SCG_SESSION.save_session: START state=spec_received class_count=4
+2026-01-17T10:18:49 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T10:18:49 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T10:18:49 DEBUG SCG_SESSION.save_session: END
+2026-01-17T10:18:49 DEBUG SCG_SESSION.add_response: END
+2026-01-17T10:18:49 DEBUG handle_process: add_response complete
+2026-01-17T10:18:49 DEBUG handle_process: checking has_pending_work
+2026-01-17T10:18:49 DEBUG handle_process: has pending work, building prompt
+2026-01-17T10:18:49 DEBUG handle_process: builder created
+2026-01-17T10:18:49 DEBUG handle_process: prompt built, length=6316
+2026-01-17T10:18:49 DEBUG handle_process: saving prompt to session
+2026-01-17T10:18:49 DEBUG SCG_SESSION.save_next_prompt: START prompt_len=6316
+2026-01-17T10:18:49 DEBUG SCG_SESSION.save_next_prompt: writing to sessions/simple_postgres/prompts/002_prompt.txt
+2026-01-17T10:18:49 DEBUG SCG_SESSION.save_next_prompt: write success
+2026-01-17T10:18:49 DEBUG SCG_SESSION.save_session: START state=spec_received class_count=4
+2026-01-17T10:18:49 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T10:18:49 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T10:18:49 DEBUG SCG_SESSION.save_session: END
+2026-01-17T10:18:49 DEBUG SCG_SESSION.save_next_prompt: END
+2026-01-17T10:18:49 DEBUG handle_process: prompt saved
+2026-01-17T10:18:49 DEBUG handle_process: builder closed
+2026-01-17T10:18:49 DEBUG handle_process: setting is_success := True
+2026-01-17T10:18:49 DEBUG handle_process: is_success set
+2026-01-17T10:18:49 DEBUG handle_process: END
+2026-01-17T10:18:49 DEBUG process_command: END
+2026-01-17T10:18:49 DEBUG SCG_CLI_APP.make: process_command returned
+2026-01-17T10:18:49 DEBUG SCG_CLI_APP.make: END - about to exit make
+2026-01-17T10:18:55 DEBUG SCG_CLI_APP.make: START
+2026-01-17T10:18:55 DEBUG SCG_CLI_APP.make: args and last_error initialized
+2026-01-17T10:18:55 DEBUG SCG_CLI_APP.make: calling process_command
+2026-01-17T10:18:55 DEBUG process_command: START
+2026-01-17T10:18:55 DEBUG process_command: command=next
+2026-01-17T10:18:55 DEBUG SCG_SESSION.make_from_existing: START name=simple_postgres
+2026-01-17T10:18:55 DEBUG SCG_SESSION.make_from_existing: calling load_session
+2026-01-17T10:18:55 DEBUG SCG_SESSION.load_session: START session_path=sessions/simple_postgres
+2026-01-17T10:18:55 DEBUG SCG_SESSION.load_session: session.json exists, reading
+2026-01-17T10:18:55 DEBUG SCG_SESSION.load_session: read 729 chars
+2026-01-17T10:18:55 DEBUG SCG_SESSION.load_session: JSON parsed successfully
+2026-01-17T10:18:55 DEBUG SCG_SESSION.load_session: loaded state=spec_received prompt_count=2
+2026-01-17T10:18:55 DEBUG SCG_SESSION.load_session: loading 4 class specs
+2026-01-17T10:18:55 DEBUG SCG_SESSION.load_session: loaded class PG_EXTERNALS
+2026-01-17T10:18:55 DEBUG SCG_SESSION.load_session: loaded class PG_CONNECTION
+2026-01-17T10:18:55 DEBUG SCG_SESSION.load_session: loaded class PG_RESULT
+2026-01-17T10:18:55 DEBUG SCG_SESSION.load_session: loaded class SIMPLE_POSTGRES
+2026-01-17T10:18:55 DEBUG SCG_SESSION.load_session: END class_specs.count=4
+2026-01-17T10:18:55 DEBUG SCG_SESSION.make_from_existing: END is_valid=True
+2026-01-17T10:18:55 DEBUG SCG_SESSION.save_session: START state=spec_received class_count=4
+2026-01-17T10:18:55 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T10:18:55 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T10:18:55 DEBUG SCG_SESSION.save_session: END
+2026-01-17T10:18:55 DEBUG SCG_SESSION.save_session: START state=spec_received class_count=4
+2026-01-17T10:18:55 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T10:18:55 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T10:18:55 DEBUG SCG_SESSION.save_session: END
+2026-01-17T10:18:55 DEBUG SCG_SESSION.save_session: START state=spec_received class_count=4
+2026-01-17T10:18:55 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T10:18:55 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T10:18:55 DEBUG SCG_SESSION.save_session: END
+2026-01-17T10:18:55 DEBUG SCG_SESSION.save_next_prompt: START prompt_len=823
+2026-01-17T10:18:55 DEBUG SCG_SESSION.save_next_prompt: writing to sessions/simple_postgres/prompts/003_prompt.txt
+2026-01-17T10:18:55 DEBUG SCG_SESSION.save_next_prompt: write success
+2026-01-17T10:18:55 DEBUG SCG_SESSION.save_session: START state=spec_received class_count=4
+2026-01-17T10:18:55 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T10:18:55 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T10:18:55 DEBUG SCG_SESSION.save_session: END
+2026-01-17T10:18:55 DEBUG SCG_SESSION.save_next_prompt: END
+2026-01-17T10:18:55 DEBUG process_command: END
+2026-01-17T10:18:55 DEBUG SCG_CLI_APP.make: process_command returned
+2026-01-17T10:18:55 DEBUG SCG_CLI_APP.make: END - about to exit make
+2026-01-17T10:19:01 DEBUG SCG_CLI_APP.make: START
+2026-01-17T10:19:01 DEBUG SCG_CLI_APP.make: args and last_error initialized
+2026-01-17T10:19:01 DEBUG SCG_CLI_APP.make: calling process_command
+2026-01-17T10:19:01 DEBUG process_command: START
+2026-01-17T10:19:01 DEBUG process_command: command=done
+2026-01-17T10:19:01 DEBUG SCG_SESSION.make_from_existing: START name=simple_postgres
+2026-01-17T10:19:01 DEBUG SCG_SESSION.make_from_existing: calling load_session
+2026-01-17T10:19:01 DEBUG SCG_SESSION.load_session: START session_path=sessions/simple_postgres
+2026-01-17T10:19:01 DEBUG SCG_SESSION.load_session: session.json exists, reading
+2026-01-17T10:19:01 DEBUG SCG_SESSION.load_session: read 1116 chars
+2026-01-17T10:19:01 DEBUG SCG_SESSION.load_session: JSON parsed successfully
+2026-01-17T10:19:01 DEBUG SCG_SESSION.load_session: loaded state=spec_received prompt_count=3
+2026-01-17T10:19:01 DEBUG SCG_SESSION.load_session: loading 4 class specs
+2026-01-17T10:19:01 DEBUG SCG_SESSION.load_session: loaded class PG_EXTERNALS
+2026-01-17T10:19:01 DEBUG SCG_SESSION.load_session: loaded class PG_CONNECTION
+2026-01-17T10:19:01 DEBUG SCG_SESSION.load_session: loaded class PG_RESULT
+2026-01-17T10:19:01 DEBUG SCG_SESSION.load_session: loaded class SIMPLE_POSTGRES
+2026-01-17T10:19:01 DEBUG SCG_SESSION.load_session: END class_specs.count=4
+2026-01-17T10:19:01 DEBUG SCG_SESSION.make_from_existing: END is_valid=True
+2026-01-17T10:19:01 DEBUG SCG_SESSION.save_session: START state=spec_received class_count=4
+2026-01-17T10:19:01 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T10:19:01 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T10:19:01 DEBUG SCG_SESSION.save_session: END
+2026-01-17T10:19:01 DEBUG process_command: END
+2026-01-17T10:19:01 DEBUG SCG_CLI_APP.make: process_command returned
+2026-01-17T10:19:01 DEBUG SCG_CLI_APP.make: END - about to exit make
+2026-01-17T10:19:06 DEBUG SCG_CLI_APP.make: START
+2026-01-17T10:19:06 DEBUG SCG_CLI_APP.make: args and last_error initialized
+2026-01-17T10:19:06 DEBUG SCG_CLI_APP.make: calling process_command
+2026-01-17T10:19:06 DEBUG process_command: START
+2026-01-17T10:19:06 DEBUG process_command: command=next
+2026-01-17T10:19:06 DEBUG SCG_SESSION.make_from_existing: START name=simple_postgres
+2026-01-17T10:19:06 DEBUG SCG_SESSION.make_from_existing: calling load_session
+2026-01-17T10:19:06 DEBUG SCG_SESSION.load_session: START session_path=sessions/simple_postgres
+2026-01-17T10:19:06 DEBUG SCG_SESSION.load_session: session.json exists, reading
+2026-01-17T10:19:06 DEBUG SCG_SESSION.load_session: read 1116 chars
+2026-01-17T10:19:06 DEBUG SCG_SESSION.load_session: JSON parsed successfully
+2026-01-17T10:19:06 DEBUG SCG_SESSION.load_session: loaded state=spec_received prompt_count=3
+2026-01-17T10:19:06 DEBUG SCG_SESSION.load_session: loading 4 class specs
+2026-01-17T10:19:06 DEBUG SCG_SESSION.load_session: loaded class PG_EXTERNALS
+2026-01-17T10:19:06 DEBUG SCG_SESSION.load_session: loaded class PG_CONNECTION
+2026-01-17T10:19:06 DEBUG SCG_SESSION.load_session: loaded class PG_RESULT
+2026-01-17T10:19:06 DEBUG SCG_SESSION.load_session: loaded class SIMPLE_POSTGRES
+2026-01-17T10:19:06 DEBUG SCG_SESSION.load_session: END class_specs.count=4
+2026-01-17T10:19:06 DEBUG SCG_SESSION.make_from_existing: END is_valid=True
+2026-01-17T10:19:06 DEBUG SCG_SESSION.save_session: START state=spec_received class_count=4
+2026-01-17T10:19:06 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T10:19:06 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T10:19:06 DEBUG SCG_SESSION.save_session: END
+2026-01-17T10:19:06 DEBUG SCG_SESSION.save_next_prompt: START prompt_len=1065
+2026-01-17T10:19:06 DEBUG SCG_SESSION.save_next_prompt: writing to sessions/simple_postgres/prompts/004_prompt.txt
+2026-01-17T10:19:06 DEBUG SCG_SESSION.save_next_prompt: write success
+2026-01-17T10:19:06 DEBUG SCG_SESSION.save_session: START state=spec_received class_count=4
+2026-01-17T10:19:06 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T10:19:06 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T10:19:06 DEBUG SCG_SESSION.save_session: END
+2026-01-17T10:19:06 DEBUG SCG_SESSION.save_next_prompt: END
+2026-01-17T10:19:06 DEBUG process_command: END
+2026-01-17T10:19:06 DEBUG SCG_CLI_APP.make: process_command returned
+2026-01-17T10:19:06 DEBUG SCG_CLI_APP.make: END - about to exit make
+2026-01-17T10:19:13 DEBUG SCG_CLI_APP.make: START
+2026-01-17T10:19:13 DEBUG SCG_CLI_APP.make: args and last_error initialized
+2026-01-17T10:19:13 DEBUG SCG_CLI_APP.make: calling process_command
+2026-01-17T10:19:13 DEBUG process_command: START
+2026-01-17T10:19:13 DEBUG process_command: command=wf-status
+2026-01-17T10:19:13 DEBUG SCG_SESSION.make_from_existing: START name=simple_postgres
+2026-01-17T10:19:13 DEBUG SCG_SESSION.make_from_existing: calling load_session
+2026-01-17T10:19:13 DEBUG SCG_SESSION.load_session: START session_path=sessions/simple_postgres
+2026-01-17T10:19:13 DEBUG SCG_SESSION.load_session: session.json exists, reading
+2026-01-17T10:19:13 DEBUG SCG_SESSION.load_session: read 1116 chars
+2026-01-17T10:19:13 DEBUG SCG_SESSION.load_session: JSON parsed successfully
+2026-01-17T10:19:13 DEBUG SCG_SESSION.load_session: loaded state=spec_received prompt_count=4
+2026-01-17T10:19:13 DEBUG SCG_SESSION.load_session: loading 4 class specs
+2026-01-17T10:19:13 DEBUG SCG_SESSION.load_session: loaded class PG_EXTERNALS
+2026-01-17T10:19:13 DEBUG SCG_SESSION.load_session: loaded class PG_CONNECTION
+2026-01-17T10:19:13 DEBUG SCG_SESSION.load_session: loaded class PG_RESULT
+2026-01-17T10:19:13 DEBUG SCG_SESSION.load_session: loaded class SIMPLE_POSTGRES
+2026-01-17T10:19:13 DEBUG SCG_SESSION.load_session: END class_specs.count=4
+2026-01-17T10:19:13 DEBUG SCG_SESSION.make_from_existing: END is_valid=True
+2026-01-17T10:19:13 DEBUG process_command: END
+2026-01-17T10:19:13 DEBUG SCG_CLI_APP.make: process_command returned
+2026-01-17T10:19:13 DEBUG SCG_CLI_APP.make: END - about to exit make
+2026-01-17T10:22:20 DEBUG SCG_CLI_APP.make: START
+2026-01-17T10:22:20 DEBUG SCG_CLI_APP.make: args and last_error initialized
+2026-01-17T10:22:20 DEBUG SCG_CLI_APP.make: calling process_command
+2026-01-17T10:22:20 DEBUG process_command: START
+2026-01-17T10:22:20 DEBUG process_command: command=wf-status
+2026-01-17T10:22:20 DEBUG SCG_SESSION.make_from_existing: START name=simple_postgres
+2026-01-17T10:22:20 DEBUG SCG_SESSION.make_from_existing: calling load_session
+2026-01-17T10:22:20 DEBUG SCG_SESSION.load_session: START session_path=sessions/simple_postgres
+2026-01-17T10:22:20 DEBUG SCG_SESSION.load_session: session.json exists, reading
+2026-01-17T10:22:20 DEBUG SCG_SESSION.load_session: read 1116 chars
+2026-01-17T10:22:20 DEBUG SCG_SESSION.load_session: JSON parsed successfully
+2026-01-17T10:22:20 DEBUG SCG_SESSION.load_session: loaded state=spec_received prompt_count=4
+2026-01-17T10:22:20 DEBUG SCG_SESSION.load_session: loading 4 class specs
+2026-01-17T10:22:20 DEBUG SCG_SESSION.load_session: loaded class PG_EXTERNALS
+2026-01-17T10:22:20 DEBUG SCG_SESSION.load_session: loaded class PG_CONNECTION
+2026-01-17T10:22:20 DEBUG SCG_SESSION.load_session: loaded class PG_RESULT
+2026-01-17T10:22:20 DEBUG SCG_SESSION.load_session: loaded class SIMPLE_POSTGRES
+2026-01-17T10:22:20 DEBUG SCG_SESSION.load_session: END class_specs.count=4
+2026-01-17T10:22:20 DEBUG SCG_SESSION.make_from_existing: END is_valid=True
+2026-01-17T10:22:20 DEBUG process_command: END
+2026-01-17T10:22:20 DEBUG SCG_CLI_APP.make: process_command returned
+2026-01-17T10:22:20 DEBUG SCG_CLI_APP.make: END - about to exit make
+2026-01-17T10:22:58 DEBUG SCG_CLI_APP.make: START
+2026-01-17T10:22:58 DEBUG SCG_CLI_APP.make: args and last_error initialized
+2026-01-17T10:22:58 DEBUG SCG_CLI_APP.make: calling process_command
+2026-01-17T10:22:58 DEBUG process_command: START
+2026-01-17T10:22:58 DEBUG process_command: command=process
+2026-01-17T10:22:58 DEBUG process_command: dispatching to handle_process
+2026-01-17T10:22:58 DEBUG handle_process: START
+2026-01-17T10:22:58 DEBUG handle_process: options parsed
+2026-01-17T10:22:58 DEBUG handle_process: loading session simple_postgres
+2026-01-17T10:22:58 DEBUG SCG_SESSION.make_from_existing: START name=simple_postgres
+2026-01-17T10:22:58 DEBUG SCG_SESSION.make_from_existing: calling load_session
+2026-01-17T10:22:58 DEBUG SCG_SESSION.load_session: START session_path=sessions/simple_postgres
+2026-01-17T10:22:58 DEBUG SCG_SESSION.load_session: session.json exists, reading
+2026-01-17T10:22:58 DEBUG SCG_SESSION.load_session: read 1116 chars
+2026-01-17T10:22:58 DEBUG SCG_SESSION.load_session: JSON parsed successfully
+2026-01-17T10:22:58 DEBUG SCG_SESSION.load_session: loaded state=spec_received prompt_count=4
+2026-01-17T10:22:58 DEBUG SCG_SESSION.load_session: loading 4 class specs
+2026-01-17T10:22:58 DEBUG SCG_SESSION.load_session: loaded class PG_EXTERNALS
+2026-01-17T10:22:58 DEBUG SCG_SESSION.load_session: loaded class PG_CONNECTION
+2026-01-17T10:22:58 DEBUG SCG_SESSION.load_session: loaded class PG_RESULT
+2026-01-17T10:22:58 DEBUG SCG_SESSION.load_session: loaded class SIMPLE_POSTGRES
+2026-01-17T10:22:58 DEBUG SCG_SESSION.load_session: END class_specs.count=4
+2026-01-17T10:22:58 DEBUG SCG_SESSION.make_from_existing: END is_valid=True
+2026-01-17T10:22:58 DEBUG handle_process: session loaded, is_valid=True
+2026-01-17T10:22:58 DEBUG handle_process: reading input file
+2026-01-17T10:22:58 DEBUG handle_process: file read, content length=3974
+2026-01-17T10:22:58 DEBUG handle_process: creating parser
+2026-01-17T10:22:58 DEBUG SCG_RESPONSE_PARSER.make: initialized
+2026-01-17T10:22:58 DEBUG handle_process: calling parser.parse
+2026-01-17T10:22:58 DEBUG SCG_RESPONSE_PARSER.parse: START, response length=3974
+2026-01-17T10:22:58 DEBUG SCG_RESPONSE_PARSER.parse: state reset
+2026-01-17T10:22:58 DEBUG SCG_RESPONSE_PARSER.parse: JSON extracted, length=3962
+2026-01-17T10:22:58 DEBUG SCG_RESPONSE_PARSER.parse: creating SIMPLE_JSON
+2026-01-17T10:22:58 DEBUG SCG_RESPONSE_PARSER.parse: calling l_json.parse
+2026-01-17T10:22:58 DEBUG SCG_RESPONSE_PARSER.parse: JSON parsed, is_object=True
+2026-01-17T10:22:58 DEBUG SCG_RESPONSE_PARSER.parse: calling parse_json_object
+2026-01-17T10:22:58 DEBUG SCG_SESSION.save_session: START state=spec_received class_count=4
+2026-01-17T10:22:58 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T10:22:58 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T10:22:58 DEBUG SCG_SESSION.save_session: END
+2026-01-17T10:22:58 DEBUG SCG_RESPONSE_PARSER.parse: parse_json_object returned
+2026-01-17T10:22:58 DEBUG SCG_RESPONSE_PARSER.parse: END, is_success=True
+2026-01-17T10:22:58 DEBUG handle_process: parse complete, is_success=True
+2026-01-17T10:22:58 DEBUG handle_process: calling add_response
+2026-01-17T10:22:58 DEBUG SCG_SESSION.add_response: START type=class_code content_len=3974
+2026-01-17T10:22:58 DEBUG SCG_SESSION.add_response: writing to sessions/simple_postgres/responses/002_response.e
+2026-01-17T10:22:58 DEBUG SCG_SESSION.add_response: write success, updating state
+2026-01-17T10:22:58 DEBUG SCG_SESSION.save_session: START state=generating class_count=4
+2026-01-17T10:22:58 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T10:22:58 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T10:22:58 DEBUG SCG_SESSION.save_session: END
+2026-01-17T10:22:58 DEBUG SCG_SESSION.add_response: END
+2026-01-17T10:22:58 DEBUG handle_process: add_response complete
+2026-01-17T10:22:58 DEBUG handle_process: checking has_pending_work
+2026-01-17T10:22:58 DEBUG handle_process: has pending work, building prompt
+2026-01-17T10:22:58 DEBUG handle_process: builder created
+2026-01-17T10:22:58 DEBUG handle_process: prompt built, length=7369
+2026-01-17T10:22:58 DEBUG handle_process: saving prompt to session
+2026-01-17T10:22:58 DEBUG SCG_SESSION.save_next_prompt: START prompt_len=7369
+2026-01-17T10:22:58 DEBUG SCG_SESSION.save_next_prompt: writing to sessions/simple_postgres/prompts/005_prompt.txt
+2026-01-17T10:22:58 DEBUG SCG_SESSION.save_next_prompt: write success
+2026-01-17T10:22:58 DEBUG SCG_SESSION.save_session: START state=generating class_count=4
+2026-01-17T10:22:58 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T10:22:58 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T10:22:58 DEBUG SCG_SESSION.save_session: END
+2026-01-17T10:22:58 DEBUG SCG_SESSION.save_next_prompt: END
+2026-01-17T10:22:58 DEBUG handle_process: prompt saved
+2026-01-17T10:22:58 DEBUG handle_process: builder closed
+2026-01-17T10:22:58 DEBUG handle_process: setting is_success := True
+2026-01-17T10:22:58 DEBUG handle_process: is_success set
+2026-01-17T10:22:58 DEBUG handle_process: END
+2026-01-17T10:22:58 DEBUG process_command: END
+2026-01-17T10:22:58 DEBUG SCG_CLI_APP.make: process_command returned
+2026-01-17T10:22:58 DEBUG SCG_CLI_APP.make: END - about to exit make
+2026-01-17T10:23:03 DEBUG SCG_CLI_APP.make: START
+2026-01-17T10:23:03 DEBUG SCG_CLI_APP.make: args and last_error initialized
+2026-01-17T10:23:03 DEBUG SCG_CLI_APP.make: calling process_command
+2026-01-17T10:23:03 DEBUG process_command: START
+2026-01-17T10:23:03 DEBUG process_command: command=done
+2026-01-17T10:23:03 DEBUG SCG_SESSION.make_from_existing: START name=simple_postgres
+2026-01-17T10:23:03 DEBUG SCG_SESSION.make_from_existing: calling load_session
+2026-01-17T10:23:03 DEBUG SCG_SESSION.load_session: START session_path=sessions/simple_postgres
+2026-01-17T10:23:03 DEBUG SCG_SESSION.load_session: session.json exists, reading
+2026-01-17T10:23:03 DEBUG SCG_SESSION.load_session: read 4844 chars
+2026-01-17T10:23:03 DEBUG SCG_SESSION.load_session: JSON parsed successfully
+2026-01-17T10:23:03 DEBUG SCG_SESSION.load_session: loaded state=generating prompt_count=5
+2026-01-17T10:23:03 DEBUG SCG_SESSION.load_session: loading 4 class specs
+2026-01-17T10:23:03 DEBUG SCG_SESSION.load_session: loaded class PG_EXTERNALS
+2026-01-17T10:23:03 DEBUG SCG_SESSION.load_session: loaded class PG_CONNECTION
+2026-01-17T10:23:03 DEBUG SCG_SESSION.load_session: loaded class PG_RESULT
+2026-01-17T10:23:03 DEBUG SCG_SESSION.load_session: loaded class SIMPLE_POSTGRES
+2026-01-17T10:23:04 DEBUG SCG_SESSION.load_session: END class_specs.count=4
+2026-01-17T10:23:04 DEBUG SCG_SESSION.make_from_existing: END is_valid=True
+2026-01-17T10:23:04 DEBUG SCG_SESSION.save_session: START state=generating class_count=4
+2026-01-17T10:23:04 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T10:23:04 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T10:23:04 DEBUG SCG_SESSION.save_session: END
+2026-01-17T10:23:04 DEBUG process_command: END
+2026-01-17T10:23:04 DEBUG SCG_CLI_APP.make: process_command returned
+2026-01-17T10:23:04 DEBUG SCG_CLI_APP.make: END - about to exit make
+2026-01-17T10:23:40 DEBUG SCG_CLI_APP.make: START
+2026-01-17T10:23:40 DEBUG SCG_CLI_APP.make: args and last_error initialized
+2026-01-17T10:23:40 DEBUG SCG_CLI_APP.make: calling process_command
+2026-01-17T10:23:40 DEBUG process_command: START
+2026-01-17T10:23:40 DEBUG process_command: command=process
+2026-01-17T10:23:40 DEBUG process_command: dispatching to handle_process
+2026-01-17T10:23:40 DEBUG handle_process: START
+2026-01-17T10:23:40 DEBUG handle_process: options parsed
+2026-01-17T10:23:40 DEBUG handle_process: loading session simple_postgres
+2026-01-17T10:23:40 DEBUG SCG_SESSION.make_from_existing: START name=simple_postgres
+2026-01-17T10:23:40 DEBUG SCG_SESSION.make_from_existing: calling load_session
+2026-01-17T10:23:40 DEBUG SCG_SESSION.load_session: START session_path=sessions/simple_postgres
+2026-01-17T10:23:40 DEBUG SCG_SESSION.load_session: session.json exists, reading
+2026-01-17T10:23:40 DEBUG SCG_SESSION.load_session: read 4844 chars
+2026-01-17T10:23:40 DEBUG SCG_SESSION.load_session: JSON parsed successfully
+2026-01-17T10:23:40 DEBUG SCG_SESSION.load_session: loaded state=generating prompt_count=5
+2026-01-17T10:23:40 DEBUG SCG_SESSION.load_session: loading 4 class specs
+2026-01-17T10:23:40 DEBUG SCG_SESSION.load_session: loaded class PG_EXTERNALS
+2026-01-17T10:23:40 DEBUG SCG_SESSION.load_session: loaded class PG_CONNECTION
+2026-01-17T10:23:40 DEBUG SCG_SESSION.load_session: loaded class PG_RESULT
+2026-01-17T10:23:40 DEBUG SCG_SESSION.load_session: loaded class SIMPLE_POSTGRES
+2026-01-17T10:23:40 DEBUG SCG_SESSION.load_session: END class_specs.count=4
+2026-01-17T10:23:40 DEBUG SCG_SESSION.make_from_existing: END is_valid=True
+2026-01-17T10:23:40 DEBUG handle_process: session loaded, is_valid=True
+2026-01-17T10:23:40 DEBUG handle_process: reading input file
+2026-01-17T10:23:40 DEBUG handle_process: file read, content length=3823
+2026-01-17T10:23:40 DEBUG handle_process: creating parser
+2026-01-17T10:23:40 DEBUG SCG_RESPONSE_PARSER.make: initialized
+2026-01-17T10:23:40 DEBUG handle_process: calling parser.parse
+2026-01-17T10:23:40 DEBUG SCG_RESPONSE_PARSER.parse: START, response length=3823
+2026-01-17T10:23:40 DEBUG SCG_RESPONSE_PARSER.parse: state reset
+2026-01-17T10:23:40 DEBUG SCG_RESPONSE_PARSER.parse: JSON extracted, length=3811
+2026-01-17T10:23:40 DEBUG SCG_RESPONSE_PARSER.parse: creating SIMPLE_JSON
+2026-01-17T10:23:40 DEBUG SCG_RESPONSE_PARSER.parse: calling l_json.parse
+2026-01-17T10:23:40 DEBUG SCG_RESPONSE_PARSER.parse: JSON parsed, is_object=True
+2026-01-17T10:23:40 DEBUG SCG_RESPONSE_PARSER.parse: calling parse_json_object
+2026-01-17T10:23:40 DEBUG SCG_SESSION.save_session: START state=generating class_count=4
+2026-01-17T10:23:40 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T10:23:40 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T10:23:40 DEBUG SCG_SESSION.save_session: END
+2026-01-17T10:23:40 DEBUG SCG_RESPONSE_PARSER.parse: parse_json_object returned
+2026-01-17T10:23:40 DEBUG SCG_RESPONSE_PARSER.parse: END, is_success=True
+2026-01-17T10:23:40 DEBUG handle_process: parse complete, is_success=True
+2026-01-17T10:23:40 DEBUG handle_process: calling add_response
+2026-01-17T10:23:40 DEBUG SCG_SESSION.add_response: START type=class_code content_len=3823
+2026-01-17T10:23:40 DEBUG SCG_SESSION.add_response: writing to sessions/simple_postgres/responses/003_response.e
+2026-01-17T10:23:40 DEBUG SCG_SESSION.add_response: write success, updating state
+2026-01-17T10:23:40 DEBUG SCG_SESSION.save_session: START state=generating class_count=4
+2026-01-17T10:23:40 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T10:23:40 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T10:23:40 DEBUG SCG_SESSION.save_session: END
+2026-01-17T10:23:40 DEBUG SCG_SESSION.add_response: END
+2026-01-17T10:23:40 DEBUG handle_process: add_response complete
+2026-01-17T10:23:40 DEBUG handle_process: checking has_pending_work
+2026-01-17T10:23:40 DEBUG handle_process: has pending work, building prompt
+2026-01-17T10:23:40 DEBUG handle_process: builder created
+2026-01-17T10:23:40 DEBUG handle_process: prompt built, length=7613
+2026-01-17T10:23:40 DEBUG handle_process: saving prompt to session
+2026-01-17T10:23:40 DEBUG SCG_SESSION.save_next_prompt: START prompt_len=7613
+2026-01-17T10:23:40 DEBUG SCG_SESSION.save_next_prompt: writing to sessions/simple_postgres/prompts/006_prompt.txt
+2026-01-17T10:23:40 DEBUG SCG_SESSION.save_next_prompt: write success
+2026-01-17T10:23:40 DEBUG SCG_SESSION.save_session: START state=generating class_count=4
+2026-01-17T10:23:40 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T10:23:40 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T10:23:40 DEBUG SCG_SESSION.save_session: END
+2026-01-17T10:23:40 DEBUG SCG_SESSION.save_next_prompt: END
+2026-01-17T10:23:40 DEBUG handle_process: prompt saved
+2026-01-17T10:23:40 DEBUG handle_process: builder closed
+2026-01-17T10:23:40 DEBUG handle_process: setting is_success := True
+2026-01-17T10:23:40 DEBUG handle_process: is_success set
+2026-01-17T10:23:40 DEBUG handle_process: END
+2026-01-17T10:23:40 DEBUG process_command: END
+2026-01-17T10:23:40 DEBUG SCG_CLI_APP.make: process_command returned
+2026-01-17T10:23:40 DEBUG SCG_CLI_APP.make: END - about to exit make
+2026-01-17T10:23:40 DEBUG SCG_CLI_APP.make: START
+2026-01-17T10:23:40 DEBUG SCG_CLI_APP.make: args and last_error initialized
+2026-01-17T10:23:40 DEBUG SCG_CLI_APP.make: calling process_command
+2026-01-17T10:23:40 DEBUG process_command: START
+2026-01-17T10:23:40 DEBUG process_command: command=done
+2026-01-17T10:23:40 DEBUG SCG_SESSION.make_from_existing: START name=simple_postgres
+2026-01-17T10:23:40 DEBUG SCG_SESSION.make_from_existing: calling load_session
+2026-01-17T10:23:40 DEBUG SCG_SESSION.load_session: START session_path=sessions/simple_postgres
+2026-01-17T10:23:40 DEBUG SCG_SESSION.load_session: session.json exists, reading
+2026-01-17T10:23:40 DEBUG SCG_SESSION.load_session: read 8425 chars
+2026-01-17T10:23:40 DEBUG SCG_SESSION.load_session: JSON parsed successfully
+2026-01-17T10:23:40 DEBUG SCG_SESSION.load_session: loaded state=generating prompt_count=6
+2026-01-17T10:23:40 DEBUG SCG_SESSION.load_session: loading 4 class specs
+2026-01-17T10:23:40 DEBUG SCG_SESSION.load_session: loaded class PG_EXTERNALS
+2026-01-17T10:23:40 DEBUG SCG_SESSION.load_session: loaded class PG_CONNECTION
+2026-01-17T10:23:40 DEBUG SCG_SESSION.load_session: loaded class PG_RESULT
+2026-01-17T10:23:40 DEBUG SCG_SESSION.load_session: loaded class SIMPLE_POSTGRES
+2026-01-17T10:23:40 DEBUG SCG_SESSION.load_session: END class_specs.count=4
+2026-01-17T10:23:40 DEBUG SCG_SESSION.make_from_existing: END is_valid=True
+2026-01-17T10:23:40 DEBUG SCG_SESSION.save_session: START state=generating class_count=4
+2026-01-17T10:23:40 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T10:23:40 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T10:23:40 DEBUG SCG_SESSION.save_session: END
+2026-01-17T10:23:40 DEBUG process_command: END
+2026-01-17T10:23:40 DEBUG SCG_CLI_APP.make: process_command returned
+2026-01-17T10:23:40 DEBUG SCG_CLI_APP.make: END - about to exit make
+2026-01-17T10:24:11 DEBUG SCG_CLI_APP.make: START
+2026-01-17T10:24:11 DEBUG SCG_CLI_APP.make: args and last_error initialized
+2026-01-17T10:24:11 DEBUG SCG_CLI_APP.make: calling process_command
+2026-01-17T10:24:11 DEBUG process_command: START
+2026-01-17T10:24:11 DEBUG process_command: command=process
+2026-01-17T10:24:11 DEBUG process_command: dispatching to handle_process
+2026-01-17T10:24:11 DEBUG handle_process: START
+2026-01-17T10:24:11 DEBUG handle_process: options parsed
+2026-01-17T10:24:11 DEBUG handle_process: loading session simple_postgres
+2026-01-17T10:24:11 DEBUG SCG_SESSION.make_from_existing: START name=simple_postgres
+2026-01-17T10:24:11 DEBUG SCG_SESSION.make_from_existing: calling load_session
+2026-01-17T10:24:11 DEBUG SCG_SESSION.load_session: START session_path=sessions/simple_postgres
+2026-01-17T10:24:11 DEBUG SCG_SESSION.load_session: session.json exists, reading
+2026-01-17T10:24:11 DEBUG SCG_SESSION.load_session: read 8425 chars
+2026-01-17T10:24:11 DEBUG SCG_SESSION.load_session: JSON parsed successfully
+2026-01-17T10:24:11 DEBUG SCG_SESSION.load_session: loaded state=generating prompt_count=6
+2026-01-17T10:24:11 DEBUG SCG_SESSION.load_session: loading 4 class specs
+2026-01-17T10:24:11 DEBUG SCG_SESSION.load_session: loaded class PG_EXTERNALS
+2026-01-17T10:24:11 DEBUG SCG_SESSION.load_session: loaded class PG_CONNECTION
+2026-01-17T10:24:11 DEBUG SCG_SESSION.load_session: loaded class PG_RESULT
+2026-01-17T10:24:11 DEBUG SCG_SESSION.load_session: loaded class SIMPLE_POSTGRES
+2026-01-17T10:24:11 DEBUG SCG_SESSION.load_session: END class_specs.count=4
+2026-01-17T10:24:11 DEBUG SCG_SESSION.make_from_existing: END is_valid=True
+2026-01-17T10:24:11 DEBUG handle_process: session loaded, is_valid=True
+2026-01-17T10:24:11 DEBUG handle_process: reading input file
+2026-01-17T10:24:11 DEBUG handle_process: file read, content length=3398
+2026-01-17T10:24:11 DEBUG handle_process: creating parser
+2026-01-17T10:24:11 DEBUG SCG_RESPONSE_PARSER.make: initialized
+2026-01-17T10:24:11 DEBUG handle_process: calling parser.parse
+2026-01-17T10:24:11 DEBUG SCG_RESPONSE_PARSER.parse: START, response length=3398
+2026-01-17T10:24:11 DEBUG SCG_RESPONSE_PARSER.parse: state reset
+2026-01-17T10:24:11 DEBUG SCG_RESPONSE_PARSER.parse: JSON extracted, length=3386
+2026-01-17T10:24:11 DEBUG SCG_RESPONSE_PARSER.parse: creating SIMPLE_JSON
+2026-01-17T10:24:11 DEBUG SCG_RESPONSE_PARSER.parse: calling l_json.parse
+2026-01-17T10:24:11 DEBUG SCG_RESPONSE_PARSER.parse: JSON parsed, is_object=True
+2026-01-17T10:24:11 DEBUG SCG_RESPONSE_PARSER.parse: calling parse_json_object
+2026-01-17T10:24:11 DEBUG SCG_SESSION.save_session: START state=generating class_count=4
+2026-01-17T10:24:11 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T10:24:11 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T10:24:11 DEBUG SCG_SESSION.save_session: END
+2026-01-17T10:24:11 DEBUG SCG_RESPONSE_PARSER.parse: parse_json_object returned
+2026-01-17T10:24:11 DEBUG SCG_RESPONSE_PARSER.parse: END, is_success=True
+2026-01-17T10:24:11 DEBUG handle_process: parse complete, is_success=True
+2026-01-17T10:24:11 DEBUG handle_process: calling add_response
+2026-01-17T10:24:11 DEBUG SCG_SESSION.add_response: START type=class_code content_len=3398
+2026-01-17T10:24:11 DEBUG SCG_SESSION.add_response: writing to sessions/simple_postgres/responses/004_response.e
+2026-01-17T10:24:11 DEBUG SCG_SESSION.add_response: write success, updating state
+2026-01-17T10:24:11 DEBUG SCG_SESSION.save_session: START state=generating class_count=4
+2026-01-17T10:24:11 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T10:24:11 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T10:24:11 DEBUG SCG_SESSION.save_session: END
+2026-01-17T10:24:11 DEBUG SCG_SESSION.add_response: END
+2026-01-17T10:24:11 DEBUG handle_process: add_response complete
+2026-01-17T10:24:11 DEBUG handle_process: checking has_pending_work
+2026-01-17T10:24:11 DEBUG handle_process: has pending work, building prompt
+2026-01-17T10:24:11 DEBUG handle_process: builder created
+2026-01-17T10:24:11 DEBUG handle_process: prompt built, length=7918
+2026-01-17T10:24:11 DEBUG handle_process: saving prompt to session
+2026-01-17T10:24:11 DEBUG SCG_SESSION.save_next_prompt: START prompt_len=7918
+2026-01-17T10:24:11 DEBUG SCG_SESSION.save_next_prompt: writing to sessions/simple_postgres/prompts/007_prompt.txt
+2026-01-17T10:24:11 DEBUG SCG_SESSION.save_next_prompt: write success
+2026-01-17T10:24:11 DEBUG SCG_SESSION.save_session: START state=generating class_count=4
+2026-01-17T10:24:11 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T10:24:11 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T10:24:11 DEBUG SCG_SESSION.save_session: END
+2026-01-17T10:24:11 DEBUG SCG_SESSION.save_next_prompt: END
+2026-01-17T10:24:11 DEBUG handle_process: prompt saved
+2026-01-17T10:24:11 DEBUG handle_process: builder closed
+2026-01-17T10:24:11 DEBUG handle_process: setting is_success := True
+2026-01-17T10:24:11 DEBUG handle_process: is_success set
+2026-01-17T10:24:11 DEBUG handle_process: END
+2026-01-17T10:24:11 DEBUG process_command: END
+2026-01-17T10:24:11 DEBUG SCG_CLI_APP.make: process_command returned
+2026-01-17T10:24:11 DEBUG SCG_CLI_APP.make: END - about to exit make
+2026-01-17T10:24:11 DEBUG SCG_CLI_APP.make: START
+2026-01-17T10:24:11 DEBUG SCG_CLI_APP.make: args and last_error initialized
+2026-01-17T10:24:11 DEBUG SCG_CLI_APP.make: calling process_command
+2026-01-17T10:24:11 DEBUG process_command: START
+2026-01-17T10:24:11 DEBUG process_command: command=done
+2026-01-17T10:24:11 DEBUG SCG_SESSION.make_from_existing: START name=simple_postgres
+2026-01-17T10:24:11 DEBUG SCG_SESSION.make_from_existing: calling load_session
+2026-01-17T10:24:11 DEBUG SCG_SESSION.load_session: START session_path=sessions/simple_postgres
+2026-01-17T10:24:11 DEBUG SCG_SESSION.load_session: session.json exists, reading
+2026-01-17T10:24:11 DEBUG SCG_SESSION.load_session: read 11601 chars
+2026-01-17T10:24:11 DEBUG SCG_SESSION.load_session: JSON parsed successfully
+2026-01-17T10:24:11 DEBUG SCG_SESSION.load_session: loaded state=generating prompt_count=7
+2026-01-17T10:24:11 DEBUG SCG_SESSION.load_session: loading 4 class specs
+2026-01-17T10:24:11 DEBUG SCG_SESSION.load_session: loaded class PG_EXTERNALS
+2026-01-17T10:24:11 DEBUG SCG_SESSION.load_session: loaded class PG_CONNECTION
+2026-01-17T10:24:11 DEBUG SCG_SESSION.load_session: loaded class PG_RESULT
+2026-01-17T10:24:11 DEBUG SCG_SESSION.load_session: loaded class SIMPLE_POSTGRES
+2026-01-17T10:24:11 DEBUG SCG_SESSION.load_session: END class_specs.count=4
+2026-01-17T10:24:11 DEBUG SCG_SESSION.make_from_existing: END is_valid=True
+2026-01-17T10:24:11 DEBUG SCG_SESSION.save_session: START state=generating class_count=4
+2026-01-17T10:24:11 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T10:24:11 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T10:24:11 DEBUG SCG_SESSION.save_session: END
+2026-01-17T10:24:11 DEBUG process_command: END
+2026-01-17T10:24:11 DEBUG SCG_CLI_APP.make: process_command returned
+2026-01-17T10:24:11 DEBUG SCG_CLI_APP.make: END - about to exit make
+2026-01-17T10:24:51 DEBUG SCG_CLI_APP.make: START
+2026-01-17T10:24:51 DEBUG SCG_CLI_APP.make: args and last_error initialized
+2026-01-17T10:24:51 DEBUG SCG_CLI_APP.make: calling process_command
+2026-01-17T10:24:51 DEBUG process_command: START
+2026-01-17T10:24:51 DEBUG process_command: command=process
+2026-01-17T10:24:51 DEBUG process_command: dispatching to handle_process
+2026-01-17T10:24:51 DEBUG handle_process: START
+2026-01-17T10:24:51 DEBUG handle_process: options parsed
+2026-01-17T10:24:51 DEBUG handle_process: loading session simple_postgres
+2026-01-17T10:24:51 DEBUG SCG_SESSION.make_from_existing: START name=simple_postgres
+2026-01-17T10:24:51 DEBUG SCG_SESSION.make_from_existing: calling load_session
+2026-01-17T10:24:51 DEBUG SCG_SESSION.load_session: START session_path=sessions/simple_postgres
+2026-01-17T10:24:51 DEBUG SCG_SESSION.load_session: session.json exists, reading
+2026-01-17T10:24:51 DEBUG SCG_SESSION.load_session: read 11601 chars
+2026-01-17T10:24:51 DEBUG SCG_SESSION.load_session: JSON parsed successfully
+2026-01-17T10:24:51 DEBUG SCG_SESSION.load_session: loaded state=generating prompt_count=7
+2026-01-17T10:24:51 DEBUG SCG_SESSION.load_session: loading 4 class specs
+2026-01-17T10:24:51 DEBUG SCG_SESSION.load_session: loaded class PG_EXTERNALS
+2026-01-17T10:24:51 DEBUG SCG_SESSION.load_session: loaded class PG_CONNECTION
+2026-01-17T10:24:51 DEBUG SCG_SESSION.load_session: loaded class PG_RESULT
+2026-01-17T10:24:51 DEBUG SCG_SESSION.load_session: loaded class SIMPLE_POSTGRES
+2026-01-17T10:24:51 DEBUG SCG_SESSION.load_session: END class_specs.count=4
+2026-01-17T10:24:51 DEBUG SCG_SESSION.make_from_existing: END is_valid=True
+2026-01-17T10:24:51 DEBUG handle_process: session loaded, is_valid=True
+2026-01-17T10:24:51 DEBUG handle_process: reading input file
+2026-01-17T10:24:51 DEBUG handle_process: file read, content length=4780
+2026-01-17T10:24:51 DEBUG handle_process: creating parser
+2026-01-17T10:24:51 DEBUG SCG_RESPONSE_PARSER.make: initialized
+2026-01-17T10:24:51 DEBUG handle_process: calling parser.parse
+2026-01-17T10:24:51 DEBUG SCG_RESPONSE_PARSER.parse: START, response length=4780
+2026-01-17T10:24:51 DEBUG SCG_RESPONSE_PARSER.parse: state reset
+2026-01-17T10:24:51 DEBUG SCG_RESPONSE_PARSER.parse: JSON extracted, length=4768
+2026-01-17T10:24:51 DEBUG SCG_RESPONSE_PARSER.parse: creating SIMPLE_JSON
+2026-01-17T10:24:51 DEBUG SCG_RESPONSE_PARSER.parse: calling l_json.parse
+2026-01-17T10:24:51 DEBUG SCG_RESPONSE_PARSER.parse: JSON parsed, is_object=True
+2026-01-17T10:24:51 DEBUG SCG_RESPONSE_PARSER.parse: calling parse_json_object
+2026-01-17T10:24:51 DEBUG SCG_SESSION.save_session: START state=generating class_count=4
+2026-01-17T10:24:51 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T10:24:51 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T10:24:51 DEBUG SCG_SESSION.save_session: END
+2026-01-17T10:24:51 DEBUG SCG_RESPONSE_PARSER.parse: parse_json_object returned
+2026-01-17T10:24:51 DEBUG SCG_RESPONSE_PARSER.parse: END, is_success=True
+2026-01-17T10:24:51 DEBUG handle_process: parse complete, is_success=True
+2026-01-17T10:24:51 DEBUG handle_process: calling add_response
+2026-01-17T10:24:51 DEBUG SCG_SESSION.add_response: START type=class_code content_len=4780
+2026-01-17T10:24:51 DEBUG SCG_SESSION.add_response: writing to sessions/simple_postgres/responses/005_response.e
+2026-01-17T10:24:51 DEBUG SCG_SESSION.add_response: write success, updating state
+2026-01-17T10:24:51 DEBUG SCG_SESSION.save_session: START state=generating class_count=4
+2026-01-17T10:24:51 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T10:24:51 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T10:24:51 DEBUG SCG_SESSION.save_session: END
+2026-01-17T10:24:51 DEBUG SCG_SESSION.add_response: END
+2026-01-17T10:24:51 DEBUG handle_process: add_response complete
+2026-01-17T10:24:51 DEBUG handle_process: checking has_pending_work
+2026-01-17T10:24:51 DEBUG handle_process: no pending work - DONE
+2026-01-17T10:24:51 DEBUG handle_process: setting is_success := True
+2026-01-17T10:24:51 DEBUG handle_process: is_success set
+2026-01-17T10:24:51 DEBUG handle_process: END
+2026-01-17T10:24:51 DEBUG process_command: END
+2026-01-17T10:24:51 DEBUG SCG_CLI_APP.make: process_command returned
+2026-01-17T10:24:51 DEBUG SCG_CLI_APP.make: END - about to exit make
+2026-01-17T10:24:51 DEBUG SCG_CLI_APP.make: START
+2026-01-17T10:24:51 DEBUG SCG_CLI_APP.make: args and last_error initialized
+2026-01-17T10:24:51 DEBUG SCG_CLI_APP.make: calling process_command
+2026-01-17T10:24:51 DEBUG process_command: START
+2026-01-17T10:24:51 DEBUG process_command: command=done
+2026-01-17T10:24:51 DEBUG SCG_SESSION.make_from_existing: START name=simple_postgres
+2026-01-17T10:24:51 DEBUG SCG_SESSION.make_from_existing: calling load_session
+2026-01-17T10:24:51 DEBUG SCG_SESSION.load_session: START session_path=sessions/simple_postgres
+2026-01-17T10:24:51 DEBUG SCG_SESSION.load_session: session.json exists, reading
+2026-01-17T10:24:51 DEBUG SCG_SESSION.load_session: read 16135 chars
+2026-01-17T10:24:51 DEBUG SCG_SESSION.load_session: JSON parsed successfully
+2026-01-17T10:24:51 DEBUG SCG_SESSION.load_session: loaded state=generating prompt_count=7
+2026-01-17T10:24:51 DEBUG SCG_SESSION.load_session: loading 4 class specs
+2026-01-17T10:24:51 DEBUG SCG_SESSION.load_session: loaded class PG_EXTERNALS
+2026-01-17T10:24:51 DEBUG SCG_SESSION.load_session: loaded class PG_CONNECTION
+2026-01-17T10:24:51 DEBUG SCG_SESSION.load_session: loaded class PG_RESULT
+2026-01-17T10:24:52 DEBUG SCG_SESSION.load_session: loaded class SIMPLE_POSTGRES
+2026-01-17T10:24:52 DEBUG SCG_SESSION.load_session: END class_specs.count=4
+2026-01-17T10:24:52 DEBUG SCG_SESSION.make_from_existing: END is_valid=True
+2026-01-17T10:24:52 DEBUG SCG_SESSION.save_session: START state=generating class_count=4
+2026-01-17T10:24:52 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T10:24:52 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T10:24:52 DEBUG SCG_SESSION.save_session: END
+2026-01-17T10:24:52 DEBUG process_command: END
+2026-01-17T10:24:52 DEBUG SCG_CLI_APP.make: process_command returned
+2026-01-17T10:24:52 DEBUG SCG_CLI_APP.make: END - about to exit make
+2026-01-17T10:25:02 DEBUG SCG_CLI_APP.make: START
+2026-01-17T10:25:02 DEBUG SCG_CLI_APP.make: args and last_error initialized
+2026-01-17T10:25:02 DEBUG SCG_CLI_APP.make: calling process_command
+2026-01-17T10:25:02 DEBUG process_command: START
+2026-01-17T10:25:02 DEBUG process_command: command=assemble
+2026-01-17T10:25:02 DEBUG SCG_SESSION.make_from_existing: START name=simple_postgres
+2026-01-17T10:25:02 DEBUG SCG_SESSION.make_from_existing: calling load_session
+2026-01-17T10:25:02 DEBUG SCG_SESSION.load_session: START session_path=sessions/simple_postgres
+2026-01-17T10:25:02 DEBUG SCG_SESSION.load_session: session.json exists, reading
+2026-01-17T10:25:02 DEBUG SCG_SESSION.load_session: read 16135 chars
+2026-01-17T10:25:02 DEBUG SCG_SESSION.load_session: JSON parsed successfully
+2026-01-17T10:25:02 DEBUG SCG_SESSION.load_session: loaded state=generating prompt_count=7
+2026-01-17T10:25:02 DEBUG SCG_SESSION.load_session: loading 4 class specs
+2026-01-17T10:25:02 DEBUG SCG_SESSION.load_session: loaded class PG_EXTERNALS
+2026-01-17T10:25:03 DEBUG SCG_SESSION.load_session: loaded class PG_CONNECTION
+2026-01-17T10:25:03 DEBUG SCG_SESSION.load_session: loaded class PG_RESULT
+2026-01-17T10:25:03 DEBUG SCG_SESSION.load_session: loaded class SIMPLE_POSTGRES
+2026-01-17T10:25:03 DEBUG SCG_SESSION.load_session: END class_specs.count=4
+2026-01-17T10:25:03 DEBUG SCG_SESSION.make_from_existing: END is_valid=True
+2026-01-17T10:25:03 DEBUG SCG_SESSION.save_session: START state=assembled class_count=4
+2026-01-17T10:25:03 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T10:25:03 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T10:25:03 DEBUG SCG_SESSION.save_session: END
+2026-01-17T10:25:03 DEBUG process_command: END
+2026-01-17T10:25:03 DEBUG SCG_CLI_APP.make: process_command returned
+2026-01-17T10:25:03 DEBUG SCG_CLI_APP.make: END - about to exit make
+2026-01-17T10:25:21 DEBUG SCG_CLI_APP.make: START
+2026-01-17T10:25:21 DEBUG SCG_CLI_APP.make: args and last_error initialized
+2026-01-17T10:25:21 DEBUG SCG_CLI_APP.make: calling process_command
+2026-01-17T10:25:21 DEBUG process_command: START
+2026-01-17T10:25:21 DEBUG process_command: command=done
+2026-01-17T10:25:21 DEBUG SCG_SESSION.make_from_existing: START name=simple_postgres
+2026-01-17T10:25:21 DEBUG SCG_SESSION.make_from_existing: calling load_session
+2026-01-17T10:25:21 DEBUG SCG_SESSION.load_session: START session_path=sessions/simple_postgres
+2026-01-17T10:25:21 DEBUG SCG_SESSION.load_session: session.json exists, reading
+2026-01-17T10:25:21 DEBUG SCG_SESSION.load_session: read 16134 chars
+2026-01-17T10:25:21 DEBUG SCG_SESSION.load_session: JSON parsed successfully
+2026-01-17T10:25:21 DEBUG SCG_SESSION.load_session: loaded state=assembled prompt_count=7
+2026-01-17T10:25:21 DEBUG SCG_SESSION.load_session: loading 4 class specs
+2026-01-17T10:25:21 DEBUG SCG_SESSION.load_session: loaded class PG_EXTERNALS
+2026-01-17T10:25:21 DEBUG SCG_SESSION.load_session: loaded class PG_CONNECTION
+2026-01-17T10:25:21 DEBUG SCG_SESSION.load_session: loaded class PG_RESULT
+2026-01-17T10:25:21 DEBUG SCG_SESSION.load_session: loaded class SIMPLE_POSTGRES
+2026-01-17T10:25:21 DEBUG SCG_SESSION.load_session: END class_specs.count=4
+2026-01-17T10:25:21 DEBUG SCG_SESSION.make_from_existing: END is_valid=True
+2026-01-17T10:25:21 DEBUG SCG_SESSION.save_session: START state=assembled class_count=4
+2026-01-17T10:25:21 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T10:25:21 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T10:25:21 DEBUG SCG_SESSION.save_session: END
+2026-01-17T10:25:21 DEBUG process_command: END
+2026-01-17T10:25:21 DEBUG SCG_CLI_APP.make: process_command returned
+2026-01-17T10:25:21 DEBUG SCG_CLI_APP.make: END - about to exit make
+2026-01-17T10:25:59 DEBUG SCG_CLI_APP.make: START
+2026-01-17T10:25:59 DEBUG SCG_CLI_APP.make: args and last_error initialized
+2026-01-17T10:25:59 DEBUG SCG_CLI_APP.make: calling process_command
+2026-01-17T10:25:59 DEBUG process_command: START
+2026-01-17T10:25:59 DEBUG process_command: command=done
+2026-01-17T10:25:59 DEBUG SCG_SESSION.make_from_existing: START name=simple_postgres
+2026-01-17T10:25:59 DEBUG SCG_SESSION.make_from_existing: calling load_session
+2026-01-17T10:25:59 DEBUG SCG_SESSION.load_session: START session_path=sessions/simple_postgres
+2026-01-17T10:25:59 DEBUG SCG_SESSION.load_session: session.json exists, reading
+2026-01-17T10:25:59 DEBUG SCG_SESSION.load_session: read 16134 chars
+2026-01-17T10:25:59 DEBUG SCG_SESSION.load_session: JSON parsed successfully
+2026-01-17T10:25:59 DEBUG SCG_SESSION.load_session: loaded state=assembled prompt_count=7
+2026-01-17T10:25:59 DEBUG SCG_SESSION.load_session: loading 4 class specs
+2026-01-17T10:25:59 DEBUG SCG_SESSION.load_session: loaded class PG_EXTERNALS
+2026-01-17T10:25:59 DEBUG SCG_SESSION.load_session: loaded class PG_CONNECTION
+2026-01-17T10:25:59 DEBUG SCG_SESSION.load_session: loaded class PG_RESULT
+2026-01-17T10:25:59 DEBUG SCG_SESSION.load_session: loaded class SIMPLE_POSTGRES
+2026-01-17T10:25:59 DEBUG SCG_SESSION.load_session: END class_specs.count=4
+2026-01-17T10:25:59 DEBUG SCG_SESSION.make_from_existing: END is_valid=True
+2026-01-17T10:25:59 DEBUG SCG_SESSION.save_session: START state=assembled class_count=4
+2026-01-17T10:25:59 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T10:25:59 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T10:25:59 DEBUG SCG_SESSION.save_session: END
+2026-01-17T10:25:59 DEBUG process_command: END
+2026-01-17T10:25:59 DEBUG SCG_CLI_APP.make: process_command returned
+2026-01-17T10:25:59 DEBUG SCG_CLI_APP.make: END - about to exit make
+2026-01-17T10:26:18 DEBUG SCG_CLI_APP.make: START
+2026-01-17T10:26:18 DEBUG SCG_CLI_APP.make: args and last_error initialized
+2026-01-17T10:26:18 DEBUG SCG_CLI_APP.make: calling process_command
+2026-01-17T10:26:18 DEBUG process_command: START
+2026-01-17T10:26:18 DEBUG process_command: command=wf-status
+2026-01-17T10:26:18 DEBUG SCG_SESSION.make_from_existing: START name=simple_postgres
+2026-01-17T10:26:18 DEBUG SCG_SESSION.make_from_existing: calling load_session
+2026-01-17T10:26:18 DEBUG SCG_SESSION.load_session: START session_path=sessions/simple_postgres
+2026-01-17T10:26:18 DEBUG SCG_SESSION.load_session: session.json exists, reading
+2026-01-17T10:26:18 DEBUG SCG_SESSION.load_session: read 16134 chars
+2026-01-17T10:26:18 DEBUG SCG_SESSION.load_session: JSON parsed successfully
+2026-01-17T10:26:18 DEBUG SCG_SESSION.load_session: loaded state=assembled prompt_count=7
+2026-01-17T10:26:18 DEBUG SCG_SESSION.load_session: loading 4 class specs
+2026-01-17T10:26:18 DEBUG SCG_SESSION.load_session: loaded class PG_EXTERNALS
+2026-01-17T10:26:18 DEBUG SCG_SESSION.load_session: loaded class PG_CONNECTION
+2026-01-17T10:26:18 DEBUG SCG_SESSION.load_session: loaded class PG_RESULT
+2026-01-17T10:26:18 DEBUG SCG_SESSION.load_session: loaded class SIMPLE_POSTGRES
+2026-01-17T10:26:18 DEBUG SCG_SESSION.load_session: END class_specs.count=4
+2026-01-17T10:26:18 DEBUG SCG_SESSION.make_from_existing: END is_valid=True
+2026-01-17T10:26:18 DEBUG process_command: END
+2026-01-17T10:26:18 DEBUG SCG_CLI_APP.make: process_command returned
+2026-01-17T10:26:18 DEBUG SCG_CLI_APP.make: END - about to exit make
+2026-01-17T10:32:36 DEBUG SCG_CLI_APP.make: START
+2026-01-17T10:32:36 DEBUG SCG_CLI_APP.make: args and last_error initialized
+2026-01-17T10:32:36 DEBUG SCG_CLI_APP.make: calling process_command
+2026-01-17T10:32:36 DEBUG process_command: START
+2026-01-17T10:32:36 DEBUG process_command: command=generate-tests
+2026-01-17T10:32:36 DEBUG process_command: END
+2026-01-17T10:32:36 DEBUG SCG_CLI_APP.make: process_command returned
+2026-01-17T10:32:36 DEBUG SCG_CLI_APP.make: END - about to exit make
+2026-01-17T10:32:43 DEBUG SCG_CLI_APP.make: START
+2026-01-17T10:32:43 DEBUG SCG_CLI_APP.make: args and last_error initialized
+2026-01-17T10:32:43 DEBUG SCG_CLI_APP.make: calling process_command
+2026-01-17T10:32:43 DEBUG process_command: START
+2026-01-17T10:32:43 DEBUG process_command: command=generate-tests
+2026-01-17T10:32:43 DEBUG SCG_SESSION.make_from_existing: START name=simple_postgres
+2026-01-17T10:32:43 DEBUG SCG_SESSION.make_from_existing: calling load_session
+2026-01-17T10:32:43 DEBUG SCG_SESSION.load_session: START session_path=sessions/simple_postgres
+2026-01-17T10:32:43 DEBUG SCG_SESSION.load_session: session.json exists, reading
+2026-01-17T10:32:43 DEBUG SCG_SESSION.load_session: read 16134 chars
+2026-01-17T10:32:43 DEBUG SCG_SESSION.load_session: JSON parsed successfully
+2026-01-17T10:32:43 DEBUG SCG_SESSION.load_session: loaded state=assembled prompt_count=7
+2026-01-17T10:32:43 DEBUG SCG_SESSION.load_session: loading 4 class specs
+2026-01-17T10:32:43 DEBUG SCG_SESSION.load_session: loaded class PG_EXTERNALS
+2026-01-17T10:32:43 DEBUG SCG_SESSION.load_session: loaded class PG_CONNECTION
+2026-01-17T10:32:43 DEBUG SCG_SESSION.load_session: loaded class PG_RESULT
+2026-01-17T10:32:43 DEBUG SCG_SESSION.load_session: loaded class SIMPLE_POSTGRES
+2026-01-17T10:32:43 DEBUG SCG_SESSION.load_session: END class_specs.count=4
+2026-01-17T10:32:43 DEBUG SCG_SESSION.make_from_existing: END is_valid=True
+2026-01-17T10:32:43 DEBUG SCG_SESSION.save_next_prompt: START prompt_len=6259
+2026-01-17T10:32:43 DEBUG SCG_SESSION.save_next_prompt: writing to sessions/simple_postgres/prompts/008_prompt.txt
+2026-01-17T10:32:43 DEBUG SCG_SESSION.save_next_prompt: write success
+2026-01-17T10:32:43 DEBUG SCG_SESSION.save_session: START state=assembled class_count=4
+2026-01-17T10:32:43 DEBUG SCG_SESSION.save_session: writing to sessions/simple_postgres/session.json
+2026-01-17T10:32:43 DEBUG SCG_SESSION.save_session: write success
+2026-01-17T10:32:43 DEBUG SCG_SESSION.save_session: END
+2026-01-17T10:32:43 DEBUG SCG_SESSION.save_next_prompt: END
+2026-01-17T10:32:43 DEBUG process_command: END
+2026-01-17T10:32:43 DEBUG SCG_CLI_APP.make: process_command returned
+2026-01-17T10:32:43 DEBUG SCG_CLI_APP.make: END - about to exit make
+2026-01-17T10:33:37 DEBUG SCG_CLI_APP.make: START
+2026-01-17T10:33:37 DEBUG SCG_CLI_APP.make: args and last_error initialized
+2026-01-17T10:33:37 DEBUG SCG_CLI_APP.make: calling process_command
+2026-01-17T10:33:37 DEBUG process_command: START
+2026-01-17T10:33:37 DEBUG process_command: command=process
+2026-01-17T10:33:37 DEBUG process_command: dispatching to handle_process
+2026-01-17T10:33:37 DEBUG handle_process: START
+2026-01-17T10:33:37 DEBUG handle_process: options parsed
+2026-01-17T10:33:37 DEBUG handle_process: loading session simple_postgres
+2026-01-17T10:33:37 DEBUG SCG_SESSION.make_from_existing: START name=simple_postgres
+2026-01-17T10:33:37 DEBUG SCG_SESSION.make_from_existing: calling load_session
+2026-01-17T10:33:37 DEBUG SCG_SESSION.load_session: START session_path=sessions/simple_postgres
+2026-01-17T10:33:37 DEBUG SCG_SESSION.load_session: session.json exists, reading
+2026-01-17T10:33:37 DEBUG SCG_SESSION.load_session: read 16134 chars
+2026-01-17T10:33:37 DEBUG SCG_SESSION.load_session: JSON parsed successfully
+2026-01-17T10:33:37 DEBUG SCG_SESSION.load_session: loaded state=assembled prompt_count=8
+2026-01-17T10:33:37 DEBUG SCG_SESSION.load_session: loading 4 class specs
+2026-01-17T10:33:37 DEBUG SCG_SESSION.load_session: loaded class PG_EXTERNALS
+2026-01-17T10:33:37 DEBUG SCG_SESSION.load_session: loaded class PG_CONNECTION
+2026-01-17T10:33:37 DEBUG SCG_SESSION.load_session: loaded class PG_RESULT
+2026-01-17T10:33:37 DEBUG SCG_SESSION.load_session: loaded class SIMPLE_POSTGRES
+2026-01-17T10:33:37 DEBUG SCG_SESSION.load_session: END class_specs.count=4
+2026-01-17T10:33:37 DEBUG SCG_SESSION.make_from_existing: END is_valid=True
+2026-01-17T10:33:37 DEBUG handle_process: session loaded, is_valid=True
+2026-01-17T10:33:37 DEBUG handle_process: reading input file
+2026-01-17T10:33:37 DEBUG handle_process: file read, content length=6855
+2026-01-17T10:33:37 DEBUG handle_process: creating parser
+2026-01-17T10:33:37 DEBUG SCG_RESPONSE_PARSER.make: initialized
+2026-01-17T10:33:37 DEBUG handle_process: calling parser.parse
+2026-01-17T10:33:37 DEBUG SCG_RESPONSE_PARSER.parse: START, response length=6855
+2026-01-17T10:33:37 DEBUG SCG_RESPONSE_PARSER.parse: state reset
+2026-01-17T10:33:37 DEBUG SCG_RESPONSE_PARSER.parse: JSON extracted, length=6843
+2026-01-17T10:33:37 DEBUG SCG_RESPONSE_PARSER.parse: creating SIMPLE_JSON
+2026-01-17T10:33:37 DEBUG SCG_RESPONSE_PARSER.parse: calling l_json.parse
+2026-01-17T10:33:37 DEBUG SCG_RESPONSE_PARSER.parse: JSON parsed, is_object=True
+2026-01-17T10:33:37 DEBUG SCG_RESPONSE_PARSER.parse: calling parse_json_object
+2026-01-17T10:33:37 DEBUG SCG_RESPONSE_PARSER.parse: parse_json_object returned
+2026-01-17T10:33:37 DEBUG SCG_RESPONSE_PARSER.parse: END, is_success=False
+2026-01-17T10:33:37 DEBUG handle_process: parse complete, is_success=False
+2026-01-17T10:33:37 DEBUG handle_process: END
+2026-01-17T10:33:37 DEBUG process_command: END
+2026-01-17T10:33:37 DEBUG SCG_CLI_APP.make: process_command returned
+2026-01-17T10:33:37 DEBUG SCG_CLI_APP.make: END - about to exit make
+2026-01-17T11:02:49 DEBUG SCG_CLI_APP.make: START
+2026-01-17T11:02:49 DEBUG SCG_CLI_APP.make: args and last_error initialized
+2026-01-17T11:02:49 DEBUG SCG_CLI_APP.make: calling process_command
+2026-01-17T11:02:49 DEBUG process_command: START
+2026-01-17T11:02:49 DEBUG process_command: command=--help
+2026-01-17T11:02:49 DEBUG process_command: END
+2026-01-17T11:02:49 DEBUG SCG_CLI_APP.make: process_command returned
+2026-01-17T11:02:49 DEBUG SCG_CLI_APP.make: END - about to exit make

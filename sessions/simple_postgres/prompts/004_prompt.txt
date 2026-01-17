@@ -1,0 +1,44 @@
+TASK: Generate ONE Eiffel class
+CLASS: PG_EXTERNALS
+DESC: Low-level C external declarations for libpq
+FEATURES: 
+
+CONTEXT (other classes in system):
+(no other classes generated yet)
+
+REUSE (available libraries):
+(no reuse candidates found)
+
+REQUIREMENTS:
+1. Write contracts FIRST (Specification Hat)
+2. Preconditions: what callers must guarantee
+3. Postconditions: COMPLETE (not just true)
+4. Class invariant: meaningful constraints
+5. Void-safe: attached/detachable properly used
+6. CQS: queries no side effects, commands no return
+
+NAMING:
+- Class: ALL_CAPS (MY_CLASS)
+- Features: lower_snake_case
+- Args: a_prefix (a_name)
+- Locals: l_prefix (l_result)
+- Booleans: is_/has_/can_
+
+STRUCTURE:
+feature {NONE} -- Initialization
+feature -- Access
+feature -- Status report
+feature -- Element change
+feature {NONE} -- Implementation
+
+OUTPUT:
+```json
+{
+  "type": "class_code",
+  "class_name": "PG_EXTERNALS",
+  "code": "note\n  description: \"...\"\nclass\n  PG_EXTERNALS\n...\nend",
+  "notes": "Implementation decisions"
+}
+```
+
+DONE WHEN: You output complete class JSON

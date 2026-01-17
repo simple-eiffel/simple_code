@@ -1,0 +1,5 @@
+{"timestamp":"2026-01-16T19:05:29Z","level":"info","message":"Test log command works","session":"sessions/test_session","category":"INSTRUCTED","action":"Test log command works"}
+{"timestamp":"2026-01-16T19:05:39Z","level":"info","message":"Testing GAP_FILL category","session":"sessions/test_session","category":"GAP_FILL","action":"Testing GAP_FILL category"}
+{"timestamp":"2026-01-16T19:05:39Z","level":"info","message":"Testing REBEL category","session":"sessions/test_session","category":"REBEL","action":"Testing REBEL category"}
+{"timestamp":"2026-01-16T19:05:39Z","level":"info","message":"Testing ERROR_FIX category","session":"sessions/test_session","category":"ERROR_FIX","action":"Testing ERROR_FIX category"}
+{"timestamp":"2026-01-16T19:05:39Z","level":"info","message":"Testing DECISION category","session":"sessions/test_session","category":"DECISION","action":"Testing DECISION category"}

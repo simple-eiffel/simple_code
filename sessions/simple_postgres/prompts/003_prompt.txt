@@ -1,0 +1,34 @@
+TASK: Generate system specification
+PROJECT: simple_postgres
+DESC: 
+
+OUTPUT: system_spec.json containing:
+- classes: array of class definitions
+- each class: name, description, features list
+- external_dependencies if C libraries needed
+
+RULES:
+1. Use DBC (require/ensure/invariant)
+2. All classes void-safe
+3. Follow Simple Eiffel patterns
+4. Command-Query Separation
+5. a_ prefix for args, l_ for locals
+
+EXTERNAL DEPS (if any):
+- List required C libraries
+- Include env_var, download_url, install_instructions
+- CHECK deps exist BEFORE generating code
+
+FORMAT:
+```json
+{
+  "type": "system_spec",
+  "system_name": "simple_postgres",
+  "external_dependencies": [...],
+  "classes": [
+    {"name": "CLASS_NAME", "description": "...", "features": [...], "invariants": [...]}
+  ]
+}
+```
+
+DONE WHEN: You output the complete JSON

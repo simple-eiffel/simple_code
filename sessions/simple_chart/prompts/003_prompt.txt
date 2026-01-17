@@ -1,0 +1,153 @@
+Generate the Eiffel class: CSV_DATA_LOADER
+
+=== SESSION INFO ===
+Session: simple_chart
+
+=== CLASS SPECIFICATION ===
+Class name: CSV_DATA_LOADER
+Description: Loads CSV using SIMPLE_CSV. Provides row/column access.
+
+=== SPECIFICATION HAT (Write Contracts FIRST) ===
+Follow the "vibe-contracting" principle: specify WHAT before HOW.
+
+For EACH feature, answer these questions IN ORDER:
+1. What must be true BEFORE this can be called? â require clause
+2. What will be true AFTER this completes? â ensure clause
+3. Is the postcondition COMPLETE, not just true? â Check for missing guarantees
+
+=== NAMING CONVENTIONS (CRITICAL) ===
+Class names:     ALL_CAPS with underscores (LIBRARY_BOOK, HASH_TABLE)
+Feature names:   all_lowercase with underscores (set_owner, find_by_title)
+Constants:       Initial_cap (Pi, Welcome_message)
+Arguments:       a_ prefix (a_name, a_count, a_item)
+Local variables: l_ prefix for clarity (l_result, l_file, l_count)
+Loop cursors:    ic for across loops (across items as ic loop ...)
+Boolean queries: is_, has_, can_ prefix (is_empty, has_key, can_extend)
+
+=== CONTRACT TAG NAMING ===
+Preconditions:   name_not_empty, index_valid, item_attached, count_positive
+Postconditions:  name_set, count_increased, result_not_void, item_added
+Invariants:      count_valid, bounds_consistent, items_attached
+
+=== CONTRACTS (AGGRESSIVE BUT MEANINGFUL) ===
+- DO add contracts that express domain logic
+- DO use 'old' for state comparisons: count = old count + 1
+- DO NOT add trivial contracts (x /= Void in void-safe code is redundant)
+- ALWAYS check postcondition completeness (is it TRUE but INCOMPLETE?)
+
+Example of INCOMPLETE vs COMPLETE postcondition:
+  INCOMPLETE: ensure has_item: items.has (a_item)
+  COMPLETE:   ensure has_item: items.has (a_item); count_increased: count = old count + 1
+
+=== FEATURE CLAUSE STRUCTURE ===
+feature {NONE} -- Initialization
+    make, make_from_*, make_with_*
+feature -- Access
+    Public queries returning values
+feature -- Status report
+    Boolean status queries (is_*, has_*)
+feature -- Element change
+    Commands that modify state
+feature {NONE} -- Implementation
+    Private helpers
+
+=== COMMAND-QUERY SEPARATION ===
+- Queries (functions): Return values, NO side effects
+- Commands (procedures): Modify state, NO return value
+- NEVER mix: a setter should NOT return the new value
+
+=== VOID SAFETY ===
+- Use 'attached' for required references
+- Use 'detachable' for optional references
+- Initialize ALL attributes in creation procedures
+- Pattern: if attached x as l_x then ... end
+
+=== SIMPLE_* LIBRARY GOTCHAS (CRITICAL) ===
+SIMPLE_JSON (SIMPLE_JSON_VALUE):
+- All query features (item, as_array, as_object) return DETACHABLE
+- MUST wrap with 'attached' pattern: if attached obj.item ("key") as val then ...
+- Use is_number (NOT is_real) to check for numeric values
+- Use as_string_32 (NOT as_string) for string values
+- For numeric values, check is_integer FIRST:
+    if val.is_integer then x := val.as_integer.to_double
+    elseif val.is_number then x := val.as_real end
+
+SIMPLE_FILE:
+- Creation: create l_file.make (a_path) -- NOT make_open_read!
+- Reading: l_content := l_file.read_all OR l_file.read_text
+- No close method - file closes automatically after read
+- Check exists before reading: if l_file.exists then ...
+
+SIMPLE_CSV:
+- Use parse (content) to parse a string, parse_file (path) for files
+- Access rows: csv.row_at (i) returns ARRAYED_LIST [STRING]
+- Access cells: csv.row_at (i).i_th (col)
+- Row/col indices are 1-based
+
+UNICODE OUTPUT (STRING_32/CHARACTER_32):
+- STRING_32.to_string_8 has precondition is_valid_as_string_8 - FAILS on Unicode!
+- CHARACTER_32.out returns "U+XXXX" code point, NOT the character
+- For Unicode output, use: print (l_string_32) or print (l_char_32)
+- Buffer CHARACTER_32 to STRING_32, then print: l_buf.append_character (char); print (l_buf)
+- If class needs both STRING_8 buffer AND Unicode: add separate STRING_32 attribute
+
+MANIFEST ARRAYS WITH UNICODE:
+- Mixed types in manifest arrays cause VWMA warning
+- For CHARACTER_32 arrays with ' ' (CHAR_8) and '%/0x2588/' (CHAR_32):
+    WRONG:  arr := << ' ', '%/0x2588/' >>
+    RIGHT:  arr := {ARRAY [CHARACTER_32]} << ' ', '%/0x2588/' >>
+
+STANDARD I/O:
+- stdin read: io.input.end_of_file (NOT io.end_of_file)
+- stdin loop: from until io.input.end_of_file loop io.read_line ... end
+
+ARGUMENTS_32:
+- Has NO make feature - do NOT try to rename it
+- Just inherit: inherit ARGUMENTS_32 (no rename clause)
+- Access args: argument (i) returns STRING_32, argument_count for count
+
+=== EIFFEL INHERITANCE GOTCHAS ===
+DEFERRED FEATURES:
+- Do NOT use 'redefine' for deferred features - just implement them
+- WRONG: inherit PARENT redefine deferred_feature end
+- RIGHT: inherit PARENT (no redefine clause, just provide implementation)
+- Only use 'redefine' for effective (already implemented) features
+
+STRING ESCAPING:
+- Quote in string: use %%" (NOT %%%")
+- Newline: %N
+- Tab: %T
+- Percent: %%
+
+=== STANDARD FEATURE NAMES (EiffelBase) ===
+Access:  item, count, capacity
+Status:  is_empty, is_full, has, is_extendible
+Commands: extend, put, replace, remove, prune, wipe_out
+Creation: make, make_empty, make_from_*, make_with_*
+
+=== CLASS STRUCTURE ===
+- End class with just 'end' (not 'end CLASS_NAME')
+- Header comment after each feature signature
+- Group related features under appropriate clause
+=== OUTPUT FORMAT ===
+Respond with a JSON object containing the generated class:
+
+```json
+{
+  "type": "class_code",
+  "class_name": "LIBRARY_BOOK",
+  "code": "note\n    description: \"...\"\nclass\n    LIBRARY_BOOK\n...\nend",
+  "notes": "Brief note about implementation decisions"
+}
+```
+
+The "code" field must contain the complete, valid Eiffel class.
+Output ONLY the JSON. No explanations before or after.
+
+=== NEXT CLI COMMAND ===
+Save this JSON response to a file (e.g., response.json) and run:
+  simple_codegen process --session simple_chart --input response.json
+
+This parses your response and either:
+- Generates next class prompt (if more classes pending)
+- Indicates ready for: simple_codegen assemble --session simple_chart --output <path>

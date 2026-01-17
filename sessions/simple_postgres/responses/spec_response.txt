@@ -1,0 +1,42 @@
+```json
+{
+  "type": "system_spec",
+  "system_name": "simple_postgres",
+  "external_dependencies": [
+    {
+      "name": "libpq",
+      "env_var": "POSTGRESQL_HOME",
+      "include_path": "$(POSTGRESQL_HOME)/include",
+      "library_path": "$(POSTGRESQL_HOME)/lib/libpq.lib",
+      "download_url": "https://www.postgresql.org/download/",
+      "install_instructions": "Install PostgreSQL 16, set POSTGRESQL_HOME env var"
+    }
+  ],
+  "classes": [
+    {
+      "name": "PG_EXTERNALS",
+      "description": "Low-level C external declarations for libpq",
+      "features": ["c_pqconnectdb", "c_pqfinish", "c_pqstatus", "c_pqexec", "c_pqresultstatus", "c_pqntuples", "c_pqnfields", "c_pqgetvalue", "c_pqclear", "c_pqerrormessage"],
+      "invariants": []
+    },
+    {
+      "name": "PG_CONNECTION",
+      "description": "PostgreSQL connection wrapper with lifecycle management",
+      "features": ["make", "connect", "disconnect", "is_connected", "execute", "last_error"],
+      "invariants": ["connection_handle_valid"]
+    },
+    {
+      "name": "PG_RESULT",
+      "description": "Query result set with row/column access",
+      "features": ["make", "row_count", "column_count", "value_at", "clear", "is_valid"],
+      "invariants": ["result_handle_valid"]
+    },
+    {
+      "name": "SIMPLE_POSTGRES",
+      "description": "Facade class - main API for simple_postgres library",
+      "features": ["make", "connect", "disconnect", "execute", "query", "last_result", "last_error", "is_connected"],
+      "invariants": []
+    }
+  ]
+}
+```

@@ -1,0 +1,25 @@
+2026-01-16T12:51:09 INFO === Starting Ollama class generation test ===
+2026-01-16T12:51:09 INFO Checking Ollama model: qwen2.5-coder:latest
+2026-01-16T12:51:10 INFO Model qwen2.5-coder:latest is available
+2026-01-16T12:51:10 INFO Model available, proceeding with generation...
+2026-01-16T12:51:10 INFO Creating SCG_CLASS_GEN with Ollama...
+2026-01-16T12:51:31 INFO Generation completed: is_generated=True
+2026-01-16T12:51:31 INFO Has error: False
+2026-01-16T12:51:31 INFO Saved to file: True
+2026-01-16T12:51:31 INFO Parsing source (953 chars)...
+2026-01-16T12:51:31 ERROR Parse errors detected:
+2026-01-16T12:51:31 ERROR   - Parse error
+2026-01-16T12:51:31 INFO Parser validation: False
+2026-01-16T12:51:31 INFO === Ollama test completed ===
+2026-01-16T12:59:18 INFO === Starting Ollama class generation test ===
+2026-01-16T12:59:18 INFO Checking Ollama model: qwen2.5-coder:latest
+2026-01-16T12:59:19 INFO Model qwen2.5-coder:latest is available
+2026-01-16T12:59:19 INFO Model available, proceeding with generation...
+2026-01-16T12:59:19 INFO Creating SCG_CLASS_GEN with Ollama...
+2026-01-16T12:59:40 INFO Generation completed: is_generated=True
+2026-01-16T12:59:40 INFO Has error: False
+2026-01-16T12:59:40 INFO Saved to file: True
+2026-01-16T12:59:40 INFO Parsing source (1024 chars)...
+2026-01-16T12:59:40 INFO Parse successful: 1 class(es)
+2026-01-16T12:59:40 INFO Parser validation: True
+2026-01-16T12:59:40 INFO === Ollama test completed ===

@@ -1,0 +1,44 @@
+{
+  "type": "system_spec",
+  "system_name": "simple_chart",
+  "description": "Eiffel library for generating ASCII charts from CSV data",
+  "classes": [
+    {
+      "name": "SIMPLE_CHART",
+      "description": "Main facade for charting. Loads CSV data and renders charts.",
+      "features": [
+        {"name": "load_csv", "type": "command", "description": "Load from file"},
+        {"name": "load_csv_string", "type": "command", "description": "Load from string"},
+        {"name": "render_bar_chart", "type": "query", "description": "Render bar chart"},
+        {"name": "render_table", "type": "query", "description": "Render table"}
+      ]
+    },
+    {
+      "name": "CSV_DATA_LOADER",
+      "description": "Loads CSV using SIMPLE_CSV. Provides row/column access.",
+      "features": [
+        {"name": "load_from_file", "type": "command", "description": "Load from file path"},
+        {"name": "load_from_string", "type": "command", "description": "Load from string"},
+        {"name": "column_values", "type": "query", "description": "Get column values"},
+        {"name": "column_as_numbers", "type": "query", "description": "Get column as REAL_64"}
+      ]
+    },
+    {
+      "name": "BAR_CHART_RENDERER",
+      "description": "Renders horizontal ASCII bar charts.",
+      "features": [
+        {"name": "render", "type": "command", "description": "Render from labels and values"},
+        {"name": "as_string", "type": "query", "description": "Get output"}
+      ]
+    },
+    {
+      "name": "TABLE_RENDERER",
+      "description": "Renders formatted ASCII tables.",
+      "features": [
+        {"name": "render", "type": "command", "description": "Render from headers and rows"},
+        {"name": "as_string", "type": "query", "description": "Get output"}
+      ]
+    }
+  ],
+  "libraries": ["simple_csv", "simple_file"]
+}
