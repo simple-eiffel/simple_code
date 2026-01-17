@@ -351,6 +351,7 @@ ${SIMPLE_LIBS}		<cluster name="src" location="./src/" recursive="true">
 		<description>Test target for ${PROJECT_NAME}</description>
 		<root class="TEST_APP" feature="make"/>
 		<library name="testing" location="$ISE_LIBRARY/library/testing/testing.ecf"/>
+		<library name="simple_testing" location="D:\prod\simple_testing\simple_testing.ecf"/>
 		<cluster name="tests" location="./testing/" recursive="true"/>
 	</target>
 </system>
@@ -386,6 +387,7 @@ ${SIMPLE_LIBS}		<cluster name="src" location="./src/" recursive="true">
 		<description>Test target for ${PROJECT_NAME}</description>
 		<root class="TEST_APP" feature="make"/>
 		<library name="testing" location="$ISE_LIBRARY/library/testing/testing.ecf"/>
+		<library name="simple_testing" location="D:\prod\simple_testing\simple_testing.ecf"/>
 		<cluster name="tests" location="./testing/" recursive="true"/>
 	</target>
 </system>
@@ -553,7 +555,7 @@ class
 	LIB_TESTS
 
 inherit
-	EQA_TEST_SET
+	TEST_SET_BASE
 
 feature -- Tests
 
