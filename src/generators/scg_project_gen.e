@@ -153,7 +153,7 @@ feature {NONE} -- Generation
 			-- Build simple_* library references
 			create l_libs.make_empty
 			from i := 1 until i > simple_libs.count loop
-				l_libs.append ("%T%T<library name=%"" + simple_libs.i_th (i) + "%" location=%"$SIMPLE_EIFFEL/" + simple_libs.i_th (i) + "/" + simple_libs.i_th (i) + ".ecf%"/>%N")
+				l_libs.append ("%T%T<library name=%"" + simple_libs.i_th (i) + "%" location=%"D:\prod\" + simple_libs.i_th (i) + "\" + simple_libs.i_th (i) + ".ecf%"/>%N")
 				i := i + 1
 			end
 
@@ -351,7 +351,7 @@ ${SIMPLE_LIBS}		<cluster name="src" location="./src/" recursive="true">
 		<description>Test target for ${PROJECT_NAME}</description>
 		<root class="TEST_APP" feature="make"/>
 		<library name="testing" location="$ISE_LIBRARY/library/testing/testing.ecf"/>
-		<cluster name="testing" location="./testing/" recursive="true"/>
+		<cluster name="tests" location="./testing/" recursive="true"/>
 	</target>
 </system>
 ]"
@@ -386,7 +386,7 @@ ${SIMPLE_LIBS}		<cluster name="src" location="./src/" recursive="true">
 		<description>Test target for ${PROJECT_NAME}</description>
 		<root class="TEST_APP" feature="make"/>
 		<library name="testing" location="$ISE_LIBRARY/library/testing/testing.ecf"/>
-		<cluster name="testing" location="./testing/" recursive="true"/>
+		<cluster name="tests" location="./testing/" recursive="true"/>
 	</target>
 </system>
 ]"
@@ -562,7 +562,7 @@ feature -- Tests
 		local
 			l_obj: ${CLASS_NAME}
 		do
-			create l_obj
+			create l_obj.make
 			assert ("created", l_obj /= Void)
 		end
 
