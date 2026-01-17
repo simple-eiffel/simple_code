@@ -296,28 +296,41 @@ feature -- Operations
 			output_path_not_empty: not a_output_path.is_empty
 		local
 			l_gen: SCG_PROJECT_GEN
-			l_path: SIMPLE_PATH
+			l_path, l_src_path: SIMPLE_PATH
 			l_file: SIMPLE_FILE
 			l_src_dir: STRING_32
 			l_simple_libs: ARRAYED_LIST [STRING]
 			l_class_path: STRING_32
+			l_sanitized_path: STRING_32
 		do
 			generated_files.wipe_out
+
+			-- Sanitize output path: strip trailing /src or \src if present
+			l_sanitized_path := a_output_path.twin
+			if l_sanitized_path.ends_with ("/src") or l_sanitized_path.ends_with ("\src") then
+				l_sanitized_path.remove_tail (4)
+			end
+			if l_sanitized_path.ends_with ("/") or l_sanitized_path.ends_with ("\") then
+				l_sanitized_path.remove_tail (1)
+			end
 
 			-- Create simple_libs list (empty for now, could be configured)
 			create l_simple_libs.make (5)
 
 			-- Generate project scaffold
-			create l_path.make_from (a_output_path.to_string_8)
+			create l_path.make_from (l_sanitized_path.to_string_8)
 			create l_gen.make_with_name (l_path, session_name.to_string_8, l_simple_libs)
 
 			if l_gen.is_generated then
-				-- Write generated class files
-				l_src_dir := a_output_path + "/src/"
+				-- Write generated class files using SIMPLE_PATH for proper path construction
+				create l_src_path.make_from (l_sanitized_path.to_string_8)
+				l_src_dir := l_src_path.add ("src").to_string.to_string_32
 
 				across class_specs as ic loop
 					if ic.is_generated and then attached ic.generated_code as l_code then
-						l_class_path := l_src_dir + ic.name.as_lower + ".e"
+						-- Use SIMPLE_PATH for proper path separator handling
+						create l_src_path.make_from (l_src_dir.to_string_8)
+						l_class_path := l_src_path.add (ic.name.as_lower + ".e").to_string.to_string_32
 						create l_file.make (l_class_path.to_string_8)
 						if l_file.write_text (l_code.to_string_8) then
 							generated_files.extend (l_class_path)

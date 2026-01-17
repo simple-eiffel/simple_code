@@ -143,6 +143,8 @@ feature {NONE} -- Command Processing
 				handle_new (a_args)
 			elseif l_command.is_case_insensitive_equal ("projects") then
 				handle_projects (a_args)
+			elseif l_command.is_case_insensitive_equal ("log") then
+				handle_log (a_args)
 			elseif l_command.is_case_insensitive_equal ("rules") or l_command.is_case_insensitive_equal ("guidance") then
 				handle_rules
 			elseif l_command.is_case_insensitive_equal ("--help") or l_command.is_case_insensitive_equal ("-h") then
@@ -1746,6 +1748,49 @@ feature {NONE} -- Helpers
 			print ("  9. simple_codegen assemble --session library_system --output ./library_system%N%N")
 			print ("  rules%N")
 			print ("      Display guardrails and constraints for Claude%N")
+		print ("%N  log --session <name> --category <CAT> --action %"description%"%N")
+		print ("      Log Claude action for after-action analysis%N")
+		print ("      Categories: INSTRUCTED | GAP_FILL | REBEL | ERROR_FIX | DECISION%N")
+		end
+
+	handle_log (a_args: ARGUMENTS_32)
+			-- Handle 'log --session <name> --category <CAT> --action "description"' command.
+			-- Used by Claude to track actions during code generation for after-action reports.
+		local
+			l_session_name, l_category, l_action: detachable STRING_32
+			l_logger: SCG_ACTION_LOGGER
+			l_session_path: STRING
+		do
+			l_session_name := get_option_value (a_args, "--session")
+			l_category := get_option_value (a_args, "--category")
+			l_action := get_option_value (a_args, "--action")
+
+			if not attached l_session_name then
+				print ("[ERROR] Missing --session option%N")
+				print ("Usage: simple_codegen log --session <name> --category <CAT> --action %"description%"%N")
+				print ("Categories: INSTRUCTED | GAP_FILL | REBEL | ERROR_FIX | DECISION%N")
+			elseif not attached l_category then
+				print ("[ERROR] Missing --category option%N")
+				print ("Categories: INSTRUCTED | GAP_FILL | REBEL | ERROR_FIX | DECISION%N")
+			elseif not attached l_action then
+				print ("[ERROR] Missing --action option%N")
+				print ("Usage: simple_codegen log --session <name> --category <CAT> --action %"description%"%N")
+			else
+				-- Build session path
+				l_session_path := "sessions/" + l_session_name.to_string_8
+
+				-- Create logger and log action
+				create l_logger.make (l_session_path)
+
+				if l_logger.is_valid_category (l_category.to_string_8) then
+					l_logger.log_action (l_category.to_string_8, l_action.to_string_8)
+					print ("[LOGGED] [" + l_category.to_string_8 + "] " + l_action.to_string_8 + "%N")
+					is_success := True
+				else
+					print ("[ERROR] Invalid category: " + l_category.to_string_8 + "%N")
+					print ("Valid categories: INSTRUCTED | GAP_FILL | REBEL | ERROR_FIX | DECISION%N")
+				end
+			end
 		end
 
 	handle_rules
