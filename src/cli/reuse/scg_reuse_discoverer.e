@@ -103,15 +103,15 @@ feature -- Discovery
 			-- Phase 1: Search for similar classes in KB (external libs)
 			if attached kb as l_kb then
 				l_candidates := search_similar_classes (l_kb, a_spec)
-				across l_candidates as c loop
-					Result.add_candidate (c)
+				across l_candidates as ic_c loop
+					Result.add_candidate (ic_c)
 				end
 			end
 
 			-- Phase 2: Search for matching features (external libs)
 			if attached kb as l_kb then
-				across a_spec.features as feat loop
-					search_matching_features (l_kb, feat, Result)
+				across a_spec.features as ic_feat loop
+					search_matching_features (l_kb, ic_feat, Result)
 				end
 			end
 
@@ -165,28 +165,28 @@ feature -- Discovery
 			session_specs := a_specs
 
 			-- Analyze each class spec
-			across a_specs as spec loop
-				l_class_result := discover_for_class (spec)
+			across a_specs as ic_spec loop
+				l_class_result := discover_for_class (ic_spec)
 
 				-- Merge candidates and recommendations
-				across l_class_result.candidates as c loop
-					Result.add_candidate (c)
+				across l_class_result.candidates as ic_c loop
+					Result.add_candidate (ic_c)
 				end
-				across l_class_result.internal_candidates as ic loop
-					Result.add_internal_candidate (ic)
+				across l_class_result.internal_candidates as ic_cand loop
+					Result.add_internal_candidate (ic_cand)
 				end
-				across l_class_result.inherit_candidates as inh loop
+				across l_class_result.inherit_candidates as ic_inh loop
 					-- Parse and re-add inherit candidates
-					Result.inherit_candidates.extend (inh)
+					Result.inherit_candidates.extend (ic_inh)
 				end
-				across l_class_result.compose_candidates as comp loop
-					Result.compose_candidates.extend (comp)
+				across l_class_result.compose_candidates as ic_comp loop
+					Result.compose_candidates.extend (ic_comp)
 				end
-				across l_class_result.do_not_reinvent as dnr loop
-					Result.add_do_not_reinvent (dnr)
+				across l_class_result.do_not_reinvent as ic_dnr loop
+					Result.add_do_not_reinvent (ic_dnr)
 				end
-				across l_class_result.suggested_imports as si loop
-					Result.add_suggested_import (si)
+				across l_class_result.suggested_imports as ic_si loop
+					Result.add_suggested_import (ic_si)
 				end
 			end
 
@@ -356,28 +356,28 @@ feature {NONE} -- Search Implementation
 		do
 			-- Search for features by name
 			l_matches := a_kb.search_features_by_name (a_feature_spec.to_string_8, 10)
-			across l_matches as m loop
-				l_score := matcher.match_feature_name (a_feature_spec.to_string_8, m.feature_name)
+			across l_matches as ic_m loop
+				l_score := matcher.match_feature_name (a_feature_spec.to_string_8, ic_m.feature_name)
 				if l_score >= 0.5 then -- Feature match threshold
 					create l_candidate.make_for_feature (
 						"base", -- Default library
-						m.class_name,
-						m.feature_name,
-						m.signature,
+						ic_m.class_name,
+						ic_m.feature_name,
+						ic_m.signature,
 						l_score
 					)
 
 					-- Add to result if not duplicate
 					if not across a_result.candidates as c some
-						c.class_name.is_equal (m.class_name) and
-						c.feature_name.is_equal (m.feature_name)
+						c.class_name.is_equal (ic_m.class_name) and
+						c.feature_name.is_equal (ic_m.feature_name)
 					end then
 						a_result.add_candidate (l_candidate)
 
 						-- Add to "do not reinvent" if strong match
 						if l_score >= 0.8 then
 							a_result.add_do_not_reinvent (
-								m.feature_name + " - use " + m.class_name + "." + m.feature_name + "()"
+								ic_m.feature_name + " - use " + ic_m.class_name + "." + ic_m.feature_name + "()"
 							)
 						end
 					end
@@ -393,8 +393,8 @@ feature {NONE} -- API Building
 			create Result.make (1000)
 
 			-- Include APIs from simple_* libraries in ECF
-			across ecf_analyzer.simple_libraries as lib loop
-				Result.append (extract_single_library_api (lib))
+			across ecf_analyzer.simple_libraries as ic_lib loop
+				Result.append (extract_single_library_api (ic_lib))
 			end
 		end
 
@@ -418,19 +418,19 @@ feature {NONE} -- API Building
 					Result.append ("%N")
 
 					-- Add key features
-					across l_kb.get_class_features (l_class.id) as feat loop
+					across l_kb.get_class_features (l_class.id) as ic_feat loop
 						-- Only show public features
-						if feat.kind.is_equal ("command") or feat.kind.is_equal ("query") then
+						if ic_feat.kind.is_equal ("command") or ic_feat.kind.is_equal ("query") then
 							Result.append ("    ")
-							Result.append (feat.name)
-							if not feat.signature.is_empty then
+							Result.append (ic_feat.name)
+							if not ic_feat.signature.is_empty then
 								Result.append (": ")
-								Result.append (feat.signature)
+								Result.append (ic_feat.signature)
 							end
 							Result.append ("%N")
-							if not feat.preconditions.is_empty then
+							if not ic_feat.preconditions.is_empty then
 								Result.append ("      require: ")
-								Result.append (feat.preconditions)
+								Result.append (ic_feat.preconditions)
 								Result.append ("%N")
 							end
 						end
@@ -450,20 +450,20 @@ feature {NONE} -- API Building
 	build_do_not_reinvent (a_result: SCG_REUSE_RESULT)
 			-- Build "do not reinvent" list from candidates.
 		do
-			across a_result.candidates as c loop
-				if c.is_strong_match then
-					if c.is_feature_level then
+			across a_result.candidates as ic_c loop
+				if ic_c.is_strong_match then
+					if ic_c.is_feature_level then
 						a_result.add_do_not_reinvent (
-							c.feature_name + " - use " + c.class_name + "." + c.feature_name
+							ic_c.feature_name + " - use " + ic_c.class_name + "." + ic_c.feature_name
 						)
 					else
 						a_result.add_do_not_reinvent (
-							c.class_name + " - available in " + c.library_name
+							ic_c.class_name + " - available in " + ic_c.library_name
 						)
 					end
 
 					-- Add library to suggested imports
-					a_result.add_suggested_import (c.library_name)
+					a_result.add_suggested_import (ic_c.library_name)
 				end
 			end
 		end

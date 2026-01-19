@@ -293,9 +293,9 @@ feature -- Synchronization
 		do
 			create Result.make (5)
 			l_all := all_projects
-			across l_all as p loop
-				if not project_exists_on_disk (p) then
-					Result.extend (p)
+			across l_all as ic_p loop
+				if not project_exists_on_disk (ic_p) then
+					Result.extend (ic_p)
 				end
 			end
 		ensure

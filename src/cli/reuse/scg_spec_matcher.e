@@ -264,12 +264,12 @@ feature {NONE} -- Implementation
 			create Result.make (10)
 			-- Split on common delimiters
 			l_words := a_text.split (' ')
-			across l_words as w loop
-				w.left_adjust
-				w.right_adjust
+			across l_words as ic_w loop
+				ic_w.left_adjust
+				ic_w.right_adjust
 				-- Filter out stop words and short words
-				if w.count >= 3 and not is_stop_word (w) then
-					Result.extend (w.twin)
+				if ic_w.count >= 3 and not is_stop_word (ic_w) then
+					Result.extend (ic_w.twin)
 				end
 			end
 		end
@@ -305,8 +305,8 @@ feature {NONE} -- Implementation
 				else
 					-- Count semicolons (separators) + 1
 					Result := 1
-					across l_params as c loop
-						if c = ';' then
+					across l_params as ic_c loop
+						if ic_c = ';' then
 							Result := Result + 1
 						end
 					end

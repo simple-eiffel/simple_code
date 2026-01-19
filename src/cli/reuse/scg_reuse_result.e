@@ -423,8 +423,8 @@ feature -- Output
 			-- Similar classes section
 			if has_candidates then
 				l_text.append ("=== SIMILAR CLASSES IN KB ===%N")
-				across candidates as c loop
-					l_text.append (c.as_prompt_text)
+				across candidates as ic_c loop
+					l_text.append (ic_c.as_prompt_text)
 				end
 				l_text.append ("%N")
 			end
@@ -432,9 +432,9 @@ feature -- Output
 			-- Reuse guidance section
 			if not do_not_reinvent.is_empty then
 				l_text.append ("=== REUSE GUIDANCE ===%N")
-				across do_not_reinvent as item loop
+				across do_not_reinvent as ic_item loop
 					l_text.append ("- DO NOT reinvent: ")
-					l_text.append (item)
+					l_text.append (ic_item)
 					l_text.append ("%N")
 				end
 				l_text.append ("- GENERATE: Only custom logic not available in existing libraries%N%N")
@@ -443,9 +443,9 @@ feature -- Output
 			-- Suggested imports
 			if not suggested_imports.is_empty then
 				l_text.append ("=== SUGGESTED IMPORTS ===%N")
-				across suggested_imports as lib loop
+				across suggested_imports as ic_lib loop
 					l_text.append ("- ")
-					l_text.append (lib)
+					l_text.append (ic_lib)
 					l_text.append ("%N")
 				end
 			end
@@ -494,9 +494,9 @@ feature -- Output
 
 			if has_candidates then
 				Result.append ("Top candidates:%N")
-				across candidates as c loop
+				across candidates as ic_c loop
 					Result.append ("  ")
-					Result.append (c.as_summary)
+					Result.append (ic_c.as_summary)
 					Result.append ("%N")
 				end
 			end

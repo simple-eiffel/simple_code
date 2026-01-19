@@ -115,14 +115,14 @@ feature -- Analysis
 				-- Critical findings first
 				if across findings as f some f.severity >= Severity_high end then
 					Result.append ("!!! CRITICAL SECURITY CONCERNS !!!%N")
-					across findings as f loop
-						if f.severity >= Severity_high then
+					across findings as ic_f loop
+						if ic_f.severity >= Severity_high then
 							Result.append ("  [")
-							Result.append (severity_name (f.severity))
+							Result.append (severity_name (ic_f.severity))
 							Result.append ("] ")
-							Result.append (f.category)
+							Result.append (ic_f.category)
 							Result.append (": ")
-							Result.append (f.description)
+							Result.append (ic_f.description)
 							Result.append ("%N")
 						end
 					end
@@ -132,12 +132,12 @@ feature -- Analysis
 				-- Medium findings
 				if across findings as f some f.severity = Severity_medium end then
 					Result.append ("SECURITY CONSIDERATIONS:%N")
-					across findings as f loop
-						if f.severity = Severity_medium then
+					across findings as ic_f loop
+						if ic_f.severity = Severity_medium then
 							Result.append ("  - ")
-							Result.append (f.category)
+							Result.append (ic_f.category)
 							Result.append (": ")
-							Result.append (f.description)
+							Result.append (ic_f.description)
 							Result.append ("%N")
 						end
 					end
@@ -147,9 +147,9 @@ feature -- Analysis
 				-- Recommendations
 				if not recommendations.is_empty then
 					Result.append ("SECURITY REQUIREMENTS FOR GENERATED CODE:%N")
-					across recommendations as r loop
+					across recommendations as ic_r loop
 						Result.append ("  * ")
-						Result.append (r)
+						Result.append (ic_r)
 						Result.append ("%N")
 					end
 					Result.append ("%N")
@@ -414,8 +414,8 @@ feature {NONE} -- Helpers
 			l_max: REAL_64
 		do
 			l_max := 0.0
-			across findings as f loop
-				l_max := l_max.max (f.severity.to_real / Severity_critical.to_real)
+			across findings as ic_f loop
+				l_max := l_max.max (ic_f.severity.to_real / Severity_critical.to_real)
 			end
 			severity_score := l_max
 		end

@@ -1992,9 +1992,9 @@ feature {NONE} -- Command Processing
 						l_classes := l_kb.get_project_classes (pname.to_string_8)
 						if not l_classes.is_empty then
 							print ("%NClasses (" + l_classes.count.out + "):%N")
-							across l_classes as c loop
-								print ("  - " + c.class_name)
-								if c.is_validated then
+							across l_classes as ic_c loop
+								print ("  - " + ic_c.class_name)
+								if ic_c.is_validated then
 									print (" [validated]")
 								end
 								print ("%N")
@@ -2004,12 +2004,12 @@ feature {NONE} -- Command Processing
 						l_history := l_kb.get_project_history (pname.to_string_8, 10)
 						if not l_history.is_empty then
 							print ("%NRecent Activity:%N")
-							across l_history as h loop
-								print ("  " + h.created_at + " | " + h.action)
-								if not h.class_name.is_empty then
-									print (" (" + h.class_name + ")")
+							across l_history as ic_h loop
+								print ("  " + ic_h.created_at + " | " + ic_h.action)
+								if not ic_h.class_name.is_empty then
+									print (" (" + ic_h.class_name + ")")
 								end
-								if h.success then
+								if ic_h.success then
 									print (" [OK]")
 								else
 									print (" [FAIL]")
@@ -2032,10 +2032,10 @@ feature {NONE} -- Command Processing
 					else
 						print ("Tracked Projects%N")
 						print ("================%N")
-						across l_projects as p loop
-							print ("  " + p.name + " [" + p.project_type + "]%N")
-							print ("    Path: " + p.path + "%N")
-							print ("    Created: " + p.created_at + "%N%N")
+						across l_projects as ic_p loop
+							print ("  " + ic_p.name + " [" + ic_p.project_type + "]%N")
+							print ("    Path: " + ic_p.path + "%N")
+							print ("    Created: " + ic_p.created_at + "%N%N")
 						end
 						print ("Total: " + l_projects.count.out + " project(s)%N")
 						print ("%NFor details: simple_codegen projects --project <name>%N")
@@ -2603,8 +2603,8 @@ feature -- Atomic Workflow Commands
 
 						if l_result.has_candidates then
 							print ("Candidates found: " + l_result.candidates.count.out + "%N")
-							across l_result.candidates as c loop
-								print ("  - " + c.as_summary + "%N")
+							across l_result.candidates as ic_c loop
+								print ("  - " + ic_c.as_summary + "%N")
 							end
 							print ("%N")
 						else
@@ -2613,16 +2613,16 @@ feature -- Atomic Workflow Commands
 
 						if not l_result.do_not_reinvent.is_empty then
 							print ("DO NOT REINVENT:%N")
-							across l_result.do_not_reinvent as item loop
-								print ("  - " + item.to_string_8 + "%N")
+							across l_result.do_not_reinvent as ic_item loop
+								print ("  - " + ic_item.to_string_8 + "%N")
 							end
 							print ("%N")
 						end
 
 						if not l_result.suggested_imports.is_empty then
 							print ("SUGGESTED IMPORTS:%N")
-							across l_result.suggested_imports as lib loop
-								print ("  - " + lib.to_string_8 + "%N")
+							across l_result.suggested_imports as ic_lib loop
+								print ("  - " + ic_lib.to_string_8 + "%N")
 							end
 							print ("%N")
 						end

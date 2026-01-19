@@ -451,9 +451,9 @@ feature -- Prompt Enhancement
 				if not l_parents.is_empty then
 					Result.append ("Inherits from: ")
 					l_first := True
-					across l_parents as p loop
+					across l_parents as ic_p loop
 						if not l_first then Result.append (", ") end
-						Result.append (p)
+						Result.append (ic_p)
 						l_first := False
 					end
 					Result.append ("%N")
@@ -462,12 +462,12 @@ feature -- Prompt Enhancement
 				l_features := get_class_features (cls.id)
 				if not l_features.is_empty then
 					Result.append ("%NFeatures:%N")
-					across l_features as f loop
-						Result.append ("  " + f.name)
-						if not f.signature.is_empty then
-							Result.append (": " + f.signature)
+					across l_features as ic_f loop
+						Result.append ("  " + ic_f.name)
+						if not ic_f.signature.is_empty then
+							Result.append (": " + ic_f.signature)
 						end
-						Result.append (" [" + f.kind + "]%N")
+						Result.append (" [" + ic_f.kind + "]%N")
 					end
 				end
 				Result.append ("=== END KB CONTEXT ===%N")
@@ -506,9 +506,9 @@ feature -- Prompt Enhancement
 			l_examples := search_examples (a_topic, a_limit)
 			if not l_examples.is_empty then
 				Result.append ("=== RELEVANT EXAMPLES ===%N")
-				across l_examples as ex loop
-					Result.append ("%N--- " + ex.title + " (" + ex.tier + ") ---%N")
-					Result.append (ex.code)
+				across l_examples as ic_ex loop
+					Result.append ("%N--- " + ic_ex.title + " (" + ic_ex.tier + ") ---%N")
+					Result.append (ic_ex.code)
 					Result.append ("%N")
 				end
 				Result.append ("=== END EXAMPLES ===%N")
@@ -545,14 +545,14 @@ feature {NONE} -- Implementation
 		do
 			create Result.make (a_query.count + 20)
 			l_words := a_query.split (' ')
-			across l_words as w loop
-				w.left_adjust
-				w.right_adjust
-				if not w.is_empty then
+			across l_words as ic_w loop
+				ic_w.left_adjust
+				ic_w.right_adjust
+				if not ic_w.is_empty then
 					if Result.count > 0 then
 						Result.append (" AND ")
 					end
-					Result.append (w)
+					Result.append (ic_w)
 					Result.append ("*")
 				end
 			end
