@@ -1,0 +1,219 @@
+{
+  "project_name": "simple_xlsx",
+  "description": "Excel spreadsheet read/write library for the simple_* ecosystem",
+  "version": "1.0.0",
+  "dependencies": [
+    "simple_file",
+    "simple_xml",
+    "simple_archive",
+    "simple_datetime"
+  ],
+  "classes": [
+    {
+      "name": "XLSX_CELL_TYPE",
+      "description": "Enumeration of cell value types",
+      "type": "enum",
+      "features": [
+        {"name": "string_type", "type": "query", "signature": "INTEGER", "description": "String cell type constant"},
+        {"name": "number_type", "type": "query", "signature": "INTEGER", "description": "Numeric cell type constant"},
+        {"name": "boolean_type", "type": "query", "signature": "INTEGER", "description": "Boolean cell type constant"},
+        {"name": "date_type", "type": "query", "signature": "INTEGER", "description": "Date cell type constant"},
+        {"name": "formula_type", "type": "query", "signature": "INTEGER", "description": "Formula cell type constant (value only)"},
+        {"name": "empty_type", "type": "query", "signature": "INTEGER", "description": "Empty cell type constant"}
+      ]
+    },
+    {
+      "name": "XLSX_CELL",
+      "description": "Single cell with value and format",
+      "type": "class",
+      "features": [
+        {"name": "make", "type": "creation", "signature": "(a_column: INTEGER; a_row: INTEGER)", "description": "Create cell at column and row"},
+        {"name": "make_string", "type": "creation", "signature": "(a_column: INTEGER; a_row: INTEGER; a_value: STRING_32)", "description": "Create string cell"},
+        {"name": "make_number", "type": "creation", "signature": "(a_column: INTEGER; a_row: INTEGER; a_value: REAL_64)", "description": "Create numeric cell"},
+        {"name": "make_boolean", "type": "creation", "signature": "(a_column: INTEGER; a_row: INTEGER; a_value: BOOLEAN)", "description": "Create boolean cell"},
+        {"name": "make_date", "type": "creation", "signature": "(a_column: INTEGER; a_row: INTEGER; a_value: DATE_TIME)", "description": "Create date cell"},
+        {"name": "column", "type": "query", "signature": "INTEGER", "description": "Column index (1-based)"},
+        {"name": "row", "type": "query", "signature": "INTEGER", "description": "Row index (1-based)"},
+        {"name": "cell_type", "type": "query", "signature": "INTEGER", "description": "Type of cell value"},
+        {"name": "string_value", "type": "query", "signature": "detachable STRING_32", "description": "String value if string type"},
+        {"name": "number_value", "type": "query", "signature": "REAL_64", "description": "Numeric value"},
+        {"name": "boolean_value", "type": "query", "signature": "BOOLEAN", "description": "Boolean value"},
+        {"name": "date_value", "type": "query", "signature": "detachable DATE_TIME", "description": "Date value if date type"},
+        {"name": "formula", "type": "query", "signature": "detachable STRING_32", "description": "Formula string if formula type"},
+        {"name": "is_empty", "type": "query", "signature": "BOOLEAN", "description": "Is this an empty cell?"},
+        {"name": "is_string", "type": "query", "signature": "BOOLEAN", "description": "Is this a string cell?"},
+        {"name": "is_number", "type": "query", "signature": "BOOLEAN", "description": "Is this a numeric cell?"},
+        {"name": "is_boolean", "type": "query", "signature": "BOOLEAN", "description": "Is this a boolean cell?"},
+        {"name": "is_date", "type": "query", "signature": "BOOLEAN", "description": "Is this a date cell?"},
+        {"name": "set_string", "type": "command", "signature": "(a_value: STRING_32)", "description": "Set string value"},
+        {"name": "set_number", "type": "command", "signature": "(a_value: REAL_64)", "description": "Set numeric value"},
+        {"name": "set_boolean", "type": "command", "signature": "(a_value: BOOLEAN)", "description": "Set boolean value"},
+        {"name": "set_date", "type": "command", "signature": "(a_value: DATE_TIME)", "description": "Set date value"},
+        {"name": "set_formula", "type": "command", "signature": "(a_formula: STRING_32; a_cached_value: STRING_32)", "description": "Set formula with cached value"},
+        {"name": "clear", "type": "command", "signature": "", "description": "Clear cell value"},
+        {"name": "style", "type": "query", "signature": "detachable XLSX_STYLE", "description": "Cell style/format"},
+        {"name": "set_style", "type": "command", "signature": "(a_style: XLSX_STYLE)", "description": "Apply style to cell"},
+        {"name": "cell_reference", "type": "query", "signature": "STRING_32", "description": "Excel-style reference (e.g., A1, B2)"},
+        {"name": "to_string", "type": "query", "signature": "STRING_32", "description": "String representation of value"}
+      ]
+    },
+    {
+      "name": "XLSX_STYLE",
+      "description": "Cell formatting (font, color, border)",
+      "type": "class",
+      "features": [
+        {"name": "make", "type": "creation", "signature": "", "description": "Create default style"},
+        {"name": "is_bold", "type": "query", "signature": "BOOLEAN", "description": "Is font bold?"},
+        {"name": "is_italic", "type": "query", "signature": "BOOLEAN", "description": "Is font italic?"},
+        {"name": "is_underline", "type": "query", "signature": "BOOLEAN", "description": "Is text underlined?"},
+        {"name": "font_name", "type": "query", "signature": "STRING_32", "description": "Font family name"},
+        {"name": "font_size", "type": "query", "signature": "REAL_64", "description": "Font size in points"},
+        {"name": "font_color", "type": "query", "signature": "STRING_32", "description": "Font color as hex (RRGGBB)"},
+        {"name": "background_color", "type": "query", "signature": "STRING_32", "description": "Background color as hex"},
+        {"name": "number_format", "type": "query", "signature": "STRING_32", "description": "Number format string"},
+        {"name": "horizontal_alignment", "type": "query", "signature": "STRING_32", "description": "Horizontal alignment (left, center, right)"},
+        {"name": "vertical_alignment", "type": "query", "signature": "STRING_32", "description": "Vertical alignment (top, center, bottom)"},
+        {"name": "set_bold", "type": "command", "signature": "(a_bold: BOOLEAN)", "description": "Set bold"},
+        {"name": "set_italic", "type": "command", "signature": "(a_italic: BOOLEAN)", "description": "Set italic"},
+        {"name": "set_underline", "type": "command", "signature": "(a_underline: BOOLEAN)", "description": "Set underline"},
+        {"name": "set_font", "type": "command", "signature": "(a_name: STRING_32; a_size: REAL_64)", "description": "Set font name and size"},
+        {"name": "set_font_color", "type": "command", "signature": "(a_color: STRING_32)", "description": "Set font color"},
+        {"name": "set_background_color", "type": "command", "signature": "(a_color: STRING_32)", "description": "Set background color"},
+        {"name": "set_number_format", "type": "command", "signature": "(a_format: STRING_32)", "description": "Set number format"},
+        {"name": "set_alignment", "type": "command", "signature": "(a_horizontal: STRING_32; a_vertical: STRING_32)", "description": "Set alignment"}
+      ]
+    },
+    {
+      "name": "XLSX_ROW",
+      "description": "Row of cells in a worksheet",
+      "type": "class",
+      "features": [
+        {"name": "make", "type": "creation", "signature": "(a_row_number: INTEGER)", "description": "Create row at row number"},
+        {"name": "row_number", "type": "query", "signature": "INTEGER", "description": "Row number (1-based)"},
+        {"name": "cells", "type": "query", "signature": "ARRAYED_LIST [XLSX_CELL]", "description": "All cells in row"},
+        {"name": "cell_count", "type": "query", "signature": "INTEGER", "description": "Number of cells with values"},
+        {"name": "cell", "type": "query", "signature": "(a_column: INTEGER): detachable XLSX_CELL", "description": "Get cell at column"},
+        {"name": "cell_by_letter", "type": "query", "signature": "(a_column: STRING): detachable XLSX_CELL", "description": "Get cell by column letter (A, B, AA)"},
+        {"name": "put_cell", "type": "command", "signature": "(a_cell: XLSX_CELL)", "description": "Add or replace cell"},
+        {"name": "put_string", "type": "command", "signature": "(a_column: INTEGER; a_value: STRING_32)", "description": "Set string value at column"},
+        {"name": "put_number", "type": "command", "signature": "(a_column: INTEGER; a_value: REAL_64)", "description": "Set number at column"},
+        {"name": "put_boolean", "type": "command", "signature": "(a_column: INTEGER; a_value: BOOLEAN)", "description": "Set boolean at column"},
+        {"name": "put_date", "type": "command", "signature": "(a_column: INTEGER; a_value: DATE_TIME)", "description": "Set date at column"},
+        {"name": "remove_cell", "type": "command", "signature": "(a_column: INTEGER)", "description": "Remove cell at column"},
+        {"name": "height", "type": "query", "signature": "REAL_64", "description": "Row height in points"},
+        {"name": "set_height", "type": "command", "signature": "(a_height: REAL_64)", "description": "Set row height"},
+        {"name": "is_hidden", "type": "query", "signature": "BOOLEAN", "description": "Is row hidden?"},
+        {"name": "set_hidden", "type": "command", "signature": "(a_hidden: BOOLEAN)", "description": "Set row visibility"}
+      ]
+    },
+    {
+      "name": "XLSX_SHEET",
+      "description": "Single worksheet in a workbook",
+      "type": "class",
+      "features": [
+        {"name": "make", "type": "creation", "signature": "(a_name: STRING_32)", "description": "Create sheet with name"},
+        {"name": "name", "type": "query", "signature": "STRING_32", "description": "Sheet name"},
+        {"name": "set_name", "type": "command", "signature": "(a_name: STRING_32)", "description": "Rename sheet"},
+        {"name": "rows", "type": "query", "signature": "ARRAYED_LIST [XLSX_ROW]", "description": "All rows in sheet"},
+        {"name": "row_count", "type": "query", "signature": "INTEGER", "description": "Number of rows with data"},
+        {"name": "column_count", "type": "query", "signature": "INTEGER", "description": "Maximum column used"},
+        {"name": "row", "type": "query", "signature": "(a_row: INTEGER): detachable XLSX_ROW", "description": "Get row by number"},
+        {"name": "cell", "type": "query", "signature": "(a_column: INTEGER; a_row: INTEGER): detachable XLSX_CELL", "description": "Get cell at column and row"},
+        {"name": "cell_by_reference", "type": "query", "signature": "(a_ref: STRING): detachable XLSX_CELL", "description": "Get cell by reference (e.g., A1)"},
+        {"name": "put_cell", "type": "command", "signature": "(a_cell: XLSX_CELL)", "description": "Add or replace cell"},
+        {"name": "put_string", "type": "command", "signature": "(a_column: INTEGER; a_row: INTEGER; a_value: STRING_32)", "description": "Set string value"},
+        {"name": "put_number", "type": "command", "signature": "(a_column: INTEGER; a_row: INTEGER; a_value: REAL_64)", "description": "Set number value"},
+        {"name": "put_boolean", "type": "command", "signature": "(a_column: INTEGER; a_row: INTEGER; a_value: BOOLEAN)", "description": "Set boolean value"},
+        {"name": "put_date", "type": "command", "signature": "(a_column: INTEGER; a_row: INTEGER; a_value: DATE_TIME)", "description": "Set date value"},
+        {"name": "column_width", "type": "query", "signature": "(a_column: INTEGER): REAL_64", "description": "Get column width"},
+        {"name": "set_column_width", "type": "command", "signature": "(a_column: INTEGER; a_width: REAL_64)", "description": "Set column width"},
+        {"name": "freeze_panes", "type": "command", "signature": "(a_column: INTEGER; a_row: INTEGER)", "description": "Freeze rows/columns"},
+        {"name": "merge_cells", "type": "command", "signature": "(a_start_col: INTEGER; a_start_row: INTEGER; a_end_col: INTEGER; a_end_row: INTEGER)", "description": "Merge cell range"},
+        {"name": "merged_ranges", "type": "query", "signature": "ARRAYED_LIST [TUPLE [start_col, start_row, end_col, end_row: INTEGER]]", "description": "List of merged cell ranges"}
+      ]
+    },
+    {
+      "name": "XLSX_WORKBOOK",
+      "description": "Excel workbook containing multiple sheets",
+      "type": "class",
+      "features": [
+        {"name": "make", "type": "creation", "signature": "", "description": "Create empty workbook"},
+        {"name": "make_from_file", "type": "creation", "signature": "(a_path: STRING_32)", "description": "Load workbook from file"},
+        {"name": "sheets", "type": "query", "signature": "ARRAYED_LIST [XLSX_SHEET]", "description": "All sheets in workbook"},
+        {"name": "sheet_count", "type": "query", "signature": "INTEGER", "description": "Number of sheets"},
+        {"name": "sheet", "type": "query", "signature": "(a_index: INTEGER): detachable XLSX_SHEET", "description": "Get sheet by index (1-based)"},
+        {"name": "sheet_by_name", "type": "query", "signature": "(a_name: STRING_32): detachable XLSX_SHEET", "description": "Get sheet by name"},
+        {"name": "active_sheet", "type": "query", "signature": "detachable XLSX_SHEET", "description": "Currently active sheet"},
+        {"name": "active_sheet_index", "type": "query", "signature": "INTEGER", "description": "Index of active sheet"},
+        {"name": "add_sheet", "type": "command", "signature": "(a_name: STRING_32): XLSX_SHEET", "description": "Add new sheet and return it"},
+        {"name": "remove_sheet", "type": "command", "signature": "(a_index: INTEGER)", "description": "Remove sheet by index"},
+        {"name": "remove_sheet_by_name", "type": "command", "signature": "(a_name: STRING_32)", "description": "Remove sheet by name"},
+        {"name": "set_active_sheet", "type": "command", "signature": "(a_index: INTEGER)", "description": "Set active sheet"},
+        {"name": "save", "type": "command", "signature": "(a_path: STRING_32): BOOLEAN", "description": "Save workbook to file"},
+        {"name": "file_path", "type": "query", "signature": "detachable STRING_32", "description": "Path of loaded file"},
+        {"name": "is_loaded", "type": "query", "signature": "BOOLEAN", "description": "Was workbook loaded from file?"},
+        {"name": "last_error", "type": "query", "signature": "STRING_32", "description": "Last error message"}
+      ]
+    },
+    {
+      "name": "XLSX_READER",
+      "description": "Parse .xlsx files (ZIP containing XML)",
+      "type": "class",
+      "features": [
+        {"name": "make", "type": "creation", "signature": "", "description": "Create reader"},
+        {"name": "read", "type": "command", "signature": "(a_path: STRING_32): detachable XLSX_WORKBOOK", "description": "Read workbook from file"},
+        {"name": "is_valid_xlsx", "type": "query", "signature": "(a_path: STRING_32): BOOLEAN", "description": "Check if file is valid xlsx"},
+        {"name": "last_error", "type": "query", "signature": "STRING_32", "description": "Last error message"},
+        {"name": "has_error", "type": "query", "signature": "BOOLEAN", "description": "Did last operation fail?"}
+      ]
+    },
+    {
+      "name": "XLSX_WRITER",
+      "description": "Generate .xlsx files (ZIP containing XML)",
+      "type": "class",
+      "features": [
+        {"name": "make", "type": "creation", "signature": "", "description": "Create writer"},
+        {"name": "write", "type": "command", "signature": "(a_workbook: XLSX_WORKBOOK; a_path: STRING_32): BOOLEAN", "description": "Write workbook to file"},
+        {"name": "last_error", "type": "query", "signature": "STRING_32", "description": "Last error message"},
+        {"name": "has_error", "type": "query", "signature": "BOOLEAN", "description": "Did last operation fail?"}
+      ]
+    },
+    {
+      "name": "SIMPLE_XLSX",
+      "description": "Facade with quick read/write methods for Excel files",
+      "type": "facade",
+      "features": [
+        {"name": "make", "type": "creation", "signature": "", "description": "Create facade"},
+        {"name": "open", "type": "query", "signature": "(a_path: STRING_32): detachable XLSX_WORKBOOK", "description": "Open existing xlsx file"},
+        {"name": "create_workbook", "type": "query", "signature": ": XLSX_WORKBOOK", "description": "Create new empty workbook"},
+        {"name": "save", "type": "command", "signature": "(a_workbook: XLSX_WORKBOOK; a_path: STRING_32): BOOLEAN", "description": "Save workbook to file"},
+        {"name": "read_sheet_as_table", "type": "query", "signature": "(a_path: STRING_32; a_sheet: INTEGER): detachable ARRAYED_LIST [ARRAYED_LIST [STRING_32]]", "description": "Quick read sheet as 2D string array"},
+        {"name": "write_table", "type": "command", "signature": "(a_data: ARRAYED_LIST [ARRAYED_LIST [STRING_32]]; a_path: STRING_32): BOOLEAN", "description": "Quick write 2D array to xlsx"},
+        {"name": "import_csv", "type": "query", "signature": "(a_csv_path: STRING_32): detachable XLSX_WORKBOOK", "description": "Import CSV file as workbook"},
+        {"name": "export_csv", "type": "command", "signature": "(a_workbook: XLSX_WORKBOOK; a_sheet_index: INTEGER; a_path: STRING_32): BOOLEAN", "description": "Export sheet to CSV"},
+        {"name": "last_error", "type": "query", "signature": "STRING_32", "description": "Last error message"},
+        {"name": "has_error", "type": "query", "signature": "BOOLEAN", "description": "Did last operation fail?"}
+      ]
+    }
+  ],
+  "external_dependencies": {
+    "c_libraries": [],
+    "notes": "Uses simple_archive for ZIP handling, simple_xml for Office Open XML parsing"
+  },
+  "contracts": {
+    "preconditions": [
+      "File exists and is valid .xlsx for read operations",
+      "Sheet index/name exists for sheet access",
+      "Cell coordinates positive (1-based indexing)"
+    ],
+    "postconditions": [
+      "Written file is valid .xlsx (can be reopened)",
+      "Loaded workbook contains at least one sheet"
+    ],
+    "invariants": [
+      "Cell coordinates within sheet bounds",
+      "Sheet names unique within workbook",
+      "Row and column indices are 1-based"
+    ]
+  }
+}

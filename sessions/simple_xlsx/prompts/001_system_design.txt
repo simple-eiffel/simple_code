@@ -1,0 +1,279 @@
+=== CLAUDE USER MANUAL REMINDER ===
+
+BEFORE proceeding, ensure you have read and understood:
+  /d/prod/simple_code/CLAUDE_USER_MANUAL.md
+
+This manual contains:
+- How to determine SCALE and SCOPE of work
+- The 6 lifecycle stages and when to apply them
+- Mandatory rules for project confinement
+- Complete command reference
+- Common mistakes to avoid
+
+If you haven't read it, STOP and read it now.
+If you have read it, proceed with the work below.
+
+=====================================
+
+=== SCALE AND SCOPE AWARENESS ===
+
+FIRST: Determine the SCALE and SCOPE of the request.
+
+SCALE (what level are you working at?):
+  - SYSTEM:   New project/library (requires FULL structure below)
+  - SUBSYSTEM: New module within existing project (partial structure)
+  - CLUSTER:  Group of related classes (src/ changes only)
+  - CLASS:    Single class (src/ file only)
+  - FEATURE:  Single feature in existing class (edit only)
+
+SCOPE (what dev-ops stages are needed?):
+  For SYSTEM scale â ALL stages (1-6)
+  For SUBSYSTEM scale â Stages 2-5 (skip skeleton if exists)
+  For CLUSTER scale â Stages 2-3, maybe 5
+  For CLASS scale â Stage 2, maybe 3
+  For FEATURE scale â Stage 2 only (edit existing file)
+
+=== SIMPLE_* PROJECT STRUCTURE (FOR SYSTEM SCALE) ===
+
+NEW projects MUST have this complete structure:
+
+PROJECT_ROOT/
+âââ project_name.ecf        # ECF configuration with library AND test targets
+âââ README.md               # Project description, usage, examples
+âââ CHANGELOG.md            # Version history
+âââ .gitignore              # Git ignore patterns
+âââ src/                    # Source code
+â   âââ main_class.e
+â   âââ supporting_classes.e
+âââ testing/                # Test classes
+â   âââ test_app.e          # Test runner (root class for test target)
+â   âââ lib_tests.e         # Test cases inheriting TEST_SET_BASE
+âââ docs/                   # Documentation
+â   âââ index.html          # Main documentation page
+â   âââ api/                # API documentation (optional)
+âââ bin/                    # Compiled binaries (deployed)
+â   âââ project_name.exe
+âââ inno/                   # Installer files (optional)
+    âââ project_name.iss    # INNO Setup script
+    âââ Output/             # Built installer
+
+=== LIFECYCLE STAGES ===
+
+You MUST complete ALL stages in order:
+
+STAGE 1: PROJECT SKELETON
+- Create directory structure (src/, testing/, docs/, bin/)
+- Create ECF with both library and test targets
+- Create README.md with project description
+- Create CHANGELOG.md with initial version
+- Create .gitignore
+
+STAGE 2: CODE GENERATION
+- Generate main classes in src/
+- Apply DBC, void safety, SCOOP patterns
+- Validate with simple_codegen validator
+
+STAGE 3: TEST CREATION
+- Create test_app.e (test runner root class)
+- Create lib_tests.e (test cases)
+- ECF test target must include testing cluster
+- Use simple_testing library
+
+STAGE 4: DOCUMENTATION
+- Create docs/index.html with:
+  - Project overview
+  - API reference
+  - Usage examples
+  - Installation instructions
+
+STAGE 5: BUILD AND DEPLOY
+- Compile with test target, run tests
+- Compile release target (finalized)
+- Copy binary to bin/ folder
+- Deploy to /d/prod/bin/ if ecosystem tool
+
+STAGE 6: INSTALLER (optional for CLI tools)
+- Create INNO Setup script
+- Build installer
+- Test installation/uninstallation
+
+=== CLI COMMANDS FOR EACH STAGE ===
+
+Stage 1: simple_codegen init --session <name>
+Stage 2: simple_codegen generate --session <name>
+Stage 3: simple_codegen generate-tests --session <name>
+Stage 4: simple_codegen docs --session <name>
+Stage 5: simple_codegen compile --session <name> --project <path>
+Stage 6: simple_codegen inno --session <name>
+
+=== VERIFICATION CHECKLIST ===
+
+Before declaring project COMPLETE:
+[ ] ECF has both main AND test targets
+[ ] testing/ folder exists with test_app.e and lib_tests.e
+[ ] docs/ folder exists with index.html
+[ ] README.md exists with project description
+[ ] CHANGELOG.md exists with version history
+[ ] .gitignore exists
+[ ] bin/ folder exists with compiled binary
+[ ] All tests pass
+[ ] Documentation is complete
+
+=== PROJECT CONFINEMENT (CRITICAL) ===
+ALL work MUST be confined to the project directory.
+
+1. FILE CREATION:
+   - ONLY create files inside the project directory
+   - NEVER create files in parent directories (e.g., /d/prod/)
+   - All source files go in project_root/src/
+   - All generated files stay in project_root/
+
+2. COMPILATION - USE CLI TOOLS (NOT ec.exe/ec.sh directly):
+   *** NEVER run ec.exe or ec.sh directly ***
+   *** USE these CLI tools instead: ***
+
+   For session-based projects:
+     simple_codegen.exe compile --session <name> --project <path>
+
+   For any Eiffel project:
+     simple_codegen compile --session <name> --project <path>
+     (compiles from correct directory, handles errors)
+
+   These tools:
+   - Automatically run from correct directory
+   - Create EIFGENs in proper location
+   - Handle refinement prompts on errors
+   - Track compilation history
+
+3. ARTIFACTS:
+   - Logs, temp files, output â project_root/
+   - Test results â project_root/
+   - EIFGENs â project_root/EIFGENs/
+   - Documentation â project_root/docs/
+
+4. VERIFICATION:
+   Before ANY file operation, verify the path is INSIDE project_root.
+   Pattern: path.has_substring(project_root)
+
+VIOLATION of these rules causes:
+- EIFGENs in wrong location (locks files elsewhere)
+- Pollution of shared directories
+- Confusion about what belongs to which project
+
+I need you to design an Eiffel system based on my requirements.
+
+=== YOUR TASK ===
+1. Analyze my requirements
+2. Decompose into cohesive Eiffel classes
+3. Output a structured specification in JSON format
+
+=== REQUIREMENTS ===
+[USER: Replace this section with your system requirements]
+Example: "I need a library management system with book tracking, member management, and loan processing"
+
+=== EXTERNAL DEPENDENCIES (CHECK FIRST!) ===
+If the system requires external C/C++ libraries (e.g., libpq, sqlite3, openssl):
+
+1. IDENTIFY external dependencies in your system_spec JSON (external_dependencies field)
+2. BEFORE generating ANY code, CHECK if they are installed:
+   - Look for headers/libraries in standard locations
+   - Check environment variables (POSTGRESQL_HOME, SQLITE_HOME, etc.)
+   - Test with: ls "expected/path/to/include" or similar
+3. If NOT installed, attempt automatic installation:
+   - Download installer from official source
+   - Run silent/unattended installation
+   - Set required environment variables
+   - Verify installation succeeded
+4. If automatic installation FAILS:
+   - STOP the entire simple_codegen process immediately
+   - Tell the user EXACTLY:
+     a) What dependency is missing
+     b) Where to download it (official URL)
+     c) How to install manually (step-by-step)
+     d) What environment variables to set (name=value)
+     e) How to restart: "simple_codegen init --session <name>" then proceed
+   - DO NOT continue with code generation until user confirms installation
+5. If installed (or after successful auto-install):
+   - Document the paths in the system_spec
+   - Proceed with code generation
+
+CRITICAL: Never generate code that depends on missing external libraries!
+The C compile WILL fail and waste time. Check dependencies FIRST.
+
+=== DESIGN PRINCIPLES (Simple Eiffel Ecosystem) ===
+1. DESIGN BY CONTRACT (DBC):
+   - Write contracts BEFORE implementation (Specification Hat)
+   - Preconditions: what callers must guarantee
+   - Postconditions: what feature guarantees (must be COMPLETE, not just true)
+   - Class invariants: ANALYZE each class to find ALL meaningful invariants!
+     (Express what is always true: count >= 0, is_empty = count = 0, etc.)
+     Include every invariant that expresses real class semantics.
+
+2. VOID SAFETY:
+   - 'attached' for required references
+   - 'detachable' for optional references
+   - Pattern: if attached x as l_x then ... end
+
+3. COMMAND-QUERY SEPARATION (CQS):
+   - Commands modify state, return nothing
+   - Queries return values, no side effects
+
+4. NAMING CONVENTIONS:
+   - Class: ALL_CAPS (LIBRARY_BOOK)
+   - Feature: lower_snake_case (find_by_title)
+   - Arguments: a_ prefix (a_name, a_count)
+   - Locals: l_ prefix (l_result, l_file)
+   - Booleans: is_/has_/can_ prefix (is_empty, has_key)
+
+5. SINGLE RESPONSIBILITY:
+   - Each class has one clear purpose
+   - Complex internals, simple external interface
+
+=== OUTPUT FORMAT ===
+Respond with a JSON object containing the system specification:
+
+```json
+{
+  "type": "system_spec",
+  "system_name": "library_system",
+  "description": "Library management system for tracking books and loans",
+  "external_dependencies": [
+    {
+      "name": "libpq",
+      "description": "PostgreSQL C client library",
+      "check_path": "$(POSTGRESQL_HOME)/include/libpq-fe.h",
+      "env_var": "POSTGRESQL_HOME",
+      "download_url": "https://www.postgresql.org/download/",
+      "install_instructions": "Install PostgreSQL 16, set POSTGRESQL_HOME=C:\\Program Files\\PostgreSQL\\16"
+    }
+  ],
+  "classes": [
+    {
+      "name": "LIBRARY_BOOK",
+      "description": "Represents a book in the library catalog",
+      "attributes": [
+        {"name": "title", "type": "STRING", "description": "Book title"},
+        {"name": "author", "type": "STRING", "description": "Author name"},
+        {"name": "is_available", "type": "BOOLEAN", "description": "Availability status"}
+      ],
+      "features": [
+        {"name": "check_out", "type": "command", "description": "Mark book as borrowed"},
+        {"name": "return_book", "type": "command", "description": "Mark book as available"}
+      ],
+      "invariants": ["title_not_empty: not title.is_empty", "author_not_empty: not author.is_empty", "availability_consistent: is_available implies not is_borrowed"]
+    }
+  ],
+  "relationships": [
+    {"from": "LIBRARY_CATALOG", "to": "LIBRARY_BOOK", "type": "contains"}
+  ]
+}
+```
+
+Output ONLY the JSON. No explanations before or after.
+
+=== NEXT CLI COMMAND ===
+Save this JSON response to a file and run:
+  simple_codegen process --session <SESSION> --input <response_file.json>
+
+This parses your system specification and generates the first class prompt.
+The CLI will guide you through generating each class in sequence.

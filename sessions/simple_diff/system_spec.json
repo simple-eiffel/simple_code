@@ -1,0 +1,146 @@
+{
+  "type": "system_spec",
+  "system_name": "simple_diff",
+  "description": "Diff and patch library providing text comparison, unified diff output, and patch application using Myers diff algorithm",
+  "external_dependencies": [],
+  "classes": [
+    {
+      "name": "SIMPLE_DIFF",
+      "description": "Facade class providing quick diff methods for comparing files, strings, and directories",
+      "attributes": [
+        {"name": "context_lines", "type": "INTEGER", "description": "Number of context lines in unified diff (default 3)"},
+        {"name": "ignore_whitespace", "type": "BOOLEAN", "description": "Whether to ignore whitespace differences"},
+        {"name": "ignore_case", "type": "BOOLEAN", "description": "Whether to ignore case differences"}
+      ],
+      "features": [
+        {"name": "diff_strings", "type": "query", "description": "Compare two strings, return DIFF_RESULT"},
+        {"name": "diff_files", "type": "query", "description": "Compare two files, return DIFF_RESULT"},
+        {"name": "diff_directories", "type": "query", "description": "Compare two directories recursively, return list of DIFF_RESULT"},
+        {"name": "apply_patch", "type": "command", "description": "Apply a unified diff to a file"},
+        {"name": "reverse_patch", "type": "command", "description": "Reverse apply a patch (unapply)"},
+        {"name": "set_context_lines", "type": "command", "description": "Set number of context lines (builder pattern)"},
+        {"name": "set_ignore_whitespace", "type": "command", "description": "Set whitespace ignoring (builder pattern)"},
+        {"name": "set_ignore_case", "type": "command", "description": "Set case ignoring (builder pattern)"}
+      ],
+      "invariants": ["context_lines_non_negative: context_lines >= 0"]
+    },
+    {
+      "name": "DIFF_ENGINE",
+      "description": "Core Myers diff algorithm implementation for computing longest common subsequence and edit script",
+      "attributes": [
+        {"name": "source_lines", "type": "ARRAYED_LIST [STRING]", "description": "Lines from source text"},
+        {"name": "target_lines", "type": "ARRAYED_LIST [STRING]", "description": "Lines from target text"}
+      ],
+      "features": [
+        {"name": "compute_diff", "type": "query", "description": "Compute diff between source and target, return list of DIFF_HUNK"},
+        {"name": "compute_lcs", "type": "query", "description": "Compute longest common subsequence"},
+        {"name": "set_source", "type": "command", "description": "Set source lines for comparison"},
+        {"name": "set_target", "type": "command", "description": "Set target lines for comparison"}
+      ],
+      "invariants": ["source_not_void: source_lines /= Void", "target_not_void: target_lines /= Void"]
+    },
+    {
+      "name": "DIFF_RESULT",
+      "description": "Contains the complete result of a diff operation including all hunks and metadata",
+      "attributes": [
+        {"name": "source_path", "type": "detachable STRING", "description": "Path to source file (if file diff)"},
+        {"name": "target_path", "type": "detachable STRING", "description": "Path to target file (if file diff)"},
+        {"name": "hunks", "type": "ARRAYED_LIST [DIFF_HUNK]", "description": "List of change hunks"},
+        {"name": "is_identical", "type": "BOOLEAN", "description": "True if no differences found"}
+      ],
+      "features": [
+        {"name": "to_unified", "type": "query", "description": "Format as unified diff string"},
+        {"name": "to_side_by_side", "type": "query", "description": "Format as side-by-side comparison"},
+        {"name": "to_html", "type": "query", "description": "Format as HTML with highlighting"},
+        {"name": "to_json", "type": "query", "description": "Format as JSON representation"},
+        {"name": "add_hunk", "type": "command", "description": "Add a hunk to the result"},
+        {"name": "line_count", "type": "query", "description": "Total number of changed lines"}
+      ],
+      "invariants": ["hunks_not_void: hunks /= Void", "identical_means_no_hunks: is_identical implies hunks.is_empty"]
+    },
+    {
+      "name": "DIFF_HUNK",
+      "description": "Represents a single contiguous block of changes with context",
+      "attributes": [
+        {"name": "source_start", "type": "INTEGER", "description": "Starting line number in source"},
+        {"name": "source_count", "type": "INTEGER", "description": "Number of lines from source"},
+        {"name": "target_start", "type": "INTEGER", "description": "Starting line number in target"},
+        {"name": "target_count", "type": "INTEGER", "description": "Number of lines from target"},
+        {"name": "lines", "type": "ARRAYED_LIST [DIFF_LINE]", "description": "Lines in this hunk"}
+      ],
+      "features": [
+        {"name": "header", "type": "query", "description": "Generate unified diff hunk header (@@ -s,c +t,c @@)"},
+        {"name": "add_line", "type": "command", "description": "Add a line to the hunk"},
+        {"name": "additions_count", "type": "query", "description": "Number of added lines"},
+        {"name": "deletions_count", "type": "query", "description": "Number of deleted lines"}
+      ],
+      "invariants": ["source_start_positive: source_start >= 1", "target_start_positive: target_start >= 1", "lines_not_void: lines /= Void", "counts_non_negative: source_count >= 0 and target_count >= 0"]
+    },
+    {
+      "name": "DIFF_LINE",
+      "description": "Represents a single line in a diff with its status (context, added, or removed)",
+      "attributes": [
+        {"name": "content", "type": "STRING", "description": "The text content of the line"},
+        {"name": "status", "type": "INTEGER", "description": "Line status: context=0, added=1, removed=2"},
+        {"name": "source_line_number", "type": "INTEGER", "description": "Line number in source (0 if added)"},
+        {"name": "target_line_number", "type": "INTEGER", "description": "Line number in target (0 if removed)"}
+      ],
+      "features": [
+        {"name": "is_context", "type": "query", "description": "True if this is a context line (unchanged)"},
+        {"name": "is_added", "type": "query", "description": "True if this line was added"},
+        {"name": "is_removed", "type": "query", "description": "True if this line was removed"},
+        {"name": "prefix", "type": "query", "description": "Get line prefix for unified format (space, +, -)"},
+        {"name": "to_string", "type": "query", "description": "Format line with prefix"}
+      ],
+      "invariants": ["content_not_void: content /= Void", "valid_status: status >= 0 and status <= 2"]
+    },
+    {
+      "name": "PATCH_APPLIER",
+      "description": "Applies unified diff patches to files with dry-run and reject file support",
+      "attributes": [
+        {"name": "dry_run", "type": "BOOLEAN", "description": "If true, do not actually modify files"},
+        {"name": "reverse", "type": "BOOLEAN", "description": "If true, reverse the patch (unapply)"},
+        {"name": "last_error", "type": "detachable STRING", "description": "Error message from last operation"},
+        {"name": "rejected_hunks", "type": "ARRAYED_LIST [DIFF_HUNK]", "description": "Hunks that failed to apply"}
+      ],
+      "features": [
+        {"name": "apply", "type": "command", "description": "Apply diff result to file"},
+        {"name": "apply_from_string", "type": "command", "description": "Parse and apply unified diff string"},
+        {"name": "has_error", "type": "query", "description": "True if last operation had errors"},
+        {"name": "has_rejects", "type": "query", "description": "True if some hunks were rejected"},
+        {"name": "write_reject_file", "type": "command", "description": "Write rejected hunks to .rej file"},
+        {"name": "set_dry_run", "type": "command", "description": "Enable/disable dry run mode"},
+        {"name": "set_reverse", "type": "command", "description": "Enable/disable reverse mode"}
+      ],
+      "invariants": ["rejected_hunks_not_void: rejected_hunks /= Void"]
+    },
+    {
+      "name": "DIFF_RENDERER",
+      "description": "Formats diff output in various styles (unified, side-by-side, HTML, colored console)",
+      "attributes": [
+        {"name": "tab_width", "type": "INTEGER", "description": "Width to expand tabs to (default 4)"},
+        {"name": "line_width", "type": "INTEGER", "description": "Maximum line width for side-by-side (default 80)"},
+        {"name": "use_color", "type": "BOOLEAN", "description": "Whether to use ANSI colors for console output"}
+      ],
+      "features": [
+        {"name": "render_unified", "type": "query", "description": "Render as unified diff format"},
+        {"name": "render_side_by_side", "type": "query", "description": "Render as side-by-side columns"},
+        {"name": "render_html", "type": "query", "description": "Render as HTML with CSS classes"},
+        {"name": "render_colored", "type": "query", "description": "Render with ANSI color codes for console"},
+        {"name": "set_tab_width", "type": "command", "description": "Set tab expansion width"},
+        {"name": "set_line_width", "type": "command", "description": "Set column width for side-by-side"}
+      ],
+      "invariants": ["tab_width_positive: tab_width >= 1", "line_width_positive: line_width >= 20"]
+    }
+  ],
+  "relationships": [
+    {"from": "SIMPLE_DIFF", "to": "DIFF_ENGINE", "type": "uses"},
+    {"from": "SIMPLE_DIFF", "to": "DIFF_RESULT", "type": "creates"},
+    {"from": "SIMPLE_DIFF", "to": "PATCH_APPLIER", "type": "uses"},
+    {"from": "DIFF_ENGINE", "to": "DIFF_HUNK", "type": "creates"},
+    {"from": "DIFF_RESULT", "to": "DIFF_HUNK", "type": "contains"},
+    {"from": "DIFF_RESULT", "to": "DIFF_RENDERER", "type": "uses"},
+    {"from": "DIFF_HUNK", "to": "DIFF_LINE", "type": "contains"},
+    {"from": "PATCH_APPLIER", "to": "DIFF_RESULT", "type": "uses"}
+  ]
+}

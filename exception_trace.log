@@ -1,0 +1,599 @@
+
+simple_code: system execution failed.
+Following is the set of recorded exceptions:
+
+******************************** Thread exception *****************************
+In thread           Root thread            0x0 (thread id)
+*******************************************************************************
+-------------------------------------------------------------------------------
+Class / Object      Routine                Nature of exception           Effect
+-------------------------------------------------------------------------------
+CONSOLE             console_ps             FILE: unable to write STRING object.:
+<000001FF822A1C98>                         Runtime I/O error.            Fail
+-------------------------------------------------------------------------------
+CONSOLE             console_ps                                          
+<000001FF822A1C98>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+CONSOLE             put_string @6                                       
+<000001FF822A1C98>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+STD_FILES           put_string @2                                       
+<000001FF822A1C78>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+SCG_CLI_APP         print @6                                            
+<000001FF820EF5A8>  (From ANY)             Routine failure.              Fail
+-------------------------------------------------------------------------------
+SCG_CLI_APP         handle_process @50                                  
+<000001FF820EF5A8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+SCG_CLI_APP         process_command @14                                 
+<000001FF820EF5A8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+SCG_CLI_APP         make @11                                            
+<000001FF820EF5A8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+SCG_CLI_APP         root's creation                                     
+<000001FF820EF5A8>                         Routine failure.              Exit
+-------------------------------------------------------------------------------
+
+
+simple_code: PANIC: caught signal #11 (Segmentation violation) -- Giving up...
+
+simple_code: system execution failed.
+Following is the set of recorded exceptions:
+
+******************************** Thread exception *****************************
+In thread           Root thread            0x0 (thread id)
+*******************************************************************************
+-------------------------------------------------------------------------------
+Class / Object      Routine                Nature of exception           Effect
+-------------------------------------------------------------------------------
+CONSOLE             console_ps             FILE: unable to write STRING object.:
+<000002185DEE19A8>                         Runtime I/O error.            Fail
+-------------------------------------------------------------------------------
+CONSOLE             console_ps                                          
+<000002185DEE19A8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+CONSOLE             put_string @6                                       
+<000002185DEE19A8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+STD_FILES           put_string @2                                       
+<000002185DEE1988>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+SCG_CLI_APP         print @6                                            
+<000002185DD2D5A8>  (From ANY)             Routine failure.              Fail
+-------------------------------------------------------------------------------
+SCG_CLI_APP         handle_process @50                                  
+<000002185DD2D5A8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+SCG_CLI_APP         process_command @14                                 
+<000002185DD2D5A8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+SCG_CLI_APP         make @11                                            
+<000002185DD2D5A8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+SCG_CLI_APP         root's creation                                     
+<000002185DD2D5A8>                         Routine failure.              Exit
+-------------------------------------------------------------------------------
+
+
+simple_code: PANIC: caught signal #11 (Segmentation violation) -- Giving up...
+
+simple_code: system execution failed.
+Following is the set of recorded exceptions:
+
+******************************** Thread exception *****************************
+In thread           Root thread            0x0 (thread id)
+*******************************************************************************
+-------------------------------------------------------------------------------
+Class / Object      Routine                Nature of exception           Effect
+-------------------------------------------------------------------------------
+CONSOLE             console_ps             FILE: unable to write STRING object.:
+<0000027B7CC1B588>                         Runtime I/O error.            Fail
+-------------------------------------------------------------------------------
+CONSOLE             console_ps                                          
+<0000027B7CC1B588>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+CONSOLE             put_string @6                                       
+<0000027B7CC1B588>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+STD_FILES           put_string @2                                       
+<0000027B7CC1B568>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+SCG_CLI_APP         print @6                                            
+<0000027B7CA555A8>  (From ANY)             Routine failure.              Fail
+-------------------------------------------------------------------------------
+SCG_CLI_APP         handle_process @50                                  
+<0000027B7CA555A8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+SCG_CLI_APP         process_command @14                                 
+<0000027B7CA555A8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+SCG_CLI_APP         make @11                                            
+<0000027B7CA555A8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+SCG_CLI_APP         root's creation                                     
+<0000027B7CA555A8>                         Routine failure.              Exit
+-------------------------------------------------------------------------------
+
+
+simple_code: PANIC: caught signal #11 (Segmentation violation) -- Giving up...
+
+simple_code: system execution failed.
+Following is the set of recorded exceptions:
+
+******************************** Thread exception *****************************
+In thread           Root thread            0x0 (thread id)
+*******************************************************************************
+-------------------------------------------------------------------------------
+Class / Object      Routine                Nature of exception           Effect
+-------------------------------------------------------------------------------
+CONSOLE             console_ps             FILE: unable to write STRING object.:
+<000002E06CA25C88>                         Runtime I/O error.            Fail
+-------------------------------------------------------------------------------
+CONSOLE             console_ps                                          
+<000002E06CA25C88>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+CONSOLE             put_string @6                                       
+<000002E06CA25C88>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+STD_FILES           put_string @2                                       
+<000002E06CA25C68>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+SCG_CLI_APP         print @6                                            
+<000002E06C8545A8>  (From ANY)             Routine failure.              Fail
+-------------------------------------------------------------------------------
+SCG_CLI_APP         handle_process @50                                  
+<000002E06C8545A8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+SCG_CLI_APP         process_command @14                                 
+<000002E06C8545A8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+SCG_CLI_APP         make @11                                            
+<000002E06C8545A8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+SCG_CLI_APP         root's creation                                     
+<000002E06C8545A8>                         Routine failure.              Exit
+-------------------------------------------------------------------------------
+
+
+simple_code: PANIC: caught signal #11 (Segmentation violation) -- Giving up...
+
+simple_code: system execution failed.
+Following is the set of recorded exceptions:
+
+******************************** Thread exception *****************************
+In thread           Root thread            0x0 (thread id)
+*******************************************************************************
+-------------------------------------------------------------------------------
+Class / Object      Routine                Nature of exception           Effect
+-------------------------------------------------------------------------------
+CONSOLE             console_ps             FILE: unable to write STRING object.:
+<0000022E69895408>                         Runtime I/O error.            Fail
+-------------------------------------------------------------------------------
+CONSOLE             console_ps                                          
+<0000022E69895408>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+CONSOLE             put_string @6                                       
+<0000022E69895408>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+STD_FILES           put_string @2                                       
+<0000022E698953E8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+SCG_CLI_APP         print @6                                            
+<0000022E696B75A8>  (From ANY)             Routine failure.              Fail
+-------------------------------------------------------------------------------
+SCG_CLI_APP         handle_process @50                                  
+<0000022E696B75A8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+SCG_CLI_APP         process_command @14                                 
+<0000022E696B75A8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+SCG_CLI_APP         make @11                                            
+<0000022E696B75A8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+SCG_CLI_APP         root's creation                                     
+<0000022E696B75A8>                         Routine failure.              Exit
+-------------------------------------------------------------------------------
+
+
+simple_code: PANIC: caught signal #11 (Segmentation violation) -- Giving up...
+
+simple_code: system execution failed.
+Following is the set of recorded exceptions:
+
+******************************** Thread exception *****************************
+In thread           Root thread            0x0 (thread id)
+*******************************************************************************
+-------------------------------------------------------------------------------
+Class / Object      Routine                Nature of exception           Effect
+-------------------------------------------------------------------------------
+CONSOLE             console_ps             FILE: unable to write STRING object.:
+<000001B6F62944E8>                         Runtime I/O error.            Fail
+-------------------------------------------------------------------------------
+CONSOLE             console_ps                                          
+<000001B6F62944E8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+CONSOLE             put_string @6                                       
+<000001B6F62944E8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+STD_FILES           put_string @2                                       
+<000001B6F62944C8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+SCG_CLI_APP         print @6                                            
+<000001B6F60AB5A8>  (From ANY)             Routine failure.              Fail
+-------------------------------------------------------------------------------
+SCG_CLI_APP         handle_process @50                                  
+<000001B6F60AB5A8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+SCG_CLI_APP         process_command @14                                 
+<000001B6F60AB5A8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+SCG_CLI_APP         make @11                                            
+<000001B6F60AB5A8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+SCG_CLI_APP         root's creation                                     
+<000001B6F60AB5A8>                         Routine failure.              Exit
+-------------------------------------------------------------------------------
+
+
+simple_code: PANIC: caught signal #11 (Segmentation violation) -- Giving up...
+
+simple_code: system execution failed.
+Following is the set of recorded exceptions:
+
+******************************** Thread exception *****************************
+In thread           Root thread            0x0 (thread id)
+*******************************************************************************
+-------------------------------------------------------------------------------
+Class / Object      Routine                Nature of exception           Effect
+-------------------------------------------------------------------------------
+CONSOLE             console_ps             FILE: unable to write STRING object.:
+<0000021D8BC68678>                         Runtime I/O error.            Fail
+-------------------------------------------------------------------------------
+CONSOLE             console_ps                                          
+<0000021D8BC68678>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+CONSOLE             put_string @6                                       
+<0000021D8BC68678>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+STD_FILES           put_string @2                                       
+<0000021D8BC68658>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+SCG_CLI_APP         print @6                                            
+<0000021D8BA6F5A8>  (From ANY)             Routine failure.              Fail
+-------------------------------------------------------------------------------
+SCG_CLI_APP         handle_process @50                                  
+<0000021D8BA6F5A8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+SCG_CLI_APP         process_command @14                                 
+<0000021D8BA6F5A8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+SCG_CLI_APP         make @11                                            
+<0000021D8BA6F5A8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+SCG_CLI_APP         root's creation                                     
+<0000021D8BA6F5A8>                         Routine failure.              Exit
+-------------------------------------------------------------------------------
+
+
+simple_code: PANIC: caught signal #11 (Segmentation violation) -- Giving up...
+
+simple_code: system execution failed.
+Following is the set of recorded exceptions:
+
+******************************** Thread exception *****************************
+In thread           Root thread            0x0 (thread id)
+*******************************************************************************
+-------------------------------------------------------------------------------
+Class / Object      Routine                Nature of exception           Effect
+-------------------------------------------------------------------------------
+CONSOLE             console_ps             FILE: unable to write STRING object.:
+<000001AE3822AD88>                         Runtime I/O error.            Fail
+-------------------------------------------------------------------------------
+CONSOLE             console_ps                                          
+<000001AE3822AD88>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+CONSOLE             put_string @6                                       
+<000001AE3822AD88>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+STD_FILES           put_string @2                                       
+<000001AE3822AD68>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+SCG_CLI_APP         print @6                                            
+<000001AE3802B5A8>  (From ANY)             Routine failure.              Fail
+-------------------------------------------------------------------------------
+SCG_CLI_APP         handle_process @50                                  
+<000001AE3802B5A8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+SCG_CLI_APP         process_command @14                                 
+<000001AE3802B5A8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+SCG_CLI_APP         make @11                                            
+<000001AE3802B5A8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+SCG_CLI_APP         root's creation                                     
+<000001AE3802B5A8>                         Routine failure.              Exit
+-------------------------------------------------------------------------------
+
+
+simple_code: PANIC: caught signal #11 (Segmentation violation) -- Giving up...
+
+simple_code: system execution failed.
+Following is the set of recorded exceptions:
+
+******************************** Thread exception *****************************
+In thread           Root thread            0x0 (thread id)
+*******************************************************************************
+-------------------------------------------------------------------------------
+Class / Object      Routine                Nature of exception           Effect
+-------------------------------------------------------------------------------
+CONSOLE             console_ps             FILE: unable to write STRING object.:
+<000001C2E38398E8>                         Runtime I/O error.            Fail
+-------------------------------------------------------------------------------
+CONSOLE             console_ps                                          
+<000001C2E38398E8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+CONSOLE             put_string @6                                       
+<000001C2E38398E8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+STD_FILES           put_string @2                                       
+<000001C2E38398C8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+SCG_CLI_APP         print @6                                            
+<000001C2E36245A8>  (From ANY)             Routine failure.              Fail
+-------------------------------------------------------------------------------
+SCG_CLI_APP         handle_process @50                                  
+<000001C2E36245A8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+SCG_CLI_APP         process_command @14                                 
+<000001C2E36245A8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+SCG_CLI_APP         make @11                                            
+<000001C2E36245A8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+SCG_CLI_APP         root's creation                                     
+<000001C2E36245A8>                         Routine failure.              Exit
+-------------------------------------------------------------------------------
+
+
+simple_code: PANIC: caught signal #11 (Segmentation violation) -- Giving up...
+
+simple_code: system execution failed.
+Following is the set of recorded exceptions:
+
+******************************** Thread exception *****************************
+In thread           Root thread            0x0 (thread id)
+*******************************************************************************
+-------------------------------------------------------------------------------
+Class / Object      Routine                Nature of exception           Effect
+-------------------------------------------------------------------------------
+CONSOLE             console_ps             FILE: unable to write STRING object.:
+<00000189D23B28D8>                         Runtime I/O error.            Fail
+-------------------------------------------------------------------------------
+CONSOLE             console_ps                                          
+<00000189D23B28D8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+CONSOLE             put_string @6                                       
+<00000189D23B28D8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+STD_FILES           put_string @2                                       
+<00000189D23B28B8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+SCG_CLI_APP         print @6                                            
+<00000189D219B5A8>  (From ANY)             Routine failure.              Fail
+-------------------------------------------------------------------------------
+SCG_CLI_APP         handle_process @50                                  
+<00000189D219B5A8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+SCG_CLI_APP         process_command @14                                 
+<00000189D219B5A8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+SCG_CLI_APP         make @11                                            
+<00000189D219B5A8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+SCG_CLI_APP         root's creation                                     
+<00000189D219B5A8>                         Routine failure.              Exit
+-------------------------------------------------------------------------------
+
+
+simple_code: PANIC: caught signal #11 (Segmentation violation) -- Giving up...
+
+simple_code: system execution failed.
+Following is the set of recorded exceptions:
+
+******************************** Thread exception *****************************
+In thread           Root thread            0x0 (thread id)
+*******************************************************************************
+-------------------------------------------------------------------------------
+Class / Object      Routine                Nature of exception           Effect
+-------------------------------------------------------------------------------
+CONSOLE             console_ps             FILE: unable to write STRING object.:
+<00000175F3D251C8>                         Runtime I/O error.            Fail
+-------------------------------------------------------------------------------
+CONSOLE             console_ps                                          
+<00000175F3D251C8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+CONSOLE             put_string @6                                       
+<00000175F3D251C8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+STD_FILES           put_string @2                                       
+<00000175F3D251A8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+SCG_CLI_APP         print @6                                            
+<00000175F3D1D098>  (From ANY)             Routine failure.              Fail
+-------------------------------------------------------------------------------
+SCG_CLI_APP         handle_process @50                                  
+<00000175F3D1D098>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+SCG_CLI_APP         process_command @14                                 
+<00000175F3D1D098>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+SCG_CLI_APP         make @11                                            
+<00000175F3D1D098>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+SCG_CLI_APP         root's creation                                     
+<00000175F3D1D098>                         Routine failure.              Exit
+-------------------------------------------------------------------------------
+
+simple_code: system execution failed.
+Following is the set of recorded exceptions:
+
+******************************** Thread exception *****************************
+In thread           Root thread            0x0 (thread id)
+*******************************************************************************
+-------------------------------------------------------------------------------
+Class / Object      Routine                Nature of exception           Effect
+-------------------------------------------------------------------------------
+CONSOLE             console_ps             FILE: unable to write STRING object.:
+<00000117F4AAB5F8>                         Runtime I/O error.            Fail
+-------------------------------------------------------------------------------
+CONSOLE             console_ps                                          
+<00000117F4AAB5F8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+CONSOLE             put_string @6                                       
+<00000117F4AAB5F8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+STD_FILES           put_string @2                                       
+<00000117F4AAB5D8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+SCG_CLI_APP         print @6                                            
+<00000117F4AA9098>  (From ANY)             Routine failure.              Fail
+-------------------------------------------------------------------------------
+SCG_CLI_APP         handle_process @50                                  
+<00000117F4AA9098>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+SCG_CLI_APP         process_command @14                                 
+<00000117F4AA9098>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+SCG_CLI_APP         make @11                                            
+<00000117F4AA9098>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+SCG_CLI_APP         root's creation                                     
+<00000117F4AA9098>                         Routine failure.              Exit
+-------------------------------------------------------------------------------
+
+simple_code: system execution failed.
+Following is the set of recorded exceptions:
+
+******************************** Thread exception *****************************
+In thread           Root thread            0x0 (thread id)
+*******************************************************************************
+-------------------------------------------------------------------------------
+Class / Object      Routine                Nature of exception           Effect
+-------------------------------------------------------------------------------
+CONSOLE             console_ps             FILE: unable to write STRING object.:
+<000002684BA46B08>                         Runtime I/O error.            Fail
+-------------------------------------------------------------------------------
+CONSOLE             console_ps                                          
+<000002684BA46B08>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+CONSOLE             put_string @6                                       
+<000002684BA46B08>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+STD_FILES           put_string @2                                       
+<000002684BA46AE8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+SCG_CLI_APP         print @6                                            
+<000002684B80C5A8>  (From ANY)             Routine failure.              Fail
+-------------------------------------------------------------------------------
+SCG_CLI_APP         handle_process @55                                  
+<000002684B80C5A8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+SCG_CLI_APP         process_command @14                                 
+<000002684B80C5A8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+SCG_CLI_APP         make @11                                            
+<000002684B80C5A8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+SCG_CLI_APP         root's creation                                     
+<000002684B80C5A8>                         Routine failure.              Exit
+-------------------------------------------------------------------------------
+
+simple_code: system execution failed.
+Following is the set of recorded exceptions:
+
+******************************** Thread exception *****************************
+In thread           Root thread            0x0 (thread id)
+*******************************************************************************
+-------------------------------------------------------------------------------
+Class / Object      Routine                Nature of exception           Effect
+-------------------------------------------------------------------------------
+CONSOLE             console_ps             FILE: unable to write STRING object.:
+<0000020747A488F8>                         Runtime I/O error.            Fail
+-------------------------------------------------------------------------------
+CONSOLE             console_ps                                          
+<0000020747A488F8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+CONSOLE             put_string @6                                       
+<0000020747A488F8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+STD_FILES           put_string @2                                       
+<0000020747A488D8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+SCG_CLI_APP         print @6                                            
+<000002074780C5A8>  (From ANY)             Routine failure.              Fail
+-------------------------------------------------------------------------------
+SCG_CLI_APP         handle_process @55                                  
+<000002074780C5A8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+SCG_CLI_APP         process_command @14                                 
+<000002074780C5A8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+SCG_CLI_APP         make @11                                            
+<000002074780C5A8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+SCG_CLI_APP         root's creation                                     
+<000002074780C5A8>                         Routine failure.              Exit
+-------------------------------------------------------------------------------
+Warning could not open Eiffel update file D
+From directory D:\prod\simple_code
+Error 2: No such file or directory
+Warning could not open Eiffel update file D
+From directory D:\prod\simple_code
+Error 2: No such file or directory
+Warning could not open Eiffel update file D
+From directory D:\prod\simple_code
+Error 2: No such file or directory
+Warning could not open Eiffel update file D
+From directory D:\prod\simple_code
+Error 2: No such file or directory
+
+simple_code: PANIC: Unexpected harmful signal (Segmentation violation) ...
+
+simple_code: system execution failed.
+Following is the set of recorded exceptions.
+NB: The raised panic may have induced completely inconsistent information:
+
+******************************** Thread exception *****************************
+In thread           Root thread            0x0 (thread id)
+*******************************************************************************
+-------------------------------------------------------------------------------
+Class / Object      Routine                Nature of exception           Effect
+-------------------------------------------------------------------------------
+SCG_CLI_APP         root's creation        Unexpected harmful signal (Segmentation violation):
+<00000239D8E8C098>                         Eiffel run-time panic.        Bye
+-------------------------------------------------------------------------------
+
+simple_code: dumping core to generate debugging information...
+Warning could not open Eiffel update file D
+From directory D:\prod\simple_code
+Error 2: No such file or directory
+
+simple_code: PANIC: Unexpected harmful signal (Segmentation violation) ...
+
+simple_code: system execution failed.
+Following is the set of recorded exceptions.
+NB: The raised panic may have induced completely inconsistent information:
+
+******************************** Thread exception *****************************
+In thread           Root thread            0x0 (thread id)
+*******************************************************************************
+-------------------------------------------------------------------------------
+Class / Object      Routine                Nature of exception           Effect
+-------------------------------------------------------------------------------
+SCG_CLI_APP         root's creation        Unexpected harmful signal (Segmentation violation):
+<0000020155C9C098>                         Eiffel run-time panic.        Bye
+-------------------------------------------------------------------------------
+
+simple_code: dumping core to generate debugging information...
