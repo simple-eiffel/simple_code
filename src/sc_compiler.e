@@ -221,8 +221,9 @@ feature -- Compilation Modes
 
 						last_test_exit_code := l_proc.exit_code
 
-						if attached l_proc.output as l_out then
-							last_test_output := l_out.to_string_8
+						if attached l_proc.last_output_bytes as l_out then
+								-- Raw bytes, as before simple_process 1.1.0 decoded `last_output'.
+							last_test_output := l_out.twin
 						else
 							last_test_output := ""
 						end
@@ -408,8 +409,9 @@ feature {NONE} -- Implementation
 
 			last_exit_code := l_proc.exit_code
 
-			if attached l_proc.output as l_out then
-				last_output := l_out.to_string_8
+			if attached l_proc.last_output_bytes as l_out then
+					-- Raw bytes, as before simple_process 1.1.0 decoded `last_output'.
+				last_output := l_out.twin
 			else
 				last_output.wipe_out
 			end
@@ -417,7 +419,7 @@ feature {NONE} -- Implementation
 			-- Capture process error separately
 			create l_proc_error.make_empty
 			if attached l_proc.last_error as l_err then
-				l_proc_error := l_err.to_string_8
+				l_proc_error := {UTF_CONVERTER}.string_32_to_utf_8_string_8 (l_err)
 			end
 
 			-- Parse output into structured result

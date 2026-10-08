@@ -211,13 +211,13 @@ feature -- Test Execution
 
 			if process.last_exit_code = 0 then
 				Result := True
-				if attached process.last_output as l_out then
-					parse_test_output (l_out.to_string_8)
+				if attached process.last_output_bytes as l_out then
+					parse_test_output (l_out.twin)
 				end
 			else
 				-- Tests may have failed but still produce output
-				if attached process.last_output as l_out then
-					parse_test_output (l_out.to_string_8)
+				if attached process.last_output_bytes as l_out then
+					parse_test_output (l_out.twin)
 				end
 				Result := all_tests_passed
 				if not Result then
@@ -244,8 +244,8 @@ feature -- Test Execution
 			l_cmd.append (a_class_name.to_string_8)
 
 			process.run_in_directory (l_cmd, project_path.to_string_8)
-			if attached process.last_output as l_out then
-				parse_test_output (l_out.to_string_8)
+			if attached process.last_output_bytes as l_out then
+				parse_test_output (l_out.twin)
 			end
 			Result := all_tests_passed
 		end
@@ -270,8 +270,8 @@ feature -- Test Execution
 			l_cmd.append (a_test_name.to_string_8)
 
 			process.run_in_directory (l_cmd, project_path.to_string_8)
-			if attached process.last_output as l_out then
-				parse_test_output (l_out.to_string_8)
+			if attached process.last_output_bytes as l_out then
+				parse_test_output (l_out.twin)
 			end
 			Result := all_tests_passed
 		end

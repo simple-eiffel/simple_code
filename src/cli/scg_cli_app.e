@@ -669,8 +669,9 @@ feature {NONE} -- Command Processing
 					create l_process.make
 					l_process.run_in_directory (l_ec_cmd + " -batch -config " + l_ecf_path + " -target " + l_session_name.to_string_8 + " -c_compile", l_project_path.to_string_8)
 
-					if attached l_process.last_output as l_out then
-						l_output := l_out.to_string_8
+					if attached l_process.last_output_bytes as l_out then
+							-- Raw bytes, as before simple_process 1.1.0 decoded `last_output'.
+						l_output := l_out.twin
 						if l_output.has_substring ("System Recompiled") then
 							print ("[OK] Compilation successful%N")
 							l_session.display_lock_state
@@ -1495,8 +1496,9 @@ feature {NONE} -- Command Processing
 					create l_process.make
 					l_process.run_in_directory (l_test_exe, l_project_path.to_string_8)
 
-					if attached l_process.last_output as l_out then
-						l_output := l_out.to_string_8
+					if attached l_process.last_output_bytes as l_out then
+							-- Raw bytes, as before simple_process 1.1.0 decoded `last_output'.
+						l_output := l_out.twin
 						create l_failures.make (5)
 
 						-- Parse test output for failures
