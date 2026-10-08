@@ -145,7 +145,7 @@ feature -- Queries
 			if attached db as l_db then
 				l_result := l_db.query_with_args (
 					"SELECT id, artifact_type, subtype, class_name, created_at FROM artifacts WHERE session_name = ? ORDER BY created_at ASC",
-					<<a_session.to_string_8>>
+					{ARRAY [detachable ANY]} <<a_session.to_string_8>>
 				)
 				across l_result.rows as ic loop
 					l_row := ic
@@ -179,7 +179,7 @@ feature -- Queries
 			if attached db as l_db then
 				l_result := l_db.query_with_args (
 					"SELECT id, artifact_type, iteration, created_at FROM artifacts WHERE session_name = ? AND class_name = ? ORDER BY created_at ASC",
-					<<a_session.to_string_8, a_class_name.to_string_8>>
+					{ARRAY [detachable ANY]} <<a_session.to_string_8, a_class_name.to_string_8>>
 				)
 				across l_result.rows as ic loop
 					l_row := ic
@@ -202,7 +202,7 @@ feature -- Queries
 			l_result: SIMPLE_SQL_RESULT
 		do
 			if attached db as l_db then
-				l_result := l_db.query_with_args ("SELECT content FROM artifacts WHERE id = ?", <<a_id>>)
+				l_result := l_db.query_with_args ("SELECT content FROM artifacts WHERE id = ?", {ARRAY [detachable ANY]} <<a_id>>)
 				if not l_result.is_empty then
 					if not l_result.first.is_null ("content") then
 						Result := l_result.first.string_value ("content")
@@ -220,7 +220,7 @@ feature -- Queries
 			l_result: SIMPLE_SQL_RESULT
 		do
 			if attached db as l_db then
-				l_result := l_db.query_with_args ("SELECT code FROM artifacts WHERE id = ?", <<a_id>>)
+				l_result := l_db.query_with_args ("SELECT code FROM artifacts WHERE id = ?", {ARRAY [detachable ANY]} <<a_id>>)
 				if not l_result.is_empty then
 					if not l_result.first.is_null ("code") then
 						Result := l_result.first.string_value ("code")
@@ -241,7 +241,7 @@ feature -- Queries
 			if attached db as l_db then
 				l_result := l_db.query_with_args (
 					"SELECT code FROM artifacts WHERE session_name = ? AND class_name = ? AND code IS NOT NULL ORDER BY created_at DESC LIMIT 1",
-					<<a_session.to_string_8, a_class_name.to_string_8>>
+					{ARRAY [detachable ANY]} <<a_session.to_string_8, a_class_name.to_string_8>>
 				)
 				if not l_result.is_empty then
 					Result := l_result.first.string_value ("code")
@@ -279,7 +279,7 @@ feature -- Queries
 			if attached db as l_db then
 				l_result := l_db.query_with_args (
 					"SELECT artifact_type, COUNT(*) as cnt FROM artifacts WHERE session_name = ? GROUP BY artifact_type",
-					<<a_session.to_string_8>>
+					{ARRAY [detachable ANY]} <<a_session.to_string_8>>
 				)
 				across l_result.rows as ic loop
 					l_row := ic
@@ -321,7 +321,7 @@ feature -- Operations
 		do
 			last_error.wipe_out
 			if attached db as l_db then
-				l_db.execute_with_args ("DELETE FROM artifacts WHERE session_name = ?", <<a_session.to_string_8>>)
+				l_db.execute_with_args ("DELETE FROM artifacts WHERE session_name = ?", {ARRAY [detachable ANY]} <<a_session.to_string_8>>)
 			end
 		end
 

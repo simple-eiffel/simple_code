@@ -146,7 +146,7 @@ feature -- Class Queries
 		do
 			l_result := safe_db.query_with_args (
 				"SELECT id, library, name, description, is_deferred FROM classes WHERE UPPER(name) = ? LIMIT 1",
-				<<a_name.as_upper>>
+				{ARRAY [detachable ANY]} <<a_name.as_upper>>
 			)
 			if not l_result.is_empty and then attached l_result.rows.first as row then
 				Result := [
@@ -170,7 +170,7 @@ feature -- Class Queries
 			create Result.make (20)
 			l_result := safe_db.query_with_args (
 				"SELECT name, kind, signature, preconditions, postconditions FROM features WHERE class_id = ? ORDER BY kind, name",
-				<<a_class_id>>
+				{ARRAY [detachable ANY]} <<a_class_id>>
 			)
 			across l_result.rows as row loop
 				Result.extend ([
@@ -194,7 +194,7 @@ feature -- Class Queries
 			create Result.make (5)
 			l_result := safe_db.query_with_args (
 				"SELECT parent_name FROM class_parents WHERE class_id = ? ORDER BY parent_name",
-				<<a_class_id>>
+				{ARRAY [detachable ANY]} <<a_class_id>>
 			)
 			across l_result.rows as row loop
 				Result.extend (row_str (row, 1))
@@ -216,7 +216,7 @@ feature -- Feature Queries
 				JOIN classes c ON c.id = f.class_id
 				WHERE UPPER(c.name) = ? AND UPPER(f.name) = ?
 				LIMIT 1
-			]", <<a_class_name.as_upper, a_feature_name.as_upper>>)
+			]", {ARRAY [detachable ANY]} <<a_class_name.as_upper, a_feature_name.as_upper>>)
 			if not l_result.is_empty and then attached l_result.rows.first as row then
 				Result := [
 					row_str (row, 1),
@@ -247,7 +247,7 @@ feature -- Feature Queries
 				WHERE UPPER(f.name) LIKE ?
 				ORDER BY c.name, f.name
 				LIMIT ?
-			]", <<l_like_pattern, a_limit>>)
+			]", {ARRAY [detachable ANY]} <<l_like_pattern, a_limit>>)
 			across l_result.rows as row loop
 				Result.extend ([
 					row_str (row, 1),
@@ -271,7 +271,7 @@ feature -- Pattern Queries
 			l_like_pattern := "%%" + a_name.as_upper + "%%"
 			l_result := safe_db.query_with_args (
 				"SELECT name, description, code, when_to_use FROM patterns WHERE UPPER(name) LIKE ? LIMIT 1",
-				<<l_like_pattern>>
+				{ARRAY [detachable ANY]} <<l_like_pattern>>
 			)
 			if not l_result.is_empty and then attached l_result.rows.first as row then
 				Result := [
@@ -312,7 +312,7 @@ feature -- Example Queries
 			l_pattern := "%%" + a_query + "%%"
 			l_result := safe_db.query_with_args (
 				"SELECT title, source, code, tier FROM examples WHERE title LIKE ? OR tags LIKE ? ORDER BY tier, title LIMIT ?",
-				<<l_pattern, l_pattern, a_limit>>
+				{ARRAY [detachable ANY]} <<l_pattern, l_pattern, a_limit>>
 			)
 			across l_result.rows as row loop
 				Result.extend ([
@@ -335,7 +335,7 @@ feature -- Error Code Queries
 		do
 			l_result := safe_db.query_with_args (
 				"SELECT code, meaning, explanation, fixes FROM errors WHERE UPPER(code) = ? LIMIT 1",
-				<<a_code.as_upper>>
+				{ARRAY [detachable ANY]} <<a_code.as_upper>>
 			)
 			if not l_result.is_empty and then attached l_result.rows.first as row then
 				Result := [
@@ -358,7 +358,7 @@ feature -- Library Queries
 		do
 			l_result := safe_db.query_with_args (
 				"SELECT name, description, uuid, dependencies FROM libraries WHERE UPPER(name) = ? LIMIT 1",
-				<<a_name.as_upper>>
+				{ARRAY [detachable ANY]} <<a_name.as_upper>>
 			)
 			if not l_result.is_empty and then attached l_result.rows.first as row then
 				Result := [
@@ -399,7 +399,7 @@ feature -- Full-Text Search
 			l_fts_query := format_fts_query (a_query)
 			l_result := safe_db.query_with_args (
 				"SELECT content_type, title, body FROM kb_search WHERE kb_search MATCH ? ORDER BY bm25(kb_search) LIMIT ?",
-				<<l_fts_query, a_limit>>
+				{ARRAY [detachable ANY]} <<l_fts_query, a_limit>>
 			)
 			across l_result.rows as row loop
 				Result.extend ([
@@ -632,7 +632,7 @@ feature -- Project Tracking
 			safe_db.execute_with_args ("[
 				INSERT OR REPLACE INTO scg_projects (name, project_type, path, description, simple_libs)
 				VALUES (?, ?, ?, ?, ?)
-			]", <<a_name, a_type, a_path, a_description, l_libs_json>>)
+			]", {ARRAY [detachable ANY]} <<a_name, a_type, a_path, a_description, l_libs_json>>)
 		end
 
 	get_project (a_name: STRING): detachable TUPLE [id: INTEGER; name: STRING; project_type: STRING; path: STRING; description: STRING; created_at: STRING]
@@ -644,7 +644,7 @@ feature -- Project Tracking
 		do
 			l_result := safe_db.query_with_args (
 				"SELECT id, name, project_type, path, description, created_at FROM scg_projects WHERE name = ?",
-				<<a_name>>
+				{ARRAY [detachable ANY]} <<a_name>>
 			)
 			if not l_result.is_empty and then attached l_result.rows.first as row then
 				Result := [
@@ -689,12 +689,12 @@ feature -- Project Tracking
 				safe_db.execute_with_args ("[
 					INSERT OR REPLACE INTO scg_project_classes (project_id, class_name, file_path)
 					VALUES (?, ?, ?)
-				]", <<l_project_id, a_class_name, a_file_path>>)
+				]", {ARRAY [detachable ANY]} <<l_project_id, a_class_name, a_file_path>>)
 
 				-- Update project last_modified
 				safe_db.execute_with_args (
 					"UPDATE scg_projects SET last_modified = CURRENT_TIMESTAMP WHERE id = ?",
-					<<l_project_id>>
+					{ARRAY [detachable ANY]} <<l_project_id>>
 				)
 			end
 		end
@@ -712,7 +712,7 @@ feature -- Project Tracking
 			if l_project_id > 0 then
 				l_result := safe_db.query_with_args (
 					"SELECT class_name, file_path, is_validated FROM scg_project_classes WHERE project_id = ? ORDER BY class_name",
-					<<l_project_id>>
+					{ARRAY [detachable ANY]} <<l_project_id>>
 				)
 				across l_result.rows as row loop
 					Result.extend ([
@@ -754,7 +754,7 @@ feature -- Project Tracking
 			if l_project_id > 0 then
 				l_result := safe_db.query_with_args (
 					"SELECT class_name, action, success, notes, created_at FROM scg_generations WHERE project_id = ? ORDER BY created_at DESC LIMIT ?",
-					<<l_project_id, a_limit>>
+					{ARRAY [detachable ANY]} <<l_project_id, a_limit>>
 				)
 				across l_result.rows as row loop
 					Result.extend ([
@@ -783,7 +783,7 @@ feature {NONE} -- Project Tracking Helpers
 		local
 			l_result: SIMPLE_SQL_RESULT
 		do
-			l_result := safe_db.query_with_args ("SELECT id FROM scg_projects WHERE name = ?", <<a_name>>)
+			l_result := safe_db.query_with_args ("SELECT id FROM scg_projects WHERE name = ?", {ARRAY [detachable ANY]} <<a_name>>)
 			if not l_result.is_empty and then attached l_result.rows.first as row then
 				Result := row_int (row, 1)
 			end
