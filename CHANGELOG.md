@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (process output)
+- Compiler and test output is taken from `last_output_bytes` (simple_process
+  1.1.0) instead of `to_string_8` of the decoded text, which failed on any
+  character above U+00FF.
+
+
 ### Added
 - Project skeleton created
 - Comprehensive EiffelStudio Tool Development guide (docs/EIFFELSTUDIO_TOOL_DEVELOPMENT.md)
