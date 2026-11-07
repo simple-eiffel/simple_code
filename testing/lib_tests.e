@@ -74,6 +74,9 @@ feature -- Test
 			l_ecf.delete
 			assert ("not_compiled", not l_compiler.is_compiled)
 			assert ("has_error", not l_compiler.last_error.is_empty)
+				-- ec itself must have run and rejected the ECF: a missing ec cannot pass.
+			assert ("ec_failed", l_compiler.last_exit_code /= 0)
+			assert ("ec_reported_vd00", l_compiler.last_output.has_substring ("VD00"))
 		end
 
 feature {NONE} -- Paths
