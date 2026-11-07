@@ -219,7 +219,7 @@ feature -- Compilation Modes
 							l_proc.execute_in_directory ("%"" + l_exe + "%"", working_directory)
 						end
 
-						last_test_exit_code := l_proc.exit_code
+						last_test_exit_code := l_proc.last_exit_code
 
 						if attached l_proc.last_output_bytes as l_out then
 								-- Raw bytes, as before simple_process 1.1.0 decoded `last_output'.
@@ -228,14 +228,14 @@ feature -- Compilation Modes
 							last_test_output := ""
 						end
 
-						if l_proc.exit_code = 0 then
+						if l_proc.last_exit_code = 0 then
 							tests_passed := True
 							if is_verbose then
 								print ("All tests passed%N")
 							end
 						else
 							if is_verbose then
-								print ("Tests failed (exit code: " + l_proc.exit_code.out + ")%N")
+								print ("Tests failed (exit code: " + l_proc.last_exit_code.out + ")%N")
 							end
 						end
 					else
@@ -421,7 +421,7 @@ feature {NONE} -- Implementation
 				l_proc.execute_in_directory (l_cmd, working_directory)
 			end
 
-			last_exit_code := l_proc.exit_code
+			last_exit_code := l_proc.last_exit_code
 
 			if attached l_proc.last_output_bytes as l_out then
 					-- Raw bytes, as before simple_process 1.1.0 decoded `last_output'.
@@ -440,7 +440,7 @@ feature {NONE} -- Implementation
 			create l_parser
 			last_result := l_parser.parse (last_output, l_proc_error, last_exit_code)
 
-			-- `ec' can exit 0 after an error, so its output decides as well.
+			-- `was_successful' says only that `ec' ran; the exit code and output decide.
 			if l_proc.was_successful and then attached last_result as l_result and then l_result.is_success then
 				is_compiled := True
 			else
@@ -482,7 +482,7 @@ feature {NONE} -- Implementation
 
 			if not l_proc.was_successful then
 				is_compiled := False
-				last_error := "finish_freezing failed with exit code " + l_proc.exit_code.out
+				last_error := "finish_freezing failed with exit code " + l_proc.last_exit_code.out
 			end
 		end
 

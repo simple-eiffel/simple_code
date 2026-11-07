@@ -53,7 +53,7 @@ feature -- Test
 		end
 
 	test_sc_compiler_sees_a_failed_compile
-			-- `ec' can exit 0 after an error, which must still count as a failure.
+			-- A compile that reports an error must count as a failure.
 		local
 			l_compiler: SC_COMPILER
 			l_ecf: PLAIN_TEXT_FILE
