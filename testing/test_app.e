@@ -87,6 +87,9 @@ feature {NONE} -- Implementation
 			end
 		rescue
 			print ("  FAIL: " + a_name + "%N")
+			if attached (create {EXCEPTION_MANAGER}).last_exception as l_ex and then attached l_ex.description as l_d then
+				print ("        " + l_d.to_string_8 + "%N")
+			end
 			failed := failed + 1
 			l_retried := True
 			retry
@@ -107,6 +110,9 @@ feature {NONE} -- Implementation
 		rescue
 			scg_project_gen_tests.cleanup
 			print ("  FAIL: " + a_name + "%N")
+			if attached (create {EXCEPTION_MANAGER}).last_exception as l_ex and then attached l_ex.description as l_d then
+				print ("        " + l_d.to_string_8 + "%N")
+			end
 			failed := failed + 1
 			l_retried := True
 			retry
@@ -127,6 +133,9 @@ feature {NONE} -- Implementation
 		rescue
 			sc_project_tests.cleanup
 			print ("  FAIL: " + a_name + "%N")
+			if attached (create {EXCEPTION_MANAGER}).last_exception as l_ex and then attached l_ex.description as l_d then
+				print ("        " + l_d.to_string_8 + "%N")
+			end
 			failed := failed + 1
 			l_retried := True
 			retry

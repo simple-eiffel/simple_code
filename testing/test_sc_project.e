@@ -407,7 +407,11 @@ feature {NONE} -- Test Constants
 			elseif attached l_env.item ("TMP") as t then
 				Result := t.to_string_8
 			else
-				Result := "C:/Temp"
+				if {PLATFORM}.is_windows then
+					Result := "C:/Temp"
+				else
+					Result := "/tmp"
+				end
 			end
 		end
 

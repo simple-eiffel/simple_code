@@ -30,26 +30,35 @@ feature -- Test
 		do
 			create l_compiler.make ("test.ecf", "test_target")
 
-			-- Verify path construction (Windows backslash separators)
-			assert ("eifgens_path", l_compiler.eifgens_path.same_string ("EIFGENs\test_target"))
-			assert ("f_code_path", l_compiler.f_code_path.same_string ("EIFGENs\test_target\F_code"))
-			assert ("w_code_path", l_compiler.w_code_path.same_string ("EIFGENs\test_target\W_code"))
+			-- Verify path construction, with this platform's separator
+			assert ("eifgens_path", l_compiler.eifgens_path.same_string (native ("EIFGENs\test_target")))
+			assert ("f_code_path", l_compiler.f_code_path.same_string (native ("EIFGENs\test_target\F_code")))
+			assert ("w_code_path", l_compiler.w_code_path.same_string (native ("EIFGENs\test_target\W_code")))
 
 			-- Verify fluent API (need to capture result since functions can't be used as instructions)
 			l_discard := l_compiler.set_working_directory ("D:\my\project")
 			l_discard := l_compiler.set_verbose (True)
 			assert ("working_dir_set", l_compiler.working_directory.same_string ("D:\my\project"))
 			assert ("verbose_set", l_compiler.is_verbose)
-			assert ("eifgens_with_workdir", l_compiler.eifgens_path.same_string ("D:\my\project\EIFGENs\test_target"))
+			assert ("eifgens_with_workdir", l_compiler.eifgens_path.same_string ("D:\my\project" + native ("\EIFGENs\test_target")))
 
 			-- Verify ec.exe path contains expected components
 			assert ("ec_path_has_studio", l_compiler.ec_exe_path.has_substring ("studio"))
-			assert ("ec_path_has_ec", l_compiler.ec_exe_path.has_substring ("ec.exe"))
+			assert ("ec_path_has_ec", l_compiler.ec_exe_path.has_substring ("ec"))
 
 			-- Verify test-related attributes are initialized
 			assert ("tests_not_passed_initially", not l_compiler.tests_passed)
 			assert ("test_exit_code_zero", l_compiler.last_test_exit_code = 0)
 			assert ("test_output_empty", l_compiler.last_test_output.is_empty)
+		end
+
+feature {NONE} -- Paths
+
+	native (a_path: STRING): STRING
+			-- `a_path' with this platform's separator.
+		do
+			Result := a_path.twin
+			Result.replace_substring_all ("\", create {STRING}.make_filled ({OPERATING_ENVIRONMENT}.directory_separator, 1))
 		end
 
 end

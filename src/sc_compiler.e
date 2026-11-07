@@ -264,9 +264,9 @@ feature -- Paths
 			-- Path to EIFGENs directory for current target.
 		do
 			if working_directory.is_empty then
-				Result := "EIFGENs\" + target
+				Result := "EIFGENs" + separator + target
 			else
-				Result := working_directory + "\EIFGENs\" + target
+				Result := working_directory + separator + "EIFGENs" + separator + target
 			end
 		ensure
 			result_not_empty: not Result.is_empty
@@ -275,7 +275,7 @@ feature -- Paths
 	f_code_path: STRING
 			-- Path to F_code directory (finalized code).
 		do
-			Result := eifgens_path + "\F_code"
+			Result := eifgens_path + separator + "F_code"
 		ensure
 			result_not_empty: not Result.is_empty
 		end
@@ -283,7 +283,7 @@ feature -- Paths
 	w_code_path: STRING
 			-- Path to W_code directory (workbench code).
 		do
-			Result := eifgens_path + "\W_code"
+			Result := eifgens_path + separator + "W_code"
 		ensure
 			result_not_empty: not Result.is_empty
 		end
@@ -297,16 +297,30 @@ feature -- Paths
 			end
 		end
 
+	separator: STRING
+			-- This platform's path separator.
+		do
+			create Result.make_filled ({OPERATING_ENVIRONMENT}.directory_separator, 1)
+		end
+
 	ec_exe_path: STRING
 			-- Full path to ec.exe compiler.
 		do
-			Result := ise_eiffel + "\studio\spec\" + ise_platform + "\bin\ec.exe"
+			if {PLATFORM}.is_windows then
+				Result := ise_eiffel + "\studio\spec\" + ise_platform + "\bin\ec.exe"
+			else
+				Result := ise_eiffel + "/studio/spec/" + ise_platform + "/bin/ec"
+			end
 		end
 
 	finish_freezing_path: STRING
 			-- Full path to finish_freezing.exe.
 		do
-			Result := ise_eiffel + "\studio\spec\" + ise_platform + "\bin\finish_freezing.exe"
+			if {PLATFORM}.is_windows then
+				Result := ise_eiffel + "\studio\spec\" + ise_platform + "\bin\finish_freezing.exe"
+			else
+				Result := ise_eiffel + "/studio/spec/" + ise_platform + "/bin/finish_freezing"
+			end
 		end
 
 feature -- Configuration (Fluent API)
@@ -485,7 +499,7 @@ feature {NONE} -- Implementation
 				l_exe := find_exe_in (a_code_path)
 				if l_exe.is_empty then
 					is_compiled := False
-					last_error := "ERROR: No .exe found in " + a_code_path
+					last_error := "ERROR: No built program found in " + a_code_path
 				elseif is_verbose then
 					print ("Built: " + l_exe + "%N")
 				end
@@ -493,7 +507,8 @@ feature {NONE} -- Implementation
 		end
 
 	find_exe_in (a_dir: STRING): STRING
-			-- Find first .exe file in `a_dir'. Returns empty string if none found.
+			-- Find the first built program in `a_dir': a .exe on Windows, an executable
+			-- file elsewhere. Returns empty string if none found.
 		require
 			dir_not_empty: not a_dir.is_empty
 		local
@@ -507,8 +522,13 @@ feature {NONE} -- Implementation
 
 			l_entries := l_files.list_files (a_dir)
 			from i := 1 until i > l_entries.count or l_found loop
-				if l_entries.i_th (i).ends_with (".exe") then
-					Result := a_dir + "\" + l_entries.i_th (i).to_string_8
+				if {PLATFORM}.is_windows then
+					if l_entries.i_th (i).ends_with (".exe") then
+						Result := a_dir + "\" + l_entries.i_th (i).to_string_8
+						l_found := True
+					end
+				elseif not l_entries.i_th (i).has ('.') and then (create {RAW_FILE}.make_with_name (a_dir + "/" + l_entries.i_th (i).to_string_8)).is_executable then
+					Result := a_dir + "/" + l_entries.i_th (i).to_string_8
 					l_found := True
 				end
 				i := i + 1
