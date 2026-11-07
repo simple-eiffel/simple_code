@@ -92,7 +92,7 @@ feature -- Test
 
 				-- Verify generator state
 				assert ("is_generated", l_gen.is_generated)
-				assert ("is_verified", l_gen.is_verified)
+				assert ("is_verified: " + (if attached l_gen.verification_error as l_why then l_why else "" end), l_gen.is_verified)
 				assert ("project_name_set", l_gen.project_name.same_string (test_project_name))
 
 				-- Verify directory structure
@@ -196,7 +196,11 @@ feature {NONE} -- Test Constants
 			elseif attached l_env.item ("TMP") as t then
 				Result := t.to_string_8
 			else
-				Result := "C:/Temp"
+				if {PLATFORM}.is_windows then
+					Result := "C:/Temp"
+				else
+					Result := "/tmp"
+				end
 			end
 		end
 

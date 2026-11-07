@@ -1488,7 +1488,7 @@ feature {NONE} -- Command Processing
 					print ("[ERROR] Invalid session: " + l_session.last_error.to_string_8 + "%N")
 				else
 					-- Locate test executable (W_code for development testing)
-					l_test_exe := l_project_path.to_string_8 + "/EIFGENs/" + l_session_name.to_string_8 + "_tests/W_code/" + l_session_name.to_string_8 + "_tests.exe"
+					l_test_exe := l_project_path.to_string_8 + "/EIFGENs/" + l_session_name.to_string_8 + "_tests/W_code/" + l_session_name.to_string_8 + "_tests" + (if {PLATFORM}.is_windows then ".exe" else "" end)
 
 					print ("[INFO] Running tests...%N")
 					print ("  Executable: " + l_test_exe + "%N")
@@ -2100,7 +2100,13 @@ feature {NONE} -- Helpers
 
 			-- Try ISE_EIFFEL environment variable
 			if attached l_ise_eiffel as l_ise then
-				Result := l_ise + "/studio/spec/win64/bin/ec.exe"
+				if {PLATFORM}.is_windows then
+					Result := l_ise + "/studio/spec/win64/bin/ec.exe"
+				elseif attached l_env.get ("ISE_PLATFORM") as l_platform then
+					Result := l_ise + "/studio/spec/" + l_platform + "/bin/ec"
+				else
+					Result := ""
+				end
 				create l_file.make_with_name (Result)
 				if l_file.exists then
 					-- Wrap in quotes for paths with spaces

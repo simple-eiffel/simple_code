@@ -227,7 +227,7 @@ feature -- Queries
 	ecf_path: STRING
 			-- Full path to project ECF file.
 		do
-			Result := path + "\" + name + ".ecf"
+			Result := path + (create {STRING}.make_filled ({OPERATING_ENVIRONMENT}.directory_separator, 1)) + name + ".ecf"
 		ensure
 			not_empty: not Result.is_empty
 			ends_with_ecf: Result.ends_with (".ecf")

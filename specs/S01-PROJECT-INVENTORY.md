@@ -21,7 +21,6 @@ simple_code/
             scg_cli_app.e
             scg_session.e
             scg_validator.e
-            scg_test_runner.e
             scg_prompt_builder.e
             ... (many more)
         generators/             -- Code generators

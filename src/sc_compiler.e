@@ -219,7 +219,7 @@ feature -- Compilation Modes
 							l_proc.execute_in_directory ("%"" + l_exe + "%"", working_directory)
 						end
 
-						last_test_exit_code := l_proc.exit_code
+						last_test_exit_code := l_proc.last_exit_code
 
 						if attached l_proc.last_output_bytes as l_out then
 								-- Raw bytes, as before simple_process 1.1.0 decoded `last_output'.
@@ -228,14 +228,14 @@ feature -- Compilation Modes
 							last_test_output := ""
 						end
 
-						if l_proc.exit_code = 0 then
+						if l_proc.last_exit_code = 0 then
 							tests_passed := True
 							if is_verbose then
 								print ("All tests passed%N")
 							end
 						else
 							if is_verbose then
-								print ("Tests failed (exit code: " + l_proc.exit_code.out + ")%N")
+								print ("Tests failed (exit code: " + l_proc.last_exit_code.out + ")%N")
 							end
 						end
 					else
@@ -264,9 +264,9 @@ feature -- Paths
 			-- Path to EIFGENs directory for current target.
 		do
 			if working_directory.is_empty then
-				Result := "EIFGENs\" + target
+				Result := "EIFGENs" + separator + target
 			else
-				Result := working_directory + "\EIFGENs\" + target
+				Result := working_directory + separator + "EIFGENs" + separator + target
 			end
 		ensure
 			result_not_empty: not Result.is_empty
@@ -275,7 +275,7 @@ feature -- Paths
 	f_code_path: STRING
 			-- Path to F_code directory (finalized code).
 		do
-			Result := eifgens_path + "\F_code"
+			Result := eifgens_path + separator + "F_code"
 		ensure
 			result_not_empty: not Result.is_empty
 		end
@@ -283,7 +283,7 @@ feature -- Paths
 	w_code_path: STRING
 			-- Path to W_code directory (workbench code).
 		do
-			Result := eifgens_path + "\W_code"
+			Result := eifgens_path + separator + "W_code"
 		ensure
 			result_not_empty: not Result.is_empty
 		end
@@ -297,16 +297,30 @@ feature -- Paths
 			end
 		end
 
+	separator: STRING
+			-- This platform's path separator.
+		do
+			create Result.make_filled ({OPERATING_ENVIRONMENT}.directory_separator, 1)
+		end
+
 	ec_exe_path: STRING
 			-- Full path to ec.exe compiler.
 		do
-			Result := ise_eiffel + "\studio\spec\" + ise_platform + "\bin\ec.exe"
+			if {PLATFORM}.is_windows then
+				Result := ise_eiffel + "\studio\spec\" + ise_platform + "\bin\ec.exe"
+			else
+				Result := ise_eiffel + "/studio/spec/" + ise_platform + "/bin/ec"
+			end
 		end
 
 	finish_freezing_path: STRING
 			-- Full path to finish_freezing.exe.
 		do
-			Result := ise_eiffel + "\studio\spec\" + ise_platform + "\bin\finish_freezing.exe"
+			if {PLATFORM}.is_windows then
+				Result := ise_eiffel + "\studio\spec\" + ise_platform + "\bin\finish_freezing.exe"
+			else
+				Result := ise_eiffel + "/studio/spec/" + ise_platform + "/bin/finish_freezing"
+			end
 		end
 
 feature -- Configuration (Fluent API)
@@ -407,7 +421,7 @@ feature {NONE} -- Implementation
 				l_proc.execute_in_directory (l_cmd, working_directory)
 			end
 
-			last_exit_code := l_proc.exit_code
+			last_exit_code := l_proc.last_exit_code
 
 			if attached l_proc.last_output_bytes as l_out then
 					-- Raw bytes, as before simple_process 1.1.0 decoded `last_output'.
@@ -426,11 +440,15 @@ feature {NONE} -- Implementation
 			create l_parser
 			last_result := l_parser.parse (last_output, l_proc_error, last_exit_code)
 
-			if l_proc.was_successful then
+			-- `was_successful' says only that `ec' ran; the exit code and output decide.
+			if l_proc.was_successful and then attached last_result as l_result and then l_result.is_success then
 				is_compiled := True
 			else
 				is_compiled := False
 				last_error := "Compilation failed with exit code " + last_exit_code.out
+				if last_exit_code = 0 then
+					last_error.append ("%N" + last_output)
+				end
 				if not l_proc_error.is_empty then
 					last_error.append ("%N" + l_proc_error)
 				end
@@ -464,7 +482,7 @@ feature {NONE} -- Implementation
 
 			if not l_proc.was_successful then
 				is_compiled := False
-				last_error := "finish_freezing failed with exit code " + l_proc.exit_code.out
+				last_error := "finish_freezing failed with exit code " + l_proc.last_exit_code.out
 			end
 		end
 
@@ -485,7 +503,7 @@ feature {NONE} -- Implementation
 				l_exe := find_exe_in (a_code_path)
 				if l_exe.is_empty then
 					is_compiled := False
-					last_error := "ERROR: No .exe found in " + a_code_path
+					last_error := "ERROR: No built program found in " + a_code_path
 				elseif is_verbose then
 					print ("Built: " + l_exe + "%N")
 				end
@@ -493,7 +511,8 @@ feature {NONE} -- Implementation
 		end
 
 	find_exe_in (a_dir: STRING): STRING
-			-- Find first .exe file in `a_dir'. Returns empty string if none found.
+			-- Find the first built program in `a_dir': a .exe on Windows, an executable
+			-- file elsewhere. Returns empty string if none found.
 		require
 			dir_not_empty: not a_dir.is_empty
 		local
@@ -507,8 +526,13 @@ feature {NONE} -- Implementation
 
 			l_entries := l_files.list_files (a_dir)
 			from i := 1 until i > l_entries.count or l_found loop
-				if l_entries.i_th (i).ends_with (".exe") then
-					Result := a_dir + "\" + l_entries.i_th (i).to_string_8
+				if {PLATFORM}.is_windows then
+					if l_entries.i_th (i).ends_with (".exe") then
+						Result := a_dir + "\" + l_entries.i_th (i).to_string_8
+						l_found := True
+					end
+				elseif not l_entries.i_th (i).has ('.') and then (create {RAW_FILE}.make_with_name (a_dir + "/" + l_entries.i_th (i).to_string_8)).is_executable then
+					Result := a_dir + "/" + l_entries.i_th (i).to_string_8
 					l_found := True
 				end
 				i := i + 1

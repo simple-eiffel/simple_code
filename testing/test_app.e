@@ -42,6 +42,7 @@ feature {NONE} -- Test Runners
 			create lib_tests
 			run_test (agent lib_tests.test_version_exists, "test_version_exists")
 			run_test (agent lib_tests.test_sc_compiler_paths, "test_sc_compiler_paths")
+			run_test (agent lib_tests.test_sc_compiler_sees_a_failed_compile, "test_sc_compiler_sees_a_failed_compile")
 		end
 
 	run_scg_project_gen_tests
@@ -87,6 +88,9 @@ feature {NONE} -- Implementation
 			end
 		rescue
 			print ("  FAIL: " + a_name + "%N")
+			if attached (create {EXCEPTION_MANAGER}).last_exception as l_ex and then attached l_ex.description as l_d then
+				print ("        " + l_d.to_string_8 + "%N")
+			end
 			failed := failed + 1
 			l_retried := True
 			retry
@@ -107,6 +111,9 @@ feature {NONE} -- Implementation
 		rescue
 			scg_project_gen_tests.cleanup
 			print ("  FAIL: " + a_name + "%N")
+			if attached (create {EXCEPTION_MANAGER}).last_exception as l_ex and then attached l_ex.description as l_d then
+				print ("        " + l_d.to_string_8 + "%N")
+			end
 			failed := failed + 1
 			l_retried := True
 			retry
@@ -127,6 +134,9 @@ feature {NONE} -- Implementation
 		rescue
 			sc_project_tests.cleanup
 			print ("  FAIL: " + a_name + "%N")
+			if attached (create {EXCEPTION_MANAGER}).last_exception as l_ex and then attached l_ex.description as l_d then
+				print ("        " + l_d.to_string_8 + "%N")
+			end
 			failed := failed + 1
 			l_retried := True
 			retry
