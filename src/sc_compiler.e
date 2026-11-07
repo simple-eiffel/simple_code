@@ -440,11 +440,15 @@ feature {NONE} -- Implementation
 			create l_parser
 			last_result := l_parser.parse (last_output, l_proc_error, last_exit_code)
 
-			if l_proc.was_successful then
+			-- `ec' can exit 0 after an error, so its output decides as well.
+			if l_proc.was_successful and then attached last_result as l_result and then l_result.is_success then
 				is_compiled := True
 			else
 				is_compiled := False
 				last_error := "Compilation failed with exit code " + last_exit_code.out
+				if last_exit_code = 0 then
+					last_error.append ("%N" + last_output)
+				end
 				if not l_proc_error.is_empty then
 					last_error.append ("%N" + l_proc_error)
 				end

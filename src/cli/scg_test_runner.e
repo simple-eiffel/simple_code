@@ -192,7 +192,9 @@ feature -- Compilation
 			-- Executable name (usually same as target or project name)
 			if attached test_target as l_target then
 				Result.append (l_target)
-				Result.append ({STRING_32} ".exe")
+				if {PLATFORM}.is_windows then
+					Result.append ({STRING_32} ".exe")
+				end
 			end
 		end
 

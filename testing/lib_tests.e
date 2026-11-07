@@ -52,6 +52,30 @@ feature -- Test
 			assert ("test_output_empty", l_compiler.last_test_output.is_empty)
 		end
 
+	test_sc_compiler_sees_a_failed_compile
+			-- `ec' can exit 0 after an error, which must still count as a failure.
+		local
+			l_compiler: SC_COMPILER
+			l_ecf: PLAIN_TEXT_FILE
+		do
+			create l_ecf.make_create_read_write ("sc_broken_probe.ecf")
+			l_ecf.put_string ("[
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-23-0" name="broken" uuid="7C2E4A10-3B5D-4F86-9A21-5E8D0C1B7F42">
+	<target name="broken">
+		<root all_classes="true"/>
+		<library name="missing" location="no/such/library.ecf"/>
+	</target>
+</system>
+			]")
+			l_ecf.close
+			create l_compiler.make ("sc_broken_probe.ecf", "broken")
+			l_compiler.compile_check
+			l_ecf.delete
+			assert ("not_compiled", not l_compiler.is_compiled)
+			assert ("has_error", not l_compiler.last_error.is_empty)
+		end
+
 feature {NONE} -- Paths
 
 	native (a_path: STRING): STRING
