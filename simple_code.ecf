@@ -23,7 +23,6 @@
 		<library name="simple_process" location="$SIMPLE_EIFFEL\simple_process\simple_process.ecf"/>
 		<library name="simple_sql" location="$SIMPLE_EIFFEL\simple_sql\simple_sql.ecf"/>
 		<library name="simple_uuid" location="$SIMPLE_EIFFEL\simple_uuid\simple_uuid.ecf"/>
-		<library name="simple_vision" location="$SIMPLE_EIFFEL\simple_vision\simple_vision.ecf"/>
 		<library name="simple_xml" location="$SIMPLE_EIFFEL\simple_xml\simple_xml.ecf"/>
 		<cluster name="src" location=".\src\" recursive="true">
 			<file_rule>
